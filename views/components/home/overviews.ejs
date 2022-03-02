@@ -7,7 +7,9 @@
           <label for="start_date">Ngày bắt đầu: </label>
         </div>
         <div class="col-md-8">
-          <input type="date" id="start_date" oninput="change_start_date()" class="form-control">
+          <select id="start_date" onchange="change_start_date()" class="form-control" >
+            <option>--Chọn--</option>
+          </select>
         </div>
       </div>
     </div>

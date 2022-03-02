@@ -14,10 +14,31 @@
         }
 
         tableCont.addEventListener('scroll', scrollHandle)
+
+        $("#reduce_form").validate({
+            ruler: {
+                reduce_date: {
+                    required: true,
+                    Number: true,
+                    minlength: 1,
+                    maxlength: 3
+                },
+            },
+            messages: {
+                reduce_date: {
+                    required: 'Không để trống',
+                    minlength: 'độ dài tối thiểu là 1 kí tự',
+                    maxlength: 'độ dài tối đã 3 kí tự',
+                    Number: 'chỉ được nhập số'
+                },
+            }
+        });
     })
 
     init = () => {
+        getStartDate();
         load_time();
+        change_start_date();
     }
 
     // show modal upload file
@@ -30,10 +51,10 @@
     irr_display = () => {
         $("#irr_display").modal('show');
         $("#irr tbody").empty();
-        let time = { 
+        let time = {
             start_date: $("#start_date").val(),
-            day_get_data: $("#day_get_data_overview").val(), 
-         };
+            day_get_data: $("#day_get_data_overview").val(),
+        };
         $.ajax({
             headers: {
                 'Accept': 'application/json',
@@ -46,9 +67,9 @@
             qualityData.sort((obj1, obj2) => {
                 return obj2.QUANTITY - obj1.QUANTITY
             })
-            $.each(qualityData, (index,item) => {
-              $("#irr tbody").append(
-                  `
+            $.each(qualityData, (index, item) => {
+                $("#irr tbody").append(
+                    `
                 <tr>
                     <td>${item.IRR_NAME}</td>
                     <td>${item.QUANTITY}</td>
@@ -56,7 +77,7 @@
                   `
                 )
             })
-            
+
         }).fail((err) => {
             throw err;
         })
@@ -109,17 +130,19 @@
         let datenow = format_time(Date.now());
 
         var date1 = new Date(datenow);
-        let start_date = format_time(date1.setDate(date1.getDate() - 10));
+        // let start_date = format_time(date1.setDate(date1.getDate() - 10));
         let day_get_data = format_time(date1.setDate(date1.getDate() - 2));
         $("#start_date").val(start_date);
         $("#day_get_data_overview").val(day_get_data);
         // getDataAmtEmployee();
+        // change_start_date();
         getQuantityEmployee();
         getQuality();
     }
 
     change_start_date = () => {
-        getQuantityEmployee();
+       getQuantityEmployee();
+       change_date_get_data();
     }
 
     change_date_get_data = () => {
@@ -131,7 +154,35 @@
         $("#employee_list").modal('show');
     }
 
+    // save employee detail
+    save_employee_detail = () => {
+        let detail_employee = {
+            ID: $("#id_employee").val(),
+            NAME: $("#name_employee").val(),
+            DATE : $("#day_get_data_overview").val(),
+            SHIFT:$("#shift").val(),
+            WORK_HRS: $("#word_hrs").val(),
+            EARNED_HOURS: $("#eff_employee").val(),
+            OPERATION_NAME:$("#operation_employee").val(),
+            IRR_NAME: $("#irr_detail").val(),
+            NOTE:$("#note").val()
+        }
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/saveemployeedetail",
+            type: "POST",
+            data: JSON.stringify(detail_employee)
+        }).done((resText) => {
+            console.log(resText.status);
+        }).fail((err) => {
+            console.log('err>> ', err)
+        })
+    }
 
+// get quantity employee
     getQuantityEmployee = () => {
         let start_date = { start_date: $("#start_date").val() };
         $.ajax({
@@ -154,7 +205,7 @@
     getDataAmtEmployee = () => {
         $(document).ajaxStart(function () {
             $('#loading').show();
-        },2000).ajaxStop(function () {
+        }).ajaxStop(function () {
             $('#loading').hide();
         });
         $("#employee_list_show tbody").empty();
@@ -198,9 +249,9 @@
                     `
                 )
             })
-            
-            $("#eff").text(`${Math.floor(eff/(pass + not_pass))}`)
-            $("#tagets").text(`${Math.floor(tagets/(pass + not_pass))}`)
+
+            $("#eff").text(`${Math.floor(eff / (pass + not_pass))}`)
+            $("#tagets").text(`${Math.floor(tagets / (pass + not_pass))}`)
             $("#employee_pass").html(`<h3 class ="text-center">${pass}</h3>`)
             $("#employee_not_pass").html(`<h3 class ="text-center">${not_pass}</h3>`)
 
@@ -209,9 +260,107 @@
         })
     }
 
-    employee_detail = (id) => {
-        $("#employee_detail").modal('show');
+    refresh = () => {
+        $("#reduce_date").val(' ');
+        $("#irr_detail").val('--chọn--');
+        $("#note").val(' ')
     }
+
+    // update reduce day
+    update_reduce_date = () => {
+        let update_date = {
+            id: $("#id_employee").val(),
+            reduce_date: $("#reduce_date").val()
+        }
+        if (update_date.reduce_date.length > 2 || update_date.reduce_date == NaN || update_date.reduce_date.length < 1) {
+            return;
+        }
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/reducedate",
+            type: "POST",
+            data: JSON.stringify(update_date)
+        }).done((resText) => {
+            if (resText.status == 200) {
+                $.notify('dời ngày thành công', 'success');
+                let id = $("#id_employee").val();
+                getDataAmtEmployee();
+                employee_detail(id);
+            } else {
+                $.notify('Vui lòng kiểm tra lại', 'error');
+            }
+        }).fail((err) => {
+            console.log("err >> ", err)
+        });
+    }
+
+    // get employee detail by ID
+    employee_detail = (id) => {
+        $(document).ajaxStart(function () {
+            $('#loading').show();
+        }).ajaxStop(function () {
+            $('#loading').hide();
+            $("#employee_detail").modal('show');
+            refresh();
+        });
+        let getEmployee = {
+            id: id,
+            date: $("#day_get_data_overview").val()
+        }
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/getemployeedetail",
+            type: "POST",
+            data: JSON.stringify(getEmployee)
+        }).done((employee) => {
+            console.log(employee)
+            $.each(employee, (index, item) => {
+                console.log(item.TAGETS);
+                $("#id_employee").val(`${item.IDD}`);
+                $("#name_employee").val(`${item.NAME}`);
+                $("#operation_employee").val(`${item.OPERATION_NAME}`);
+                $("#word_hrs").val(`${item.WORK_HRS}`);
+                $("#eff_employee").val(`${item.EFF}`);
+                $("#day_working_real").val(`${item.DAY_WORKING_REAL}`);
+                $("#tagets_employee").val(`${item.TAGETS}`);
+                $("#shift").val(`${item.Shift}`);
+            })
+        }).fail((err) => {
+            console.log('err', err);
+        })
+    }
+
+    // get Start day
+    getStartDate = () => {
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/getstartdate",
+            type: "GET",
+        }).done((start_date) => {
+            console.log(start_date)
+            if (start_date != null) {
+                $.each(start_date, (index, item) => {
+                    $("#start_date").append(
+                        `
+                        <option value = "${item.START_DATE}">${item.START_DATE}</option>
+                        `
+                    )
+                })
+            }
+        }).fail((err) => {
+            console.log("err", err);
+        })
+    }
+
 
 
     // GET ERROR
@@ -219,10 +368,10 @@
         $("#top_1").empty();
         $("#top_2").empty();
         $("#top_3").empty();
-        let time = { 
+        let time = {
             start_date: $("#start_date").val(),
-            day_get_data: $("#day_get_data_overview").val(), 
-         };
+            day_get_data: $("#day_get_data_overview").val(),
+        };
         $.ajax({
             headers: {
                 'Accept': 'application/json',
@@ -237,7 +386,7 @@
             })
             let num = 1;
             let total = 0;
-            $.each(qualityData, (index,item) => {
+            $.each(qualityData, (index, item) => {
                 total += item.QUANTITY
                 $("#top_" + num).append(
                     `
@@ -255,7 +404,7 @@
             })
             console.log(qualityData)
             $("#error_total").html(`<h3 class ="text-center" style="front-weight: bolt">${total}</h3>`)
-            
+
         }).fail((err) => {
             throw err;
         })
