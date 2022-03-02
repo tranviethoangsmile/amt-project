@@ -1,0 +1,79 @@
+<div class="modal fade" id="employee_change_info" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: black;">
+                <h5 class="modal-title" id="exampleModalLabel" style="font-size: 1vw; font-weight: bold;color:white">
+                    Thay đổi thông tin</h5>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="col-md-12">
+                                <span>ID</span>
+                                <input type="text" class="form-control" id="id_employee" disabled>
+                            </div>
+                            <div class="col-md-12">
+                                <span>Họ và tên: </span>
+                                <input type="text" class="form-control" id="name_employee" disabled>
+                            </div>
+                            <div class="col-md-12">
+                                <span>Ca</span>
+                                <input type="text" class="form-control" id="shift_employee" disabled>
+                            </div>
+                            <div class="col-md-12">
+                                <span>Chuyền</span>
+                                <input type="text" class="form-control" id="line_employee" disabled>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="container">
+                                <div class="col-md-12">
+                                    <label for="style_detail">Mã hàng:</label>
+                                    <select id="style_detail" class="form-control"
+                                        onchange="getOperationNameOfStyleDetail()">
+                                        <option>--Chọn--</option>
+                                    </select>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="operation_name">Công đoạn:</label>
+                                        <select id="operation_name" class="form-control">
+                                            <option>--Chọn--</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="time_training">Thời gian đào tạo:</label>
+                                        <select class="form-control" id="time_training">
+                                            <option>--Chọn--</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <span>Ngày thay đổi:</span>
+                                    <input type="text" class="form-control" id="reduce_date" required>
+                                </div>
+                                <div class="col-md-12">
+                                    <span>Ghi chú</span>
+                                    <textarea id="note" class="form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-6">
+                        <button type="button" class="btn btn-secondary" onclick="() => {$(this).modal('hide')}"
+                            data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                    <div class="col-6">
+                        <button type="button" class="btn btn-primary"
+                            onclick="saveChangeInfomationOfEmployee()">Lưu</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

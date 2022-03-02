@@ -1,0 +1,74 @@
+<style>
+  html, body { 
+    line-height: 30px !important;
+  }
+    .mdl-layout__drawer {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-flex-wrap: nowrap;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    width: 200px;
+    height: 100%;
+    max-height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-shadow: 0 2px 2px 0 rgb(0 0 0 / 14%), 0 3px 1px -2px rgb(0 0 0 / 20%), 0 1px 5px 0 rgb(0 0 0 / 12%);
+    box-sizing: border-box;
+    border-right: 1px solid #e0e0e0;
+    background: #fafafa;
+    -webkit-transform: translateX(-250px);
+    transform: translateX(-250px);
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition-duration: .2s;
+    transition-timing-function: cubic-bezier(.4,0,.2,1);
+    transition-property: transform;
+    transition-property: transform,-webkit-transform;
+    color: #424242;
+    overflow: visible;
+    overflow-y: auto;
+    z-index: 1;
+}
+.mdl-layout__drawer-button {
+    display: none;
+    position: absolute;
+    height: 48px;
+    width: 48px;
+    border: 0;
+    -webkit-flex-shrink: 0;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    overflow: hidden;
+    text-align: center;
+    cursor: pointer;
+    font-size: 26px;
+    line-height: 56px;
+    font-family: Helvetica,Arial,sans-serif;
+    margin: 8px 12px;
+    top: 0;
+    left: 0;
+    color: rgb(255,255,255);
+    z-index: 4;
+}
+.demo-navigation .mdl-navigation__link .material-icons {
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.56);
+    margin-right: 20px;
+    margin-left: -15px;
+    width: 15%;
+}
+
+</style>
+  <nav class="demo-navigation mdl-navigation ">
+    <a style="text-align: center; font-size: 40px;height: 50px;margin-top: 10px; color: rgb(255, 255, 0);">ECF</a>
+    <a id="linkhome" class="mdl-navigation__link" href="http://pbvweb01v/"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation" style="color: rgb(255, 255, 0)!important;">home</i>TRANG CHỦ</a>
+    <a  onclick="add_ecf_form()" id="linkhome" class="mdl-navigation__link" href="#"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation" style="color: rgb(255, 255, 0)!important;">add_chart</i>Tạo ECF mới</a>
+    <a id="linkwork" class="mdl-navigation__link" href="http://pbvweb01v/CCS"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation" style="color: rgb(255, 255, 0)!important;">assignment</i>CCS</a>
+    <a id="linkstaff" class="mdl-navigation__link " href="http://pbvweb01v/KPI"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation" style="color: rgb(255, 255, 0)!important;">account_box</i>KPI</a>

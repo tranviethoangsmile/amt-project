@@ -1,0 +1,76 @@
+<script>
+    $(document).ready(() => {
+        $("#authorForm").validate({
+            ruler: {
+                username : {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 50
+                },
+                password : {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 50
+                }
+            },
+            messages: {
+                username: {
+                    required: 'không để trông',
+                    minlength: 'Độ dài tối thiểu là 3 kí tự',
+                    maxlength: 'Độ dài tối đa là 50 kí tự'
+                },
+                password: {
+                    required: 'không để trống',
+                    minlength: 'Độ dài tối thiểu là 5 kí tự',
+                    maxlength: 'Độ dài tối đa là 50 kí tự'
+                }
+            }
+
+        })
+    })
+
+
+    function checkSupport()
+    {
+        if (('sessionStorage' in window) && window['sessionStorage'] !== null)
+        {
+            alert("Trình duyệt hỗ trợ lưu trữ web");
+            return;
+        }
+        alert("Trình duyệt không hỗ trợ lưu trữ web"); 
+    }
+    function loadData(){
+        if(('localStorage' in window) && window['localStorage'] != null && localStorage.getItem('ghinho')
+            ){
+            document.frmDangNhap.username.value = localStorage.getItem('tendangnhap');
+            document.frmDangNhap.password.value = localStorage.getItem('matkhau');
+        }
+    }
+    function lsRememberMe()
+    {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        var rememberMe = document.getElementById("rememberMe").checked;
+        if(('localStorage' in window) && window['localStorage'] != null){
+            localStorage.setItem('tendangnhap', username);
+            localStorage.setItem('matkhau', password);
+            // alert("Tên người dùng : " + localStorage.getItem('tendangnhap') + ", Mật khẩu : " + localStorage.getItem('matkhau'));
+        }
+        else{
+            alert("Trình duyệt không hỗ trợ LocalStorage");
+        }     
+        //ghi nho thong tin
+        if(rememberMe)
+        {
+            localStorage.setItem('ghinho', 1);
+        }
+    }
+    function forgot(){
+        document.getElementById("rememberMe").checked=false;
+        localStorage.removeItem('tendangnhap');
+        localStorage.removeItem('matkhau');
+        localStorage.removeItem('ghinho');
+        document.frmDangNhap.username.value = "";
+        document.frmDangNhap.password.value ="";
+    }
+</script>

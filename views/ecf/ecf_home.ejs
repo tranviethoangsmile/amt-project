@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <!-- day picker -->
+    <!-- Include jQuery -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>ECF</title>
+
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="images/android-desktop.png">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+    <link rel="apple-touch-icon-precomposed" href="images/ios-desktop.png">
+
+    <!-- Tile icon for Win8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+    <meta name="msapplication-TileColor" content="#3372DF">
+
+    <link rel="shortcut icon" href="images/favicon.png">
+
+    <!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones -->
+    <!--
+    <link rel="canonical" href="http://www.example.com/">
+    -->
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.cyan-light_blue.min.css"> -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+      .mdl-layout--fixed-drawer.is-upgraded:not(.is-small-screen)>.mdl-layout__header {
+            margin-left: 200px;
+            width: calc(100% - 200px);
+            margin-left: 0px !important;
+            /* margin-left: 100px !important; */
+            width: 100%;
+        }
+      .btn {
+            background-color: DodgerBlue;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            margin-top:18px;
+            cursor: pointer;
+            border-radius: 3px/3px;
+        }
+        .btn:hover {
+            background-color: RoyalBlue;
+        }
+        .form1{
+            height: 200px;
+        }
+        
+        .col-10 {
+        float: left;
+        /* width: 10%; */
+        min-width: 100px;
+        margin-top: 32px;
+        }
+
+        .col-90 {
+        float: left;
+        width: 90%;
+        margin-top: 26px;
+        }
+        .coll-90 {
+        float: left;
+        min-width: 100px;;
+        margin-top: 26px;
+        margin-left: 50px;
+        }
+        .col-auto{
+            float: left;
+            min-width: 80px;
+            margin-left: 30px;
+            margin-top: 26px;
+        }
+        .col-aut1{
+            min-width:800px;
+            margin-left: 30px;
+            margin-top: 26px;
+            clear: left;
+        }
+        .col-autoo{
+            float: left;
+            /* margin-left: 10px; */
+            min-width: 50px;
+            margin-top: 20px;
+            /* margin-left: 30px; */
+        }
+        .container{
+            height: 200px;
+            width: 300px;
+            position: relative;
+            margin-top: 15px;
+            }
+            .container .wrapper{
+            position: relative;
+            height: 200px;
+            width: 300;
+            border-radius: 5px;
+            background: #fff;
+            border: 2px dashed #c2cdda;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            }
+            .wrapper.active{
+            border: none;
+            }
+            .wrapper .image{
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            }
+            .wrapper img{
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            }
+            .container #custom-btn{
+            text-align: center;
+            margin-top: -15px;
+            display: block;
+            width: 100%;
+            height: 20px;
+            border: none;
+            outline: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            background: linear-gradient(135deg,#3a8ffe 0%,#9658fe 100%);
+            }
+    #view-source {
+      position: fixed;
+      display: block;
+      right: 0;
+      bottom: 0;
+      margin-right: 40px;
+      margin-bottom: 40px;
+      z-index: 900;
+    }
+    .left {
+      float: left;
+      width: 15%;
+      /* margin-top: 5px; */
+      
+      border: solid 1px rgb(255, 255, 255);
+    }
+    .right {
+      float: left;
+      width: 85%;
+      /* margin-top: 5px; */
+      border: solid 1px rgb(248, 248, 248);
+    }
+    html, body {
+      font-family: 'Roboto', 'Helvetica', sans-serif;
+    }
+    .demo-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 24px;
+    }
+    .demo-layout .mdl-layout__header .mdl-layout__drawer-button {
+      color: rgba(0, 0, 0, 0.54);
+    }
+    .mdl-layout__drawer .avatar {
+      margin-bottom: 16px;
+    }
+    .demo-drawer {
+      border: none;
+      width: 250px;/* width: 250px; đổi */
+    }
+    .demo-drawer .mdl-menu__container {
+      z-index: -1;
+    }
+    .demo-drawer .demo-navigation {
+      z-index: -2;
+    }
+    /* END iOS Safari specific workaround */
+    .demo-drawer .mdl-menu .mdl-menu__item {
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-align-items: center;
+          -ms-flex-align: center;
+              align-items: center;
+    }
+    .demo-drawer-header {
+      box-sizing: border-box;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-flex-direction: column;
+          -ms-flex-direction: column;
+              flex-direction: column;
+      -webkit-justify-content: flex-end;
+          -ms-flex-pack: end;
+              justify-content: flex-end;
+      padding: 16px;
+      height: 151px;
+    }
+    .demo-avatar-dropdown {
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      position: relative;
+      -webkit-flex-direction: row;
+          -ms-flex-direction: row;
+              flex-direction: row;
+      -webkit-align-items: center;
+          -ms-flex-align: center;
+              align-items: center;
+      width: 100%;
+    }
+
+    .demo-navigation {
+      -webkit-flex-grow: 1;
+          -ms-flex-positive: 1;
+              flex-grow: 1;
+    }
+    .demo-layout .demo-navigation .mdl-navigation__link {
+      display: -webkit-flex !important;
+      display: -ms-flexbox !important;
+      display: flex !important;
+      -webkit-flex-direction: row;
+          -ms-flex-direction: row;
+              flex-direction: row;
+      -webkit-align-items: center;
+          -ms-flex-align: center;
+              align-items: center;
+      color: rgba(255, 255, 255, 0.56);
+      font-weight: 500;
+    }
+    .demo-layout .demo-navigation .mdl-navigation__link:hover {
+      background-color: #00BCD4;
+      color: #37474F;
+    }
+    .demo-navigation .mdl-navigation__link .material-icons {
+      font-size: 24px;
+      color: rgba(255, 255, 255, 0.56);
+      margin-right: 32px;
+      margin-left: -15px;
+    }
+
+    .demo-content {
+      max-width: 80%;
+    }
+
+    .demo-charts {
+      -webkit-align-items: center;
+          -ms-flex-align: center;
+              align-items: center;
+    }
+    .demo-chart:nth-child(1) {
+      color: #ACEC00;
+    }
+    .demo-chart:nth-child(2) {
+      color: #00BBD6;
+    }
+    .demo-chart:nth-child(3) {
+      color: #BA65C9;
+    }
+    .demo-chart:nth-child(4) {
+      color: #EF3C79;
+    }
+    .demo-graphs {
+      padding: 16px 32px;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-flex-direction: column;
+          -ms-flex-direction: column;
+              flex-direction: column;
+      -webkit-align-items: stretch;
+          -ms-flex-align: stretch;
+              align-items: stretch;
+    }
+    _:-ms-input-placeholder, :root .demo-graphs {
+      min-height: 664px;
+    }
+    _:-ms-input-placeholder, :root .demo-graph {
+      max-height: 300px;
+    }
+    /* TODO end */
+    .demo-graph:nth-child(1) {
+      color: #00b9d8;
+    }
+    .demo-graph:nth-child(2) {
+      color: #d9006e;
+    }
+
+    .demo-cards {
+      -webkit-align-items: flex-start;
+          -ms-flex-align: start;
+              align-items: flex-start;
+      -webkit-align-content: flex-start;
+          -ms-flex-line-pack: start;
+              align-content: flex-start;
+    }
+    .demo-cards .demo-separator {
+      height: 32px;
+    }
+    .demo-cards .mdl-card__title.mdl-card__title {
+      color: white;
+      font-size: 24px;
+      font-weight: 400;
+    }
+    .demo-cards ul {
+      padding: 0;
+    }
+    .demo-cards h3 {
+      font-size: 1em;
+    }
+    .demo-updates .mdl-card__title {
+      min-height: 200px;
+      background-image: url('images/dog.png');
+      background-position: 90% 100%;
+      background-repeat: no-repeat;
+    }
+    .demo-cards .mdl-card__actions a {
+      color: #00BCD4;
+      text-decoration: none;
+    }
+
+    .demo-options h3 {
+      margin: 0;
+    }
+    .demo-options .mdl-checkbox__box-outline {
+      border-color: rgba(255, 255, 255, 0.89);
+    }
+    .demo-options ul {
+      margin: 0;
+      list-style-type: none;
+    }
+    .demo-options li {
+      margin: 4px 0;
+    }
+    .demo-options .material-icons {
+      color: rgba(255, 255, 255, 0.89);
+    }
+    .demo-options .mdl-card__actions {
+      height: 64px;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      box-sizing: border-box;
+      -webkit-align-items: center;
+          -ms-flex-align: center;
+              align-items: center;
+    }
+    </style>
+  </head>
+  <body onload="load_ecf_data()">
+    <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header" >
+      <header class="demo-header mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600" >
+        <div class="mdl-layout__header-row">
+          <div style="background-color: #263238;width: 199px;height: 65px;margin-left: -40px;"><h2 style="color: #b9e407;font-weight: bold; margin-left: 60px; font-family: cursive;">ECF</h2></div>
+          <div style="background-color: #ffffff;width: 3px;height: 65px;background-color: #b9e407;"></div>
+          
+          <!-- <span style="border-left: thick solid #ff0000;"> </span> -->
+          <span class="mdl-layout-title" style="margin-left: 30px;">Thông tin thay đổi nhân sự</span>
+          <div class="mdl-layout-spacer"></div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
+          </div>
+          <span><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation" style="height: 10px; font-size: 30px;">account_circle</i></span>
+          <span style="font-size: 20px;" id="user"><%=user %></span>
+
+          <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
+          <i class="material-icons">more_vert</i>
+          </button>
+          <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="hdrbtn" style="align-items: center;">
+            <li class="mdl-menu__item"  id="position" ><%=note %></li>
+            <a href="/logout" style="margin-left: 5px;" >
+              <button  class="btn-box" style="color: black; background-color: rgb(255, 255, 255);border: solid rgb(255, 255, 255);width: 230px;text-align: left;" >Đăng xuất</button></a>
+            </ul>
+        </div>
+     
+        <!-- <div  style="height: 100px; background-color: rgb(255, 255, 255); margin-top: 3px; margin-left: 10px; border: solid 1px rgb(255, 255, 255) ;" >
+            <button class="btn" id="btsearch"><i class="fa fa-search" ></i> Tìm kiếm</button>
+            <button class="btn" style=" background-color: #ffffff; border: solid 2px blueviolet;" id="btadd"><i class="fa fa-plus"></i> Thêm</button>
+        </div> -->
+      </header>
+      <div class="demo-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">      
+        <%-include ('menu_ecf'); %>
+      </div>
+      
+     
+      <main class="mdl-layout__content mdl-color--grey-100" style="margin-left: 200px !important;">
+          <div  style="background-color: rgb(255, 255, 255); margin-top: 3px;  border: solid 1px rgb(255, 255, 255) ; padding-bottom: 10px;" >
+            <div class="col-auto" style="min-width: 50px!important; width: 50px !important;"><p class="modal-title" style="color: #7c4abe;font-weight: bold;">IDNV</p></div>
+            <div class="col-autoo"><input  aria-required="true" style="padding-left: 5px; width:100px; min-height: 10px;text-align: center; margin: auto; " type="text" id="searchid" class="form-control"></div>
+            <div class="col-auto" style="min-width: 80px!important; width: 80px !important;"><p class="modal-title" style="color: #7c4abe;font-weight: bold;">bộ phận</p></div>
+            <div class="col-autoo">
+              <select id="dept_sel_search" class="form-control col-autosearch" style="width: 80px;">
+                <option >--</option>
+                <option >IE</option>
+                <option >PR</option>
+                <option >FI</option>
+                <option >HR</option>
+                <option >FM</option>
+              </select>
+            </div>
+            <div class="col-auto" style="min-width: 30px!important; width: 30px !important;"><p class="modal-title" style="width: 20px !important; color: #7c4abe;font-weight: bold;">tháng</p></div>
+            <div class="col-autoo"><input class="col-md-6 form-control" type="month" id="date_sel" name="date_sel"  style="float: right;margin-right: 20px; width:210px;margin-left: 15px;"></div>
+            <button class="btn" style="margin-left: 20px;" id="btrefresh"><i class="fa fa-refresh"></i>Làm mới</button>
+            <button class="btn" id="btsearch"><i class="fa fa-search" ></i> Tìm kiếm</button>
+            <!-- <button class="btn" style=" background-color: #c3fe3a;" id="btadd"><i class="fa fa-plus"></i> Thêm</button> -->
+            <button id="uploadex"  class="btn" style="background-color: rgb(255, 0, 0);width: 110px;text-align: left;" ><i class="fa fa-upload" ></i>Tải Form</button></a>
+          </div>
+          <div  style="height: 680px; background-color: rgb(255, 255, 255); margin-top: 3px; border: solid 1px rgb(255, 255, 255) ;" >           
+            <style>
+              #tablea {
+                  margin-top: 0px !important;
+                  font-family: Arial, Helvetica, sans-serif;
+                  border-collapse: collapse;
+                  border-radius: 15px;
+                  /* border: 1px solid #ffffff; */
+                  overflow: scroll !important;
+              }
+              
+              #tablea td {
+                  text-align: center !important;
+                  /* border: 1px solid #3a3a3a; */
+                  height: 20px !important;
+                  border: 1px solid #ddd;
+              }
+              
+              #tablea th {
+                  border: 1px solid #ddd;
+                  padding: 8px;
+                  border: 1px solid #ffffff;
+                  height: 45px !important;
+                  min-width: 80px;
+
+              }
+              
+              #tablea tr:nth-child(even) {
+                  background-color: #f2f2f2;
+              }
+              
+              #tablea tr:hover {
+                  background-color: #ddd;
+              }
+
+              #tablea th {
+                  height: 600px;
+                  padding-top: 12px;
+                  padding-bottom: 12px;
+                  text-align: center;
+                  background-color: #7c4abe;
+                  color: white;
+              }
+              .tableFixHead {
+                  overflow-y: auto;
+                  height: 700px;
+              }
+              .tableFixHead thead:not([scope=row]) {
+                  position: sticky;
+                  top: 0;
+              }
+              #tablea {
+                  border-collapse: collapse;
+                  width: 100%;
+              }
+            </style>  
+              <div class="tableFixHead">
+                <div class="page-content" style=" margin-top: 0px;">
+                  <div class="loader" id="load" style="display: none; margin: auto;margin-top: 0px;"></div>
+                    <table id="tablea" style="width:98%; margin: auto;"  onclick="detail_ticket()">
+                      <thead>
+                        <tr>                      
+                          <th style="text-align: center;">IDNV</th>
+                          <th style="text-align: center;" >Tên</th>
+                          <th style="text-align: center;">Từ BP</th> 
+                          <th style="text-align: center;">Sang BP</th> 
+                          <th style="text-align: center;" >Loại chuyển đổi</th>
+                          <th style="text-align: center;">Req</th>
+                          <th style="text-align: center;" >HR MGR</th>
+                          <th style="display: none;" >time_HR</th>
+                          <th style="text-align: center;" >DEPT MGR</th>  
+                          <th style="display: none;" >time_dept</th>   
+                          <th style="text-align: center;" >PLANT MGR</th>   
+                          <th style="display: none;" >time_mgr</th>                                      
+                        </tr>                        
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </thead>
+                    </table>
+                  </div>
+              </div>
+
+          </div>
+      </main>
+      <!-- modal review chi tiết ECF-->
+
+      <div class="w3-container">
+        <div style="margin-top: 0px;" id="id02" class="w3-modal">
+            <div style="width: 1200px; height: 920px ; border: solid 3px blueviolet;" class="w3-modal-content">
+              <div class="w3-container" >
+                <div class="modal-header">
+                  <h5 class="modal-title" style="color: #7c4abe ; font-weight: bold;" id="approve_info">thông tin phê duyệt</h5>
+                </div>
+                <div id="blockupda" style="padding-left: 120px;">
+                  <div class="col-md-4" style="margin: auto !important; display: block;">
+                    <p style="margin-bottom: 0px;">HR. Manager <br> Trần Thị Như Liên <br><spand id="hr_time"> 2021-12-01</spand></p>
+                    <select id="HR_sel" style="width: 120px; margin: auto!important; padding-bottom: 5px;" disabled>
+                      <option>---</option>
+                      <option >Approved</option>
+                      <option >Rejected</option>
+                    </select>
+                    <br>
+                    <button class="btn" id="btcopy" style="margin-top: 3px;" disabled><i class="fa fa-copy"></i>HR Submit</button>
+                  </div>
+                  <div class="col-md-4">
+                    <p style="margin-bottom: 0px;">PR. Manager <br> Lê Tân <br><spand id="dept_time">2021-12-01</spand></p>
+                    <select id="dept_sel" style="width: 120px; margin: auto!important; padding-bottom: 5px;" disabled>
+                      <option>---</option>
+                      <option >Approved</option>
+                      <option >Rejected</option>
+                    </select>
+                    <br>
+                    <button class="btn" id="btcopy" style="margin-top: 3px;" disabled><i class="fa fa-copy"></i>Dept. Submit</button>
+              
+                  </div>
+                  <div class="col-md-4">
+                    <p style="margin-bottom: 0px;">PLANT. Manager <br> Phan Quốc Tuấn <br><spand id="mgr_time">2021-12-01</spand></p>
+                    <select id="mgr_sel" style="width: 120px; margin: auto!important; padding-bottom: 5px;" disabled>
+                      <option>---</option>
+                      <option >Approved</option>
+                      <option >Rejected</option>
+                    </select>
+                    <br>
+                    <button disabled class="btn" id="btcopy" style="margin-top: 3px;"><i class="fa fa-copy"></i>Mgr. Submit</button>
+                  </div>
+                </div>   
+            </div>
+                <div class="w3-container">
+                    <span style="font-size: 25px;margin-right: 5px;" onclick="document.getElementById('id02').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+                    <div class="modal-header">
+                        <h5 class="modal-title" style="color: #7c4abe ; font-weight: bold;" id="namebox">Chi tiết: Employee Change Form</h5>
+                    </div>
+                    <fieldset style="margin-top: 20px;align-content: center; width: 98%; height: 640px;" class="col-auto">
+                      <legend>file: <spand id="ecf_name">ecf_doc_file</spand></legend>
+                      <div style="width: 98%; height: 580px; overflow-y: scroll;">
+                        <img id="img_ecf" style="display: block; width: 90%; overflow-y: scroll; margin-left: auto !important; margin-right: auto !important;" src="./public/img_ecf/ECF-123321-20211214.jpg">
+                      </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+      </div>
+
+
+      <!-- other form -->
+
+
+      <div class="w3-container">
+          <div id="id03" class="w3-modal">
+            <div style="width: 1000px; height: 250px ;border: solid 3px blueviolet;" class="w3-modal-content" >
+              <div style="width: 100%; height: 100%;" class="w3-container">
+                  <span style="font-size: 25px;margin-right: 5px;" onclick="document.getElementById('id03').style.display='none'" class="w3-button w3-display-topright" style="font-size: 35px; margin-top: 10px;margin-right: 10px;">&times;</span>
+                  <div class="modal-header">
+                    <h5 class="modal-title" style="color: #7c4abe ; font-weight: bold;">Tải file excel</h5>
+                  </div>
+                <!-- <div style="margin:auto ;width: 1000px; height: 100px; margin-top: 100px;" class="demo-card-square mdl-card mdl-shadow--2dp"> -->
+                  <div class="mdl-card__title mdl-card--expand">
+                      <form style="margin:auto ;width: 900px; " action="CCS/Upload_New_PRR" id="upload_formm" method="POST" enctype="multipart/form-data">
+                          <!-- <legend style="background-color: #46B6AC;">Upload file</legend> -->
+                          <div class="form-group">
+                              <label for="">File</label>
+                              <input style="height: auto;" type="file" class="form-control" name="files" id='filee'>
+                          </div>
+                          <button id='submit' type="submit" class="btn btn-primary">UPLOAD</button>                       
+                          <div></div>
+                      </form>
+                <!-- </div> -->
+                      <div class="loader" id="loadd" style="display: none; margin: auto;margin-top: 100px;"></div>
+                  </div>
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <!-- form submit ecf -->
+      <div class="w3-container">
+        <div id="submit_ecf_form" class="w3-modal">
+          <div style="width: 1000px; height: 540px ;border: solid 3px blueviolet;" class="w3-modal-content" >
+            <div style="width: 100%; height: 100%;" class="w3-container">
+                <span style="font-size: 25px;margin-right: 5px;" onclick="document.getElementById('submit_ecf_form').style.display='none'" class="w3-button w3-display-topright" style="font-size: 35px; margin-top: 10px;margin-right: 10px;">&times;</span>
+                <div class="modal-header">
+                  <h5 class="modal-title" style="color: #7c4abe ; font-weight: bold;">submit ECF form</h5>
+                </div>
+              <!-- <div style="margin:auto ;width: 1000px; height: 100px; margin-top: 100px;" class="demo-card-square mdl-card mdl-shadow--2dp"> -->
+                <div class="mdl-card__title mdl-card--expand">
+                    <form style="margin:auto ;width: 900px; " action="ecf/Upload_New_ecf" id="upload_form_ecf" method="POST" enctype="multipart/form-data">
+                        <div class="w3-container">
+                          <div class="modal-header">
+                            <label for="">chọn file tải lên (*.doc, *.docx)</label>
+                            <input style="height: auto;" type="file" class="form-control" name="file" id='file_ecf'>
+                          </div>
+                        </div>
+
+                    
+                        <h5 class="modal-title" style="padding-top: 60px; color: #7c4abe ; font-weight: bold;">Thông tin cơ bản:</h5>
+                        <div class="w3-container" style="padding-top: 10px;">
+                          <div class="col-md-6">
+                            <label for="">IDNV: </label>
+                            <input style="height: auto;" type="number" class="form-control" name="idnv_ecf" id='idnv_ecf' onkeypress="check_name()">
+                          </div>
+                          <div class="col-md-6">
+                            <label for="">Tên Nhân viên: </label>
+                            <input style="height: auto;" type="text" class="form-control" name="nv_ecf" id='nv_ecf' disabled>
+                          </div>
+                        </div>
+                        <div class="w3-container" style="padding-top: 10px;">
+                          <div class="col-md-6">
+                            <label for="">từ bộ phận: </label>
+                            <select name="dept1_sel" id="dept1_sel" class="form-control" disabled>
+                              <option >--</option>
+                              <option >CPL</option>
+                              <option >CT</option>
+                              <option >F&M</option>
+                              <option >FI</option>
+                              <option >HR</option>
+                              <option >IE</option>
+                              <option >IECT</option>
+                              <option >IT</option>
+                              <option >LOG</option>
+                              <option >LP</option>
+                              <option >MEC</option>
+                              <option >PL</option>
+                              <option >PR</option>
+                              <option >QA</option>
+
+                            </select>
+                          </div>
+                          <div class="col-md-6">
+                            <label for="">chuyển sang bộ phận: </label>
+                            <select name="dept2_sel" id="dept2_sel" class="form-control">
+                              <option >--</option>
+                              <option >--</option>
+                              <option >CPL</option>
+                              <option >CT</option>
+                              <option >F&M</option>
+                              <option >FI</option>
+                              <option >HR</option>
+                              <option >IE</option>
+                              <option >IECT</option>
+                              <option >IT</option>
+                              <option >LOG</option>
+                              <option >LP</option>
+                              <option >MEC</option>
+                              <option >PL</option>
+                              <option >PR</option>
+                              <option >QA</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="w3-container" style="padding-top: 30px;">
+                          <button  id='submit' type="button" value="0" class="btn btn-primary" onclick="check_submit_form()">Tải thông tin lên</button> 
+                          <button id='submit_hide' type="submit" value="submit" style="display: none;">ok</button>
+                        </div>
+                                              
+                    </form>
+              <!-- </div> -->
+                    <div class="loader" id="load_ecf" style="display: none; margin: auto;margin-top: 100px;"></div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    <script type="text/javascript">
+
+      function change_time(time){
+        // return (new Date(time)).toLocaleString("en-US", { hour12: false },{timeZone: "Asia/Bangkok"});
+        return (new Date(time)).toLocaleString('sv-SE');
+        
+      }
+     
+      document.getElementById('uploadex').addEventListener('click', function() {
+            document.getElementById('id03').style.display = 'block';   
+      })
+      
+
+    
+      function detail_ticket() {
+        var table = document.getElementById("tablea");
+        // document.getElementById('blockedit').style.display = 'block';
+        // document.getElementById('blockadd').style.display = 'none';
+        event.stopImmediatePropagation;
+        if (table) {
+          for (var i = 1; i < table.rows.length; i++) {
+            table.rows[i].ondblclick = function(e) {
+              tableText(this);
+              }
+          }
+        }
+      }
+    
+      function add_ecf_form(){
+        document.getElementById('id02').style.display = 'none'; 
+        document.getElementById('submit_ecf_form').style.display = 'block'; 
+      }
+
+      function load_ecf_data(){
+        var user="admin"
+        var xhttp = new XMLHttpRequest();
+        //event.preventDefault(); //prevent default action 
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+                var res_result=this.responseText
+                if (res_result=="false"){
+                  alert('something wrong, please contact admin')
+                } 
+                else{
+                  ls=JSON.parse(res_result)
+                  console.log(ls)
+                    if (ls.length>0){
+                      var ttdt=""
+                      for (i=0;i<ls.length;i++){
+                          var ap1=""
+                          var ap2=""
+                          var ap3=""
+                          var t1="_"
+                          var t2="_"
+                          var t3="_"
+                          if (ls[i].HR_timeupdate!=null){
+                            console.log(ls[i].HR_timeupdate)
+                            let date_ob = new Date(ls[i].HR_timeupdate);
+                            let date = date_ob.getDate();
+                            let month = date_ob.getMonth() + 1;
+                            let year = date_ob.getFullYear();
+                            t1=year+"-"+ month+"-" + date
+                            console.log(t1)
+                          }
+                          if (ls[i].dept_timeupdate!=null){
+                            let date_ob = new Date(ls[i].HR_timeupdate);
+                            let date = date_ob.getDate();
+                            let month = date_ob.getMonth() + 1;
+                            let year = date_ob.getFullYear();
+                            t2=year+"-"+ month+"-" + date
+                          }
+                          if (ls[i].mgr_timeupdate!=null){
+                            let date_ob = new Date(ls[i].HR_timeupdate);
+                            let date = date_ob.getDate();
+                            let month = date_ob.getMonth() + 1;
+                            let year = date_ob.getFullYear();
+                            t3=year+"-"+ month+"-" + date
+                          }
+                          if (ls[i].HR_approval == null){
+                            ap1="---"
+                          } else{
+                            ap1=ls[i].HR_approval
+                          }
+                          if (ls[i].dept_approval == null){
+                            ap2="---"
+                          } else{
+                            ap2=ls[i].dept_approval
+                          }
+                          if (ls[i].mgr_approval == null){
+                            ap3="---"
+                          } else{
+                            ap3=ls[i].mgr_approval
+                          }
+                          ttdt+='<tr><td >'+ ls[i].key_ecf + '</td><td >' +  ls[i].name + '</td><td >'+ ls[i].from_dept + '</td><td >' + ls[i].to_dept 
+                          ttdt+='</td><td ></td><td>' + ls[i].user_submit + '</td><td >'+  ap1 + '</td><td style="display: none;">'+t1+'</td><td >'+  ap2 
+                          ttdt+= '</td><td style="display: none;">'+t2+'</td><td >' +  ap3 + '</td><td style="display: none;">'+t3+'</td></tr>';
+                      }
+                      $('#tablea tbody').html(ttdt)
+
+                    }
+                  }
+            }
+            
+          };
+
+          xhttp.open("post", '/ecf/load_ecf_data', true);
+          // var id= document.getElementById("idreq").value;
+          // send data jason
+          xhttp.setRequestHeader("Content-type", "application/json");
+          data_send = {
+              // timereq: timereq,
+              username: user
+              // id:id
+          };
+          xhttp.send(JSON.stringify(data_send));
+      }
+
+     
+     
+     
+      // function submitForm() {
+      //     const name = document.getElementById("idnv_ecf");
+      //     const files = document.getElementById("file_ecf");
+      //     const formData = new FormData();
+      //     formData.append("name", name.value);
+      //         for(let i =0; i < files.files.length; i++) {
+      //             formData.append("files", files.files[i]);
+      //     }
+      //     fetch("/ecf/Upload_New_ecf", {
+      //         method: 'post',
+      //         body: formData
+      //     })
+      //         .then((res) => console.log(res))
+      //         .catch((err) => ("Error occured", err));
+      // }
+
+      function check_submit_form(){
+        // submitForm()
+        // console.log("submited")
+        // return
+        var fi=document.getElementById("file_ecf").value;
+        console.log(fi)
+        if (fi.indexOf(".doc")>-1){
+          var msnv=document.getElementById("idnv_ecf").value;
+          if (msnv.length!=6){
+            alert("vui lòng kiểm tra lại mã số nhân viên");
+            return
+          }
+          var ten=document.getElementById("nv_ecf").value
+          if (ten==""){
+            alert("vui lòng nhập ID 6 số và nhấn enter để kiểm tra nhân viên");
+            return
+          }
+          var dept2=document.getElementById("dept2_sel").value
+          if (dept2=="--"){
+            alert("vui lòng chọn bộ phận chuyển đến");
+            return
+          }
+          // đủ điều kiện submit form
+          document.getElementById("nv_ecf").disabled=false;
+          document.getElementById("dept1_sel").disabled=false;
+          var form = document.getElementById('upload_form_ecf');
+          let formData = new FormData(form);
+          if (fi!= "") {
+            event.preventDefault();
+            var xsend = new XMLHttpRequest();
+            xsend.open('POST', '/ecf/Upload_New_ecf', true);
+            xsend.send(formData);
+            xsend.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                var abc=this.responseText
+                if (abc=="finish"){
+                  let ts = Date.now();
+
+                  let date_ob = new Date(ts);
+                  let date = date_ob.getDate();
+                  let month = date_ob.getMonth() + 1;
+                  let year = date_ob.getFullYear();
+                  var dsubmit=year+"-"+ month+"-" + date
+                  // prints date & time in YYYY-MM-DD format
+                  console.log(dsubmit);
+                  document.getElementById("img_ecf").src='./public/img_ecf/ECF-'+msnv+"_"+dsubmit+'.jpg'
+                  alert("information have been submited")
+                  document.getElementById('submit_ecf_form').style.display='none';
+                }
+                else{
+                  alert("submit informaiton wrong! please contact admin")
+                }
+              }
+            }
+          }
+
+        }else{
+          alert("vui lòng chọn file word (*.doc) để load lên")
+          return
+        }
+      }
+
+
+
+      function tableText(tableRow){
+        document.getElementById("img_ecf").src='./public/img_ecf/ECF-'+tableRow.childNodes[0].innerText+'.jpg';
+        document.getElementById("ecf_name").innerText=tableRow.childNodes[0].innerText+'.doc'
+        document.getElementById("hr_time").innerText=tableRow.childNodes[7].innerText
+        document.getElementById("dept_time").innerText=tableRow.childNodes[9].innerText
+        document.getElementById("mgr_time").innerText=tableRow.childNodes[11].innerText
+        document.getElementById("HR_sel").value=tableRow.childNodes[6].innerText
+        document.getElementById("dept_sel").value=tableRow.childNodes[8].innerText
+        document.getElementById("mgr_sel").value=tableRow.childNodes[10].innerText
+        document.getElementById('submit_ecf_form').style.display = 'none'; 
+        document.getElementById('id02').style.display = 'block';    
+        document.getElementById('blockupda').style.display = 'block';   
+
+      
+      }
+
+
+      function detail_ticket1() {
+            var table = document.getElementById("tableb");
+            // document.getElementById('file').value="";
+            event.stopImmediatePropagation;
+            if (table) {
+                for (var i = 1; i < table.rows.length; i++) {
+                    table.rows[i].ondblclick = function(e) {
+                        deleText(this);
+                    }
+                }
+            }
+      }
+
+      function check_name(){
+        var msnv=document.getElementById("idnv_ecf").value
+        if (msnv.length>=6 && event.keyCode === 13){
+                event.preventDefault(); //prevent default action 
+                alert("check nv")
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.open("post", '/ecf/idnv', true);
+                xmlhttp.setRequestHeader("Content-type", "application/json");
+                data = {
+                    idnv : msnv      
+                };
+                xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var data = this.responseText;
+                    if (data == "false") {
+                        alert("Mã nhân viên không có trong emplist");
+                    } else {
+                        
+                    }
+                      var jsonObject = JSON.parse(this.responseText);
+                      var ten_nv=jsonObject[0].name;
+                      var bophan=jsonObject[0].dept;
+                      document.getElementById("nv_ecf").value=ten_nv;
+                      document.getElementById("dept1_sel").value=bophan;
+
+                    }
+                }
+                xmlhttp.send(JSON.stringify(data));
+
+
+
+
+
+
+            }
+      }
+
+
+
+      function deleText(tableRow) {
+        var table = document.getElementById("tableb");
+        var rows = table.getElementsByTagName('tr');
+        console.log(rows.length);
+        var table = document.getElementById("tableb");
+        var rows = table.getElementsByTagName('tr');
+        for ( var i = 1; i < rows.length; i++) {
+          if (rows[i].cells[0].innerText== tableRow.childNodes[0].innerText){
+            document.getElementById("tableb").deleteRow(i);
+        
+          };
+        }
+        console.log("----");
+        console.log(rows.length);
+      }
+          
+      document.getElementById('btcopy').addEventListener('click', function() {
+            document.getElementById('id02').style.display = 'block';
+            // document.getElementById('id01').style.display = 'none';
+             document.getElementById('blockupda').style.display = 'none';
+            document.getElementById('blockadd').style.display = 'block';
+            document.getElementById("ursche").value = document.getElementById("user").innerHTML ;
+            document.getElementById("nameold").value = "";
+        
+        })
+
+    </script> 
+  </body>
+</html>

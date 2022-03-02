@@ -1,0 +1,297 @@
+<script>
+    $(document).ready(() => {
+        init();
+
+        // table custom fixed thead
+        var tableCont = document.querySelector('#table-cont')
+        /**
+         * scroll handle
+         * @param {event} e -- scroll event
+         */
+        function scrollHandle(e) {
+            var scrollTop = this.scrollTop;
+            this.querySelector('thead').style.transform = 'translateY(' + scrollTop + 'px)';
+        }
+
+        tableCont.addEventListener('scroll', scrollHandle)
+
+    })
+
+    // contrustor 
+    init = () => {
+        getData();
+    }
+
+    // get data then display on the screen
+    getData = () => {
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/getamtdata",
+            type: "GET",
+        }).done((data) => {
+            console.log(data);
+            $.each(data, (index, item) => {
+                $("#amt_data tbody").append(
+                    `
+                <tr ondblclick="emloyeeOption(${item.ID})">
+                    <td>${item.ID}</td>
+                    <td>${item.NAME}</td>
+                    <td>${item.OPERATION_NAME}</td>
+                    <td>${item.Shift}</td>
+                    <td><button onclick="employeeDetail(${item.ID})" class="btn btn-outline-success">Chi tiết</button</td>
+                </tr>
+                 `
+                );
+            });
+        }).fail((err) => {
+            console.log(err);
+        })
+    }
+
+    // get Code_training
+
+    getCodeTraining = () => {
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/getcodetraining",
+            type: "GET",
+        }).done((code_training_list) => {
+            console.log(code_training_list)
+            if(code_training_list != null) {
+                $.each(code_training_list, (index, item) => {
+                    $("#time_training").append(
+                        `
+                        <option value = "${item.CODE_TRAINING}">${item.CODE_TRAINING}</option>
+                        `
+                    )
+                })
+            }
+        }).fail((err) => {
+            console.log('fail', err);
+        })
+    }
+
+    // get employee detail
+    employeeDetail = (id) => {
+        $("#employee_detail").modal('show');
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/getemployeedetail/" + id,
+            type: "GET",
+        }).done((data) => {
+            console.log(data)
+            if(data == null) {
+                $("#infomation").css('display = none');
+            }
+            if (data != null) {
+                $.each(data, (index, item) => {
+                    $("#employee_id").val(item.ID);
+                    $("#employee_name").val(item.Name);
+                    $("#employee_line").val(item.Line);
+                })
+                $.each(data, (index, item) => {
+                    if(item.OPERATION_NAME == null) {
+                        $("#employee_detail tbody").empty().append(
+                            `
+                            <tr> 
+                                <td rowspan="5" style ="text-align: center; color:red"> Chưa có dữ liệu nhân viên...</td>
+                            </tr>
+                            `
+                        )
+                    }else{
+                        let time = item.TIME_WORKED - item.REDUCE_DATE
+                        $("#employee_detail tbody").empty().append(
+                            `
+                            <tr>
+                                <td>${item.OPERATION_NAME}</td>
+                                <td>${item.TIME_TRAINING}</td>
+                                <td>${item.TIME_WORKED}</td>
+                                <td>${item.REDUCE_DATE}</td>
+                                <td>${time}</td>
+                                <td>${item.NOTE}</td>
+                            </tr>
+                            `
+                        )
+                    }
+                })
+            }
+        }).fail((e) => {
+            console.log('fail >>', e);
+        })
+    }
+
+    // get style detail
+    getStyleDetail = () => {
+        $("#style_detail").empty();
+        $("#style_detail").append(`<option>--chọn--</option>`)
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/getstyledetail",
+            type: "GET",
+        }).done((data) => {
+            if (data != null) {
+                $.each(data, (index, item) => {
+                    $("#style_detail").append(
+                        `
+                        <option value="${item.STYLE_DETAIL}">${item.STYLE_DETAIL}</option>
+                        `
+                    )
+                })
+            }
+        })
+    }
+
+    // get operation of style detail
+    getOperationNameOfStyleDetail = () => {
+        $("#operation_name").empty();
+        $("#operation_name").append(`<option>--chọn--</option>`)
+        let style = $("#style_detail").val();
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/getoperationname/" + style,
+            type: "GET",
+        }).done((data) => {
+            if (data != null) {
+                $.each(data, (index, item) => {
+                    $("#operation_name").append(
+                        `
+                     <option value = "${item.OPERATION_NAME}">${item.OPERATION_NAME}</option>
+                     `
+                    )
+                })
+            }
+        }).fail((e) => {
+            console.log('fail', e);
+        })
+    }
+
+    // get employee detail then option detail
+    emloyeeOption = (id) => {
+        getStyleDetail();
+        getCodeTraining();
+        $("#employee_change_info").modal('show')
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/getemployeeoption/" + id,
+            type: "GET",
+        }).done((data) => {
+
+            $.each(data, (index, item) => {
+                $("#id_employee").val(`${item.ID}`);
+                $("#name_employee").val(`${item.Name}`);
+                $("#shift_employee").val(`${item.Shift}`)
+                $("#line_employee").val(`${item.Line}`);
+            })
+        }).fail((e) => {
+            console.log("fail", e)
+        })
+    }
+
+
+    saveChangeInfomationOfEmployee = () => {
+        Swal.fire({
+            title: 'Bạn muốn lưu lại thông tin của nhân viên này không?',
+            showDenyButton: true,
+            confirmButtonText: 'Lưu',
+            denyButtonText: `Hủy`,
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                let employee_detail = {
+            ID: $("#id_employee").val(),
+            OPERATION_NAME: $("#operation_name").val(),
+            TIME_TRAINING: $("#time_training").val(),
+            REDUCE_DATE: $("#reduce_date").val(),
+            NOTE: $("#note").val()
+        }
+        if (employee_detail.OPERATION_NAME == '' || employee_detail.TIME_TRAINING == '' || employee_detail.REDUCE_DATE == '') {
+            if (employee_detail.OPERATION_NAME == '') {
+                $("#operation_name").val('Không được bỏ trống..');
+            } else if (employee_detail.TIME_TRAINING == '') {
+                $("#time_training").val('Không được bỏ trống..');
+            } else if (employee_detail.REDUCE_DATE == '') {
+                $("#reduce_date").val('Không được bỏ trống..')
+            }
+            $.notify('Vui lòng nhập đầy đủ thông tin', 'error')
+            return;
+        }
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/updateemployeedetail",
+            type: "POST",
+            data: JSON.stringify(employee_detail)
+        }).done((date) => {
+            if (date.status == '404') {
+                $.notify('Cập nhật không thành công', 'error')
+            } else {
+                $.notify('Cập nhật thành công', 'success')
+                $("#operation_name").val(''),
+                    $("#time_training").val(''),
+                    $("#reduce_date").val(''),
+                    $("#note").val('')
+                $("#employee_change_info").modal('hide');
+            }
+        }).fail((e) => {
+            console.log('fail: >>', e)
+        })
+            } else if (result.isDenied) {
+                Swal.fire('Changes are not saved', '', 'info')
+            }
+        })
+    }
+
+    // display modal handle file
+    handle_file = () => {
+        $("#handle_file").modal("show");
+    }
+
+    // upload file
+    updload_file = () => {
+        var form = document.getElementById('upload_file_tagets');
+        if (document.getElementById('tagets_file').value != '') {
+            event.preventDefault();
+            var xsend = new XMLHttpRequest();
+            var fileInput = document.getElementById('tagets_file');
+            var file;
+            file = fileInput.files[0];
+            console.log(file['name']);
+            var formData = new FormData();
+            formData.append('filee', file);
+            if (file != null) {
+                xsend.open('POST', '/api/amt/uploadfiletagetstrainingtracking', true);
+                xsend.send(formData);
+                xsend.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var data = this.responseText;
+                        if (data == "finishupspare") {
+                            alert("Tải file lên thành công!!!");
+                        }
+                    }
+                }
+            }
+        } else {
+            alert("Không có tệp nào được chọn!!!")
+        }
+    }
+</script>

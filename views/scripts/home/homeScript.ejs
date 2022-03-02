@@ -1,0 +1,268 @@
+<script>
+    $(document).ready(() => {
+        init();
+
+        // table custom fixed thead
+        var tableCont = document.querySelector('#table-container')
+        /**
+         * scroll handle
+         * @param {event} e -- scroll event
+         */
+        function scrollHandle(e) {
+            var scrollTop = this.scrollTop;
+            this.querySelector('thead').style.transform = 'translateY(' + scrollTop + 'px)';
+        }
+
+        tableCont.addEventListener('scroll', scrollHandle)
+    })
+
+    init = () => {
+        load_time();
+    }
+
+    // show modal upload file
+    update_employee_info = () => {
+        $("#handle_file").modal('show');
+        $("#tagets_file").val('');
+    }
+
+    // error total display
+    irr_display = () => {
+        $("#irr_display").modal('show');
+        $("#irr tbody").empty();
+        let time = { 
+            start_date: $("#start_date").val(),
+            day_get_data: $("#day_get_data_overview").val(), 
+         };
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/getquality",
+            type: "POST",
+            data: JSON.stringify(time)
+        }).done((qualityData) => {
+            qualityData.sort((obj1, obj2) => {
+                return obj2.QUANTITY - obj1.QUANTITY
+            })
+            $.each(qualityData, (index,item) => {
+              $("#irr tbody").append(
+                  `
+                <tr>
+                    <td>${item.IRR_NAME}</td>
+                    <td>${item.QUANTITY}</td>
+                </tr>
+                  `
+                )
+            })
+            
+        }).fail((err) => {
+            throw err;
+        })
+    }
+
+    // upload file
+    updload_file = () => {
+        $("#handle_file").modal('hide');
+        Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'đang cập nhật. Vui lòng đợi...',
+            showConfirmButton: false,
+            timer: 5000
+        })
+        var form = document.getElementById('upload_file_tagets');
+        if (document.getElementById('tagets_file').value != '') {
+            event.preventDefault();
+            var xsend = new XMLHttpRequest();
+            var fileInput = document.getElementById('tagets_file');
+            var file;
+            file = fileInput.files[0];
+            console.log(file['name']);
+            var formData = new FormData();
+            formData.append('filee', file);
+            if (file != null) {
+                xsend.open('POST', '/api/amt/uploadfileemployeeinfo', true);
+                xsend.send(formData);
+                xsend.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var data = this.responseText;
+                        console.log(data)
+                        if (data == 'success') {
+                            $.notify('cập nhật thành công', 'success');
+                        } else {
+                            $.notify('cập nhật không thành công', 'error');
+                            $("#handle_file").modal('show');
+                        }
+                    }
+                }
+            }
+        } else {
+            alert("Không có tệp nào được chọn!!!")
+            return;
+        }
+    }
+
+    // setup time default 
+    function load_time() {
+        let datenow = format_time(Date.now());
+
+        var date1 = new Date(datenow);
+        let start_date = format_time(date1.setDate(date1.getDate() - 10));
+        let day_get_data = format_time(date1.setDate(date1.getDate() - 2));
+        $("#start_date").val(start_date);
+        $("#day_get_data_overview").val(day_get_data);
+        // getDataAmtEmployee();
+        getQuantityEmployee();
+        getQuality();
+    }
+
+    change_start_date = () => {
+        getQuantityEmployee();
+    }
+
+    change_date_get_data = () => {
+        getDataAmtEmployee();
+        getQuality();
+    }
+
+    show_employee_list = () => {
+        $("#employee_list").modal('show');
+    }
+
+
+    getQuantityEmployee = () => {
+        let start_date = { start_date: $("#start_date").val() };
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/getquantityemployee",
+            type: "POST",
+            data: JSON.stringify(start_date)
+        }).done((employeeQuantity) => {
+            console.log(employeeQuantity)
+            $("#employee_total").html(`<h1 class ="text-center" style="font-size: 5vw">${employeeQuantity.length}</h1>`)
+        }).fail((err) => {
+            throw err;
+        })
+    }
+
+    // get total employee at Start date
+    getDataAmtEmployee = () => {
+        $(document).ajaxStart(function () {
+            $('#loading').show();
+        },2000).ajaxStop(function () {
+            $('#loading').hide();
+        });
+        $("#employee_list_show tbody").empty();
+        let time = {
+            start_date: $("#start_date").val(),
+            day_get_data: $("#day_get_data_overview").val(),
+        };
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/getdataamtemployee",
+            type: "POST",
+            data: JSON.stringify(time)
+        }).done((employeeData) => {
+            let pass = 0;
+            let not_pass = 0;
+            let eff = 0;
+            let tagets = 0;
+            console.log(employeeData)
+            $.each(employeeData, (index, item) => {
+                if (item.EFF > item.TAGETS) {
+                    pass += 1;
+                } else {
+                    not_pass += 1;
+                }
+                eff += Math.floor(item.EFF);
+                tagets += item.TAGETS;
+                $("#employee_list_show tbody").append(
+                    `
+                    <tr ondblclick = "employee_detail(${item.IDD})">
+                        <td>${item.IDD}</td>
+                        <td>${item.NAME}</td>
+                        <td>${item.OPERATION_NAME}</td>
+                        <td>${item.Shift}</td>
+                        <td>${Math.floor(item.EFF)}</td>
+                        <td>${item.TAGETS}</td>
+                        <td><button class="btn btn-${item.EFF > item.TAGETS ? 'success' : 'danger'}">${item.EFF > item.TAGETS ? 'ĐẠT' : 'KHÔNG ĐẠT'}</button> </td>
+                    </tr>
+                    `
+                )
+            })
+            
+            $("#eff").text(`${Math.floor(eff/(pass + not_pass))}`)
+            $("#tagets").text(`${Math.floor(tagets/(pass + not_pass))}`)
+            $("#employee_pass").html(`<h3 class ="text-center">${pass}</h3>`)
+            $("#employee_not_pass").html(`<h3 class ="text-center">${not_pass}</h3>`)
+
+        }).fail((err) => {
+            throw err;
+        })
+    }
+
+    employee_detail = (id) => {
+        $("#employee_detail").modal('show');
+    }
+
+
+    // GET ERROR
+    getQuality = () => {
+        $("#top_1").empty();
+        $("#top_2").empty();
+        $("#top_3").empty();
+        let time = { 
+            start_date: $("#start_date").val(),
+            day_get_data: $("#day_get_data_overview").val(), 
+         };
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/getquality",
+            type: "POST",
+            data: JSON.stringify(time)
+        }).done((qualityData) => {
+            qualityData.sort((obj1, obj2) => {
+                return obj2.QUANTITY - obj1.QUANTITY
+            })
+            let num = 1;
+            let total = 0;
+            $.each(qualityData, (index,item) => {
+                total += item.QUANTITY
+                $("#top_" + num).append(
+                    `
+                    <div class= "row">
+                        <div class = "col-md-6">
+                            <h${num}>${item.IRR_NAME}</h${num}>
+                        </div>
+                        <div class = "col-md-6">
+                            <h${num}>${item.QUANTITY}</h${num}>
+                        </div>
+                    </div>
+                    `
+                )
+                num++;
+            })
+            console.log(qualityData)
+            $("#error_total").html(`<h3 class ="text-center" style="front-weight: bolt">${total}</h3>`)
+            
+        }).fail((err) => {
+            throw err;
+        })
+    }
+
+    // format time
+    format_time = (time) => {
+        return (new Date(time)).toLocaleDateString('fr-CA');
+    }
+</script>

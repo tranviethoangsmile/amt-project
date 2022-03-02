@@ -1,0 +1,130 @@
+<div class="card text-center" style="width: 100%; background-color: white;">
+  <div class="row main-header mt-4" style="background-color: white;">
+    <div class="col-7"></div>
+    <div class="col-4">
+      <div class="row">
+        <div class="col-md-4">
+          <label for="start_date">Ngày bắt đầu: </label>
+        </div>
+        <div class="col-md-8">
+          <input type="date" id="start_date" oninput="change_start_date()" class="form-control">
+        </div>
+      </div>
+    </div>
+    <div class="col-1">
+      <button class="btn btn-primary" onclick="update_employee_info()">Cập nhật</button>
+    </div>
+  </div>
+  <div class="card-body">
+    <br>
+    <div class="row" style="height: 16rem;">
+      <div class="col-4">
+        <div class="card">
+          <div class="row text-center" style="height: 16rem;">
+            <h3 class="text-center">NHÂN VIÊN</h3>
+            <div class="col-12">
+              <p id="employee_total"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="card" style="height: 16rem;">
+          <div class="row">
+            <div class="col-md-6">
+              <h3>HIỆU SUẤT</h3>
+            </div>
+            <div class="col-md-6">
+              <input type="date" id="day_get_data_overview" oninput="change_date_get_data()" class="form-control">
+            </div>
+          </div>
+          <hr class="mt-1">
+          <div class="row text-center">
+            <div class="col-md-6">
+              <h5>ĐẠT</h5>
+              <hr>
+              <div class="card">
+                <h3 id="employee_pass">0</h3>
+                <hr style="margin: 0;">
+                <div class="row">
+                  <div class="col-6">
+                    HSTB
+                  </div>
+                  <div class="col-6">
+                    <h1 class="mt-3" id="eff">0</h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h5>KHÔNG ĐẠT</h5>
+              <hr>
+              <div class="card">
+                <h3 id="employee_not_pass">0</h3>
+                <hr style="margin: 0;">
+                <div class="row">
+                  <div class="col-6">
+                    CTTB
+                  </div>
+                  <div class="col-6">
+                    <h1 class="mt-3" id="tagets">0</h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="card">
+          <div class="row text-center" style="height: 16rem;">
+            <div class="row">
+              <div class="col-4">
+                <h3>LỖI</h3>
+                <hr>
+              </div>
+              <div class="col-4">
+                <p id="error_total"></p>
+                <hr>
+              </div>
+              <div class="col-4">
+                <button class="btn btn-outline-success mt-2" onclick="irr_display()">Chi tiết</button>
+              </div>
+            </div>
+            <div class="col-12">
+              <span>Lỗi hay gặp</span>
+            </div>
+            <div class="col-12">
+              <h1 id="top_1"></h1>
+              <h2 id="top_2"></h2>
+              <h3 id="top_3"></h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="row">
+        <h2>Theo dõi chi tiết</h2>
+      </div>
+    </div>
+    <div class='table-cont' id='table-cont'>
+      <table class="table table-hover" id="employee_list_show">
+        <thead>
+          <tr>
+            <th>Mã nhân viên</th>
+            <th>Họ tên</th>
+            <th>Công đoạn</th>
+            <th>Ca</th>
+            <th>Hiệu suất thực tế</th>
+            <th>Chỉ tiêu</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody style="background-color: white;">
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

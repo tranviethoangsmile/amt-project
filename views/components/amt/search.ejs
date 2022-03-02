@@ -1,0 +1,45 @@
+<div class="row main-header mt-4" style="background-color: rgb(255,255,255);">
+    <div class="col-4">
+      <div class="row ml-sm-2 mt-4">
+        <div class="col-md-6">
+          <span>Tên / Mã Nhân Viên</span>
+        </div>
+        <div class="col-md-6">
+          <input aria-required="true" type="text" id="searchname" class="form-control">
+        </div>
+      </div>
+    </div>
+    <div class="col-5">
+      <div class="row mt-4">
+        <div class="col-md-2">
+          <span>Thời gian</span>
+        </div>
+        <div class="col-md-5">
+          <input aria-required="true" type="date" id="day1" class="form-control" style="width:100%">
+        </div>
+        <div class="col-md-4">
+          <input aria-required="true" type="date" id="day2" class="form-control" style="width:100%">
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="row mt-4">
+        <div class="col-md-4">
+          <button class = "btn btn-primary" id="btrefresh"><i class="fa fa-refresh"></i> Làm mới</button>
+        </div>
+        <div class="col-md-4">
+          <button class = "btn btn-primary" id="btsearch"><i class="fa fa-search"></i> Tìm kiếm</button>
+        </div>
+        <div class="col-md-4">
+          <button onclick="handle_file()" class = "btn btn-success" id="btadd"><i class="fas fa-bars"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <style>
+    span {
+      font-size: 1vw;
+      font-weight: bold;
+    }
+  </style>

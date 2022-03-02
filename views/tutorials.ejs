@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%-include ('layout/header'); %>
+</head>
+
+<body class="layout-fixed layout-navbar-fixed layout-footer-fixed sidebar-closed sidebar-collapse">
+  <div class="wrapper">
+    <%-include ('dashboard/preloader');%>
+    <%-include ('dashboard/nav');%>
+        <div class="content-wrapper">
+          <%-include ('./components/tutorials/search'); %>
+          <%-include ('./components/tutorials/display_video_list');%> 
+        </div>
+        <%-include ('./components/tutorials/footer');%>
+  </div>
+<%-include('./components/tutorials/form_upload_video');%>
+<%-include('./components/tutorials/view_video_modal');%>
+<%-include('./components/tutorials/edit_video_info');%>
+
+  <!-- jQuery -->
+  <%-include ('layout/script');%>
+  <%-include ('./scripts/tutorials/tutorialsScript');%>
+</body>
+
+</html> 

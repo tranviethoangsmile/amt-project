@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%-include ('layout/header'); %>
+</head>
+<body class="layout-fixed layout-navbar-fixed layout-footer-fixed sidebar-closed sidebar-collapse">
+  <div class="wrapper">
+    <%-include ('dashboard/preloader');%>
+      <%-include ('dashboard/nav');%>
+
+          <div class="content-wrapper">
+            <div class="main-header" id="loading" style="display: none; margin-top: 20%; margin-left: 45.5%;">
+              <div class="loader"></div>
+              <span style="color: red; text-align: center;">xin vui lòng đợi !!!!!!!</span>
+            </div>
+            <%-include ('./components/home/overviews');%>
+          </div>
+          <%-include ('./components/home/footer');%>
+          <%-include ('./components/home/uploadFileEmployee');%>
+          <%-include ('./components/home/employee_detail');%>
+          <%-include ('./components/home/irr_display_modal');%>
+  </div>
+  <!-- jQuery -->
+  <%-include ('layout/script');%>
+    <%-include ('./scripts/home/homeScript');%>
+</body>
+
+</html>

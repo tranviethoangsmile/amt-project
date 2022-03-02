@@ -1,0 +1,27 @@
+<div class="modal fade" id="edit_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Chỉnh sửa video</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input id="id_video" hidden>
+                <label for="video_name">Tên Video</label>
+                <input id="video_name" class="form-control" disabled>
+                <label for="descript">Thông tin</label>
+                <input id="descript" class="form-control">
+                <label for="upload_by">Người đăng</label>
+                <input id="upload_by" class="form-control">
+                <div class="row mt-4">
+                    <div class="col-6">
+                        <button class="btn btn-success" onclick="updateVideoInfo()">Lưu</button>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-danger" onclick="deleteVideo()">Xóa</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

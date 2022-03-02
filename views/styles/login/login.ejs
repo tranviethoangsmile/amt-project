@@ -1,0 +1,29 @@
+<style>
+    body {
+            margin: 0;
+            padding: 0;
+        }
+  .divider:after,
+  .divider:before {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #eee;
+  }
+  .h-custom {
+    height: calc(100% - 73px);
+  }
+  @media (max-width: 450px) {
+    .h-custom {
+      height: 100%;
+    }
+  }
+
+  label.error {
+		display: inline-block;
+		color:red;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+		width: 200px;
+    margin-bottom: 5px;
+	}
+</style>

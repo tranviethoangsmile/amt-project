@@ -1,0 +1,16 @@
+<div class="modal fade" id="upload_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Đăng video hướng dẫn</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="upload_video" method="post"  action="/api/amt/uploadvideofile" enctype="multipart/form-data">
+                    <input type="file" id="video_file" name="video" class="form-control" multiple="multiple">
+                    <input type="button" onclick="upload_video()" value="upload" class="btn btn-success">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

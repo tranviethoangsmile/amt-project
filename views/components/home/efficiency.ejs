@@ -1,0 +1,36 @@
+<div class="card" style="width: 18rem;">
+    <div class="row">
+        <div class="col-5">
+            <span>Ngày bắt đầu: </span>
+        </div>
+        <div class="col-7">
+            <input type="date" id="start_date" class="form-control" oninput="change_start_date()">
+        </div>
+    </div>
+    <div class="card-body">
+        <h5 class="text-center">Hiệu suất</h5>
+        <br>
+        <div class="card">
+            <div class="row text-center">
+                <div class="col-6">
+                    <h5>ĐẠT</h5>
+                    <hr>
+                    <br>
+                    <div class="card">
+                        <p id="employee_pass"></p>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <h5>KHÔNG ĐẠT</h5>
+                    <hr>
+                    <br>
+                    <div class="card">
+                        <p id="employee_not_pass"></p>
+                    </div>
+                </div>
+            </div>
+            <p id="employee_total"></p>
+        </div>
+        <a class="btn btn-primary" onclick="show_employee_list()">Xem danh sách</a>
+    </div>
+</div>

@@ -1,0 +1,46 @@
+<div class="modal fade" id="employee_detail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: black;">
+        <h5 class="modal-title" id="exampleModalLabel" style="font-size: 1vw; font-weight: bold;color:white">Chi tiết
+          nhân viên</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="infomation" style="display: block;">
+          <div class="row">
+            <div class="col-4">
+              <span>ID:</span>
+              <input id="employee_id" class="form-control" disabled>
+            </div>
+            <div class="col-4">
+              <span>Họ và tên:</span>
+              <input id="employee_name" class="form-control" disabled>
+            </div>
+            <div class="col-4">
+              <span>Chuyền: </span>
+              <input class="form-control" id="employee_line" disabled>
+            </div>
+  
+  
+            <table class="table table-hover mt-4" id="employee_detail">
+              <thead>
+                <tr>
+                  <th>CÔNG ĐOẠN</th>
+                  <th>THỜI GIAN ĐÀO TẠO</th>
+                  <th>THỜI GIAN LÀM VIỆC</th>
+                  <th>THAY ĐỔI</th>
+                  <th>THỜI GIAN CÒN LẠI</th>
+                  <th>GHI CHÚ</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- employee detail display -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

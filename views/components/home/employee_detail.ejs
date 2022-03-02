@@ -1,0 +1,62 @@
+<div class="modal fade" id="employee_detail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: black;">
+        <h5 class="modal-title" id="exampleModalLabel" style="font-size: 1vw; font-weight: bold;color:white">Thông tin nhân viên</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-4">
+            <span>Mã</span>
+            <input id="id_employee" class="form-control" disabled />
+          </div>
+          <div class="col-4">
+            <span>Họ tên</span>
+            <input id="name_employee" class="form-control" disabled />
+          </div>
+          <div class="col-4">
+            <span>Công đoạn</span>
+            <input id="operation_employee" class="form-control" disabled />
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-6">
+            <div class="row">
+              <div class="col-md-3">
+                <label for="reduce_date">Dời ngày:</label>
+              </div>
+              <div class="col-md-9">
+                <input id="reduce_date" class="form-control" />
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <button class="btn btn-default" onclick="update_reduce_date()">Cập nhật</button>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-4">
+            <span>Giờ làm việc</span>
+            <input id="word_hrs" class="form-control" disabled />
+          </div>
+          <div class="col-4">
+            <span>Hiệu suất </span>
+            <input id="eff" class="form-control" disabled />
+          </div>
+          <div class="col-4">
+            <span>Ngày đào tạo </span>
+            <input id="day_working_real" class="form-control" disabled />
+          </div>
+        </div>
+        <div class="row mt-3">
+          <label for="note">Ghi chú</label>
+          <div class="col-12">
+            <textarea id="note" class="form-control"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

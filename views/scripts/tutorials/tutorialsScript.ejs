@@ -1,0 +1,254 @@
+<script>
+    $(document).ready(() => {
+
+        var tableCont = document.querySelector('#table-cont')
+        /**
+         * scroll handle
+         * @param {event} e -- scroll event
+         */
+        function scrollHandle(e) {
+            var scrollTop = this.scrollTop;
+            this.querySelector('thead').style.transform = 'translateY(' + scrollTop + 'px)';
+        }
+
+        tableCont.addEventListener('scroll', scrollHandle)
+
+        
+        init();
+
+    })
+
+    init = () => {
+        getAllVideo();
+    }
+    showUploadModal = () => {
+        $("#upload_modal").modal('show');
+        $("#video_file").val('')
+
+    }
+
+    search = () => {
+        let data_search = {
+            data: $("#search_data").val()
+        };
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/search",
+            type: "POST",
+            data: JSON.stringify(data_search)
+        }).done((data) => {
+            if (data != null) {
+                $("#display_list_video tbody").empty();
+                $.each(data, (index, item) => {
+                    $("#display_list_video tbody").append(
+                        `
+                           <tr>
+                            <td>${item.description}</td>
+                            <td><video src="./public/amt_video/${item.name}" width="250" height="150" ondblclick = "viewVideo(${item.id})"></video></td>
+                            <td>${item.upload_by}</td>
+                            <td><button class="btn btn-outline-success" onclick="showVideoInfo(${item.id})">chỉnh sửa / xóa</button></td>
+                            </tr>
+                           `
+                    )
+                })
+            }else {
+                $.notify('video không tồn tại', 'warning');
+            }
+        }).fail((err) => {
+            throw err;
+        })
+    }
+
+    upload_video = () => {
+        let form = $("#upload_video");
+        if ($("#video_file").val() != '') {
+            event.preventDefault();
+            var videoSend = new XMLHttpRequest();
+            var fileInput = document.getElementById('video_file');
+            var file = fileInput.files[0];
+            console.log(file['name']);
+            var formData = new FormData();
+            formData.append('filee', file);
+            if (file != null) {
+                videoSend.open('POST', '/api/amt/uploadvideofile', true);
+                videoSend.send(formData);
+                videoSend.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        $("#upload_modal").modal('hide');
+                        $.notify('upload video thành công', 'success')
+                        getAllVideo();
+                    }
+                }
+            }
+        } else {
+            $.notify('Chọn video để upload', 'warning')
+        }
+
+    }
+
+    getAllVideo = () => {
+        $("#display_list_video tbody").empty();
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/getallvideoamt",
+            type: "GET",
+        }).done((videoList) => {
+            if (videoList != null) {
+                $.each(videoList, (index, item) => {
+                    $("#display_list_video tbody").append(
+                        `
+                       <tr>
+                        <td>${item.description}</td>
+                        <td><video src="./public/amt_video/${item.name}" width="250" height="150" ondblclick = "viewVideo(${item.id})"></video></td>
+                        <td>${item.upload_by}</td>
+                        <td><button class="btn btn-outline-success" onclick="showVideoInfo(${item.id})">chỉnh sửa / xóa</button></td>
+                        </tr>
+                       `
+                    )
+                })
+            }
+        }).fail((e) => {
+            console.log('fail', e);
+        })
+    }
+
+    cancel = () => {
+        $("#view_video").modal('hide');
+    }
+
+    viewVideo = (id) => {
+        $("#view_video").modal('show');
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/getinfovideo/" + id,
+            type: "GET",
+        }).done((video) => {
+            if (video != null) {
+                $.each(video, (index, item) => {
+                    $("#video").html(`<div class="embed-responsive embed-responsive-16by9">
+  <iframe class="embed-responsive-item" src="./public/amt_video/${item.name}" allowfullscreen></iframe>
+</div>`)
+                    $("#description").html(`<div><span>${item.description}<span></div>`)
+
+                })
+            }
+        }).fail((e) => {
+            console.log("fail>> ", e)
+        })
+    }
+
+    showVideoInfo = (id) => {
+        $("#edit_modal").modal('show');
+        getVideoInfoById(id)
+    }
+
+    getVideoInfoById = (id) => {
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/getinfovideo/" + id,
+            type: "GET",
+        }).done((video) => {
+            console.log(video)
+            if (video != null) {
+                $.each(video, (index, item) => {
+                    console.log(item.description);
+                    $("#id_video").val(`${item.id}`);
+                    $("#descript").val(`${item.description}`);
+                    $("#video_name").val(`${item.name}`);
+                    $("#upload_by").val(`${item.upload_by}`)
+                })
+            }
+        }).fail((e) => {
+            console.log("fail>> ", e)
+        })
+    }
+
+    updateVideoInfo = () => {
+        Swal.fire({
+            title: 'Bạn muốn lưu thông tin này?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Lưu'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let video = {
+                    id: $("#id_video").val(),
+                    name: $("#video_name").val(),
+                    description: $("#descript").val(),
+                    upload_by: $("#upload_by").val(),
+                    update_at: new Date()
+                }
+                console.log(video)
+                $.ajax({
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    url: "/api/amt/updatevideoinfo/",
+                    type: "POST",
+                    data: JSON.stringify(video)
+                }).done((res) => {
+                    if (res.status == 200) {
+                        $("#edit_modal").modal('hide');
+                        $.notify('cập nhật thành công', 'success')
+                        getAllVideo();
+                    } else {
+                        $.notify('cập nhật không thành công', 'error')
+                    }
+                }).fail((err) => {
+                    throw err;
+                })
+            }
+        })
+
+    }
+
+    deleteVideo = () => {
+        Swal.fire({
+            title: 'Bạn muốn xóa video này?',
+            text: "hành động này sẽ không thể hoàn tác!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Xóa'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let id = $("#id_video").val();
+                $.ajax({
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    url: "/api/amt/deletevideo/" + id,
+                    type: "POST",
+                }).done((res) => {
+                    if (res.status == 200) {
+                        $("#edit_modal").modal('hide');
+                        $.notify('xóa thành công', 'success');
+                        getAllVideo();
+                    } else {
+                        $.notify('xóa không thành công', 'error');
+                    }
+                }).fail((err) => {
+                    throw err;
+                })
+
+            }
+        })
+    }
+</script>
