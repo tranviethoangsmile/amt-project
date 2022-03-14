@@ -123,11 +123,34 @@ module.exports = function (app, passport) {
 
     var amt_upload = multer({ storage: amt_storage })
 
+    // test 
+    app.get('/test', (req,res) => {
+        connect_amt.getConnection((err, data) => {
+            if(err){
+                res.send({
+                    status:505,
+                    message:'fail'
+                })
+            }
+            let sql = 'SELECT * FROM amt.amt_tracking';
+            data.query(sql, (err, dataget) => {
+                if(err){
+                    res.send({
+                        status:505,
+                        message:'fail'
+                    })
+                }else{
+                    res.send(dataget);
+                }
+            })
+        })
+    })
 
-    // save employee detail
 
-    app.post('/api/amt/saveemployeedetail', (req,res) => {
-        let {ID, NAME,DATE,SHIFT,WORK_HRS,EARNED_HOURS,OPERATION_NAME,IRR_NAME,NOTE} = req.body
+    // tracking employee start - end
+
+    app.post('/api/amt/trackingemployeestartend', (req, res) => {
+        let {ID, START, END} = req.body;
         connect_amt.getConnection((err, data) => {
             if(err) {
                 res.send({
@@ -135,8 +158,62 @@ module.exports = function (app, passport) {
                     message:'fail'
                 })
             }
-            let sql_save = `INSERT INTO employee_profile ('ID', 'NAME,DATE','SHIFT','WORK_HRS','EARNED_HOURS','OPERATION_NAME','IRR_NAME','NOTE')
-            VALUE('${ID}',' ${NAME}', '${DATE}', '${SHIFT}', '${WORK_HRS}', '${EARNED_HOURS}', '${OPERATION_NAME}',' ${IRR_NAME}', '${NOTE}')`
+            let sql_get_tracking = `SELECT * FROM amt.employee_profile WHERE EMPLOYEE = '${ID}' AND DATE >= '${START}' AND DATE <= '${END}'`
+            console.log(sql_get_tracking);
+            data.query(sql_get_tracking, (err, employees) => {
+                if(err){
+                    res.send({
+                        status:505,
+                        message:'fail'
+                    })
+                }else {
+                    res.send(employees);
+                }
+            })
+        })
+    })
+
+
+    // tracking employee detail
+
+    app.post('/api/amt/trackingdetailemployee', (req,res) => {
+        let {ID, DATE} = req.body;
+        connect_amt.getConnection((err, data) => {
+            if(err) {
+                res.send({
+                    status:505,
+                    message:'fail'
+                })
+            }
+            let sql_get_tracking = `SELECT * FROM amt.employee_profile WHERE EMPLOYEE = '${ID}' AND DATE = '${DATE}'`
+            console.log(sql_get_tracking);
+            data.query(sql_get_tracking, (err, employees) => {
+                if(err){
+                    res.send({
+                        status:505,
+                        message:'fail'
+                    })
+                }else {
+                    res.send(employees);
+                }
+            })
+        })
+    })
+
+
+    // save employee detail
+
+    app.post('/api/amt/saveemployeedetail', (req,res) => {
+        let {ID,NAME,DATE,SHIFT,WORK_HRS,EARNED_HOURS,TAGETS,OPERATION_NAME,IRR_NAME,NOTE} = req.body
+        connect_amt.getConnection((err, data) => {
+            if(err) {
+                res.send({
+                    status:505,
+                    message:'fail'
+                })
+            }
+            let sql_save = `INSERT INTO employee_profile (EMPLOYEE,NAME,DATE,SHIFT,WORK_HRS,EARNED_HOURS,TAGETS,OPERATION_NAME,IRR_NAME,NOTE)
+            VALUE('${ID}','${NAME}','${DATE}', '${SHIFT}', '${WORK_HRS}', '${EARNED_HOURS}','${TAGETS}', '${OPERATION_NAME}',' ${IRR_NAME}', '${NOTE}')`
             console.log(sql_save);
             data.query(sql_save, (err, result) => {
                 if(err){

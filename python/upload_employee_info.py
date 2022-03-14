@@ -48,15 +48,13 @@ for i in range(0,len(datafull)):
     OPERATION_NAME=str(datafull.iloc[i,3])
     CODE_TRANNING=str(datafull.iloc[i,4]) 
     START_DATE=str(datafull.iloc[i,5])
-    REDUCE_DATE=str(datafull.iloc[i,6])
-    NOTE=str(datafull.iloc[i,7]) 
-    REASON_NOT_PASS=str(datafull.iloc[i,8])
+    TECHNICIAN=str(datafull.iloc[i,6])
     print(ID)
    
    
-    query=('INSERT INTO amt_tracking(ID,NAME,SHIFT,OPERATION_NAME,CODE_TRAINING,START_DATE,REDUCE_DATE,NOTE,REASON_NOT_PASS)'
-        + 'values (%s, %s, %s, %s, %s, %s, %s, %s, %s)')
-    values=(ID,NAME,SHIFT,OPERATION_NAME,CODE_TRANNING,START_DATE,REDUCE_DATE,NOTE,REASON_NOT_PASS)
+    query=('INSERT INTO amt_tracking(ID,NAME,SHIFT,OPERATION_NAME,CODE_TRAINING,START_DATE,TECHNICIAN)'
+        + 'values (%s, %s, %s, %s, %s, %s, %s)')
+    values=(ID,NAME,SHIFT,OPERATION_NAME,CODE_TRANNING,START_DATE,TECHNICIAN)
     print(query)
     mycursor.execute(query, values)
     mydb.commit()

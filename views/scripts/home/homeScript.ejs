@@ -141,8 +141,8 @@
     }
 
     change_start_date = () => {
-       getQuantityEmployee();
-       change_date_get_data();
+        getQuantityEmployee();
+        change_date_get_data();
     }
 
     change_date_get_data = () => {
@@ -159,13 +159,14 @@
         let detail_employee = {
             ID: $("#id_employee").val(),
             NAME: $("#name_employee").val(),
-            DATE : $("#day_get_data_overview").val(),
-            SHIFT:$("#shift").val(),
+            DATE: $("#day_get_data_overview").val(),
+            SHIFT: $("#shift").val(),
             WORK_HRS: $("#word_hrs").val(),
             EARNED_HOURS: $("#eff_employee").val(),
-            OPERATION_NAME:$("#operation_employee").val(),
+            TAGETS: $("#tagets_employee").val(),
+            OPERATION_NAME: $("#operation_employee").val(),
             IRR_NAME: $("#irr_detail").val(),
-            NOTE:$("#note").val()
+            NOTE: $("#note").val()
         }
         $.ajax({
             headers: {
@@ -176,13 +177,16 @@
             type: "POST",
             data: JSON.stringify(detail_employee)
         }).done((resText) => {
-            console.log(resText.status);
+            if (resText.status == 200) {
+                $.notify('cập nhật thành công', 'success');
+                $("#employee_detail").modal('hide');
+            }
         }).fail((err) => {
             console.log('err>> ', err)
         })
     }
 
-// get quantity employee
+    // get quantity employee
     getQuantityEmployee = () => {
         let start_date = { start_date: $("#start_date").val() };
         $.ajax({
@@ -244,7 +248,7 @@
                         <td>${item.Shift}</td>
                         <td>${Math.floor(item.EFF)}</td>
                         <td>${item.TAGETS}</td>
-                        <td><button class="btn btn-${item.EFF > item.TAGETS ? 'success' : 'danger'}">${item.EFF > item.TAGETS ? 'ĐẠT' : 'KHÔNG ĐẠT'}</button> </td>
+                        <td><button class="btn btn-${item.EFF > item.TAGETS ? 'success' : 'danger'}" onclick="tracking_detail_employee(${item.IDD})">${item.EFF > item.TAGETS ? 'ĐẠT' : 'KHÔNG ĐẠT'}</button> </td>
                     </tr>
                     `
                 )
@@ -264,6 +268,99 @@
         $("#reduce_date").val(' ');
         $("#irr_detail").val('--chọn--');
         $("#note").val(' ')
+    }
+
+    // get tracking start - end date
+
+    search_tracking_employee = () => {
+        $("#table_tracking_employee tbody").empty();
+        let data_tracking = {
+            ID: $("#id_tracking_employee").val(),
+            START: $("#start_tracking").val(),
+            END: $("#end_tracking").val()
+        }
+
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/trackingemployeestartend",
+            type: "POST",
+            data: JSON.stringify(data_tracking)
+        }).done((employeeList) => {
+            console.log('start>>>end',employeeList)
+            if (employeeList != null) {
+                $.each(employeeList, (index, item) => {
+                    $("#id_tracking_employee").val(`${item.EMPLOYEE}`);
+                    $("#name_tracking_employee").val(`${item.NAME}`);
+                    $("#shift_tracking_employee").val(`${item.SHIFT}`);
+                    $("#table_tracking_employee tbody").append(
+                        `
+                        <tr>
+                            <td>${item.DATE}</td>
+                            <td>${item.OPERATION_NAME}</td>
+                            <td>${item.WORK_HRS}</td>
+                            <td>${item.EARNED_HOURS}</td>
+                            <td>${item.TAGETS}</td>
+                            <td style="background-color:${item.EARNED_HOURS > item.TAGETS ? 'blue' : 'red'}  ">${item.EARNED_HOURS > item.TAGETS ? 'ĐẠT' : 'KHÔNG ĐẠT'}</td>
+                            <td>${item.IRR_NAME}</td>
+                            <td>${item.NOTE}</td>
+                        </tr>
+                        `
+                    )
+                })
+            }
+        }).fail((err) => {
+            console.log('err', err);
+        })
+    }
+
+    // get tracking_employee_detail
+    tracking_detail_employee = (id) => {
+        $("#tracking_employee_detail").modal('show');
+        $("#id_tracking_employee").val(' ');
+        $("#name_tracking_employee").val(' ');
+        $("#shift_tracking_employee").val(' ');
+        $("#table_tracking_employee tbody").empty();
+        let data_tracking = {
+            ID: id,
+            DATE: $("#day_get_data_overview").val()
+        }
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/trackingdetailemployee",
+            type: "POST",
+            data: JSON.stringify(data_tracking)
+        }).done((employee) => {
+            if (employee != null) {
+                $.each(employee, (index, item) => {
+                    $("#id_tracking_employee").val(`${item.EMPLOYEE}`);
+                    $("#name_tracking_employee").val(`${item.NAME}`);
+                    $("#shift_tracking_employee").val(`${item.SHIFT}`);
+                    $("#table_tracking_employee tbody").append(
+                        `
+                        <tr>
+                            <td>${item.DATE}</td>
+                            <td>${item.OPERATION_NAME}</td>
+                            <td>${item.WORK_HRS}</td>
+                            <td>${item.EARNED_HOURS}</td>
+                            <td>${item.TAGETS}</td>
+                            <td style="background-color:${item.EARNED_HOURS > item.TAGETS ? 'blue' : 'red'}  ">${item.EARNED_HOURS > item.TAGETS ? 'ĐẠT' : 'KHÔNG ĐẠT'}</td>
+                            <td>${item.IRR_NAME}</td>
+                            <td>${item.NOTE}</td>
+                        </tr>
+                        `
+                    )
+                })
+            }
+        }).fail((err) => {
+            console.log('fail>>', err);
+        })
+
     }
 
     // update reduce day
