@@ -49,9 +49,9 @@ def update_employee_info():
     month = now.strftime("%m")
     print("month:", month)
 
-    day = int(now.strftime("%d")) - 1
+    day = int(now.strftime("%d")) - 2
     if day < 0 :
-        day = day + 1
+        day = day + 2
     if day < 10 :
         day = '0' +  str(day) 
     
@@ -94,7 +94,7 @@ GROUP BY tb10.ID;""".format(year = year, month = month, day = day)
     print(result)
 update_employee_info()
 # schedule.every().saturday.at("11:59").do(update_employee_info)
-schedule.every().day.at("17:00").do(update_employee_info)
+schedule.every().day.at("12:30").do(update_employee_info)
 # schedule.every(5).minutes.do(update_employee_info)
 # print(datetime.datetime.now())
 # print('shedule start')

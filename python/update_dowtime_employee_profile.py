@@ -44,13 +44,13 @@ def update_dowtime_employee_info():
     month = now.strftime("%m")
     print("month:", month)
 
-    day = int(now.strftime("%d")) - 2
+    day = int(now.strftime("%d")) - 3
     if day < 0 :
-        day = day + 2
+        day = day + 3
     if day < 10 :
         day = '0' +  str(day) 
     print("day:", day)
-    sql_up= """SELECT tb2.*,b.starttime,TIME(SUM(TIMEDIFF(b.finish,b.starttime))) AS DOWTIME FROM (SELECT tb1.* FROM (SELECT * FROM amt.amt_tracking b
+    sql_up= """SELECT tb2.*,b.starttime, ROUND((TIME_TO_SEC(TIME(SUM(TIMEDIFF(b.finish,b.starttime))))/60)/60,2) AS DOWTIME FROM (SELECT tb1.* FROM (SELECT * FROM amt.amt_tracking b
     WHERE b.ID NOT IN (SELECT ID FROM amt.employee_stop_working))tb
     INNER JOIN (SELECT a.ID,a.NAME, a.Shift, a.Line FROM erpsystem.setup_emplist AS a)tb1
     ON tb1.ID = tb.ID)tb2
@@ -70,7 +70,6 @@ def update_dowtime_employee_info():
         month_tracking = split_time[1]
         day_tracking = split_time[2]
         day_month_year = year_tracking + month_tracking + day_tracking
-
         print(day_tracking)
  
         sql_up="""UPDATE amt.employee_profile a SET a.DOWTIME = '{x5}' WHERE a.ID = '{x0}' AND DAY_TRACKING = '{x4}'""".format(x0 = str(x[0]), x5 = str(x[5]), x4 = day_month_year )
@@ -82,7 +81,7 @@ def update_dowtime_employee_info():
 update_dowtime_employee_info()
 # schedule.every().saturday.at("11:59").do(update_employee_info)
 # schedule.every().day.at("13:40").do(update_employee_info)
-schedule.every(10).minutes.do(update_dowtime_employee_info)
+# schedule.every(10).minutes.do(update_dowtime_employee_info)
 # print(datetime.datetime.now())
 # print('shedule start')
 while True:

@@ -123,234 +123,18 @@ module.exports = function (app, passport) {
 
     var amt_upload = multer({ storage: amt_storage })
 
-    // test 
-    app.get('/test', (req,res) => {
-        connect_amt.getConnection((err, data) => {
-            if(err){
-                res.send({
-                    status:505,
-                    message:'fail'
-                })
-            }
-            let sql = 'SELECT * FROM amt.amt_tracking';
-            data.query(sql, (err, dataget) => {
-                if(err){
-                    res.send({
-                        status:505,
-                        message:'fail'
-                    })
-                }else{
-                    res.send(dataget);
-                }
-            })
-        })
-    })
 
 
-    // tracking employee start - end
-
-    app.post('/api/amt/trackingemployeestartend', (req, res) => {
-        let {ID, START, END} = req.body;
-        connect_amt.getConnection((err, data) => {
-            if(err) {
-                res.send({
-                    status:505,
-                    message:'fail'
-                })
-            }
-            let sql_get_tracking = `SELECT * FROM amt.employee_profile WHERE EMPLOYEE = '${ID}' AND DATE >= '${START}' AND DATE <= '${END}'`
-            console.log(sql_get_tracking);
-            data.query(sql_get_tracking, (err, employees) => {
-                if(err){
-                    res.send({
-                        status:505,
-                        message:'fail'
-                    })
-                }else {
-                    res.send(employees);
-                }
-            })
-        })
-    })
 
 
-    // tracking employee detail
-
-    app.post('/api/amt/trackingdetailemployee', (req,res) => {
-        let {ID, DATE} = req.body;
-        connect_amt.getConnection((err, data) => {
-            if(err) {
-                res.send({
-                    status:505,
-                    message:'fail'
-                })
-            }
-            let sql_get_tracking = `SELECT * FROM amt.employee_profile WHERE EMPLOYEE = '${ID}' AND DATE = '${DATE}'`
-            console.log(sql_get_tracking);
-            data.query(sql_get_tracking, (err, employees) => {
-                if(err){
-                    res.send({
-                        status:505,
-                        message:'fail'
-                    })
-                }else {
-                    res.send(employees);
-                }
-            })
-        })
-    })
 
 
-    // save employee detail
 
-    app.post('/api/amt/saveemployeedetail', (req,res) => {
-        let {ID,NAME,DATE,SHIFT,WORK_HRS,EARNED_HOURS,TAGETS,OPERATION_NAME,IRR_NAME,NOTE} = req.body
-        connect_amt.getConnection((err, data) => {
-            if(err) {
-                res.send({
-                    status:505,
-                    message:'fail'
-                })
-            }
-            let sql_save = `INSERT INTO employee_profile (EMPLOYEE,NAME,DATE,SHIFT,WORK_HRS,EARNED_HOURS,TAGETS,OPERATION_NAME,IRR_NAME,NOTE)
-            VALUE('${ID}','${NAME}','${DATE}', '${SHIFT}', '${WORK_HRS}', '${EARNED_HOURS}','${TAGETS}', '${OPERATION_NAME}',' ${IRR_NAME}', '${NOTE}')`
-            console.log(sql_save);
-            data.query(sql_save, (err, result) => {
-                if(err){
-                    res.send({
-                        status:505,
-                        message:'fail'
-                    })
-                }else {
-                    res.send({
-                        status:200,
-                        message:'success'
-                    })
-                }
-            })
-        })
-    })
+   
+
+   
 
 
-    // get start date
-    app.get('/api/amt/getstartdate', (req,res) => {
-        connect_amt.getConnection((err, data) => {
-            if(err){
-                res.send({
-                    status:505,
-                    message:'fail'
-                })
-            };
-            let sql_data = `SELECT START_DATE FROM amt.amt_tracking 
-            GROUP BY START_DATE`
-            data.query(sql_data, (err, startDate) => {
-                if(err) {
-                    res.send({
-                        status:505,
-                        message:'fail'
-                    })
-                }else {
-                    res.send(startDate);
-                }
-            }) 
-        })
-    })
-
-
-    // reduce_date 
-    app.post('/api/amt/reducedate', (req,res) => {
-        let id = req.body.id;
-        let reduce = req.body.reduce_date;
-        if(reduce == NaN){
-            res.send({
-                status:505,
-                message:'fail'
-            })
-        }
-        connect_amt.getConnection((err, data) => {
-            if(err) throw err;
-            let sql_data = `UPDATE amt.amt_tracking
-            SET REDUCE_DATE ='${reduce}'
-            WHERE ID ='${id}'`
-            data.query(sql_data, (err, updated) => {
-                if(err){
-                    res.send({
-                        status:505,
-                        message:'fail'
-                    })
-                }else {
-                    res.send({
-                        status:200,
-                        message:'success'
-                    })
-                }
-            })
-        })
-    })
-
-
-    // get employee detail by id
-    app.post('/api/amt/getemployeedetail/', (req,res) => {
-        let id = req.body.id;
-        let date = req.body.date;
-        connect_hrsystem.getConnection((err, data) => {
-            if (err) throw err;
-            let sql_data = `SELECT IDD, NAME, OPERATION_NAME, Shift, WORK_HRS, DAY_WORKING_REAL, EFF, TAGETS FROM(SELECT IDD, NAME, OPERATION_NAME, Shift, WORK_HRS, DAY_WORKING_REAL, CODE_TRAINING, (((SUM(EARNED_HOURS)/60)/WORK_HRS)* 100)AS EFF
-            FROM (SELECT IDD, NAME, OPERATION_NAME, Shift, WORK_HRS, (DAY - REDUCE_DATE) AS DAY_WORKING_REAL, CODE_TRAINING, REDUCE_DATE 
-            FROM (SELECT IDD, NAME, OPERATION_NAME, Shift, tb4.WORK_HRS, DAY  
-            FROM (SELECT tb1.ID AS IDD, tb1.NAME, tb1.OPERATION_NAME, tb1.Shift, tb2.WORK_HRS AS WORK_HRS, COUNT(tb2.DATE) AS DAY 
-            FROM(SELECT a.ID,a.NAME, b.OPERATION_NAME, a.Shift FROM erpsystem.setup_emplist a
-            INNER JOIN linebalancing.bundle_group_by_employee_detail b
-            ON RIGHT(a.ID,5)=b.EMPLOYEE
-            WHERE a.ID = '${id}'
-            GROUP BY a.ID)tb1
-            INNER JOIN (SELECT * FROM pr2k.employee_timesheet p WHERE DATE <= '${date}')tb2
-            ON tb1.ID = tb2.EMPLOYEE
-            GROUP BY tb1.ID)tb3
-            INNER JOIN (SELECT WORK_HRS, EMPLOYEE FROM pr2k.employee_timesheet p WHERE DATE = '${date}')tb4
-            ON tb4.EMPLOYEE = tb3.IDD)tb5
-            INNER JOIN (SELECT CODE_TRAINING, ID, REDUCE_DATE FROM amt.amt_tracking)tb6
-            ON tb5.IDD = tb6.ID)tb7
-            INNER JOIN (SELECT d.EMPLOYEE,d.EARNED_HOURS FROM pr2k.employee_scanticket d WHERE d.DATE = '${format_time(date)}')tb8
-            ON RIGHT(tb7.IDD,5) = tb8.EMPLOYEE
-            GROUP BY tb7.IDD)tb9
-            INNER JOIN (SELECT * FROM amt.tagets_training_tracking)tb10
-            ON tb9.DAY_WORKING_REAL = tb10.DAY AND tb9.CODE_TRAINING = tb10.CODE_TRAINING`;
-            data.query(sql_data, (err, employeeList) => {
-                if (err) throw err;
-                data.release();
-                console.log("data",employeeList)
-                res.send(employeeList);
-            })
-        })
-    })
-
-
-    // get amt quality 
-    app.post('/api/amt/getquality', (req, res) => {
-        let startDate = req.body.start_date;
-        let dayGetData = req.body.day_get_data;
-        connect_hrsystem.getConnection((err, data) => {
-            if (err) throw err;
-            let sql_data = `SELECT IRR_NAME, COUNT(IRR_NAME) AS QUANTITY FROM
-            (SELECT d.EMPLOYEE,d.DATE,d.OPERATION,d.UNITS,d.IRR FROM
-            (SELECT c.EMPLOYEE,c.DATE,c.OPERATION,c.UNITS,c.IRR FROM
-            (SELECT * FROM pr2k.qc_endline_record a WHERE LEFT(a.TimeUpdate,10)='${dayGetData}') b
-            INNER JOIN pr2k.employee_scanticket c
-            ON c.TICKET=b.TICKET) d
-            INNER JOIN erpsystem.setup_emplist e
-            ON right(e.ID,5)=d.EMPLOYEE
-            WHERE e.StartDate='${startDate}') f
-            INNER JOIN pr2k.qc_irr_code g
-            ON g.ID=f.IRR
-            GROUP BY IRR_NAME;`;
-            data.query(sql_data, (err, qualityData) => {
-                if (err) throw err;
-                data.release();
-                res.send(qualityData);
-            })
-        })
-    })
 
     // go to amt page
     app.get('/amt', isLoggedIn, (req, res) => {
@@ -360,23 +144,6 @@ module.exports = function (app, passport) {
         });
     })
 
-    app.post('/api/amt/getquantityemployee', (req, res) => {
-        let start_date = req.body.start_date;
-        connect_hrsystem.getConnection((err, data) => {
-            if (err) throw err;
-            let sql_data = `SELECT a.ID,a.NAME, b.OPERATION_NAME, a.Shift FROM erpsystem.setup_emplist a
-            INNER JOIN linebalancing.bundle_group_by_employee_detail b
-            ON RIGHT(a.ID,5)=b.EMPLOYEE
-            WHERE a.StartDate='${start_date}'
-            GROUP BY a.ID`
-            data.query(sql_data, (err, employeeQuantity) => {
-                if (err) throw err;
-                data.release();
-                res.send(employeeQuantity);
-            })
-        })
-    })
-
     
     format_time = (time) => {
         let arr = time.split("-");
@@ -384,56 +151,7 @@ module.exports = function (app, passport) {
         return string;
     }
 
-    // get data display on screen
-    app.post('/api/amt/getdataamtemployee', (req, res) => {
-        let startDate = req.body.start_date;
-        let dayGetData = req.body.day_get_data;
-        console.log(startDate + dayGetData)
-        connect_hrsystem.getConnection((err, data) => {
-            if (err) throw err;
-            let sql_data = `SELECT IDD, NAME, OPERATION_NAME, Shift, WORK_HRS, DAY_WORKING_REAL, EFF, TAGETS FROM(SELECT IDD, NAME, OPERATION_NAME, Shift, WORK_HRS, DAY_WORKING_REAL, CODE_TRAINING, (((SUM(EARNED_HOURS)/60)/WORK_HRS)* 100)AS EFF
-            FROM (SELECT IDD, NAME, OPERATION_NAME, Shift, WORK_HRS, (DAY - REDUCE_DATE) AS DAY_WORKING_REAL, CODE_TRAINING, REDUCE_DATE 
-            FROM (SELECT IDD, NAME, OPERATION_NAME, Shift, tb4.WORK_HRS, DAY  
-            FROM (SELECT tb1.ID AS IDD, tb1.NAME, tb1.OPERATION_NAME, tb1.Shift, tb2.WORK_HRS AS WORK_HRS, COUNT(tb2.DATE) AS DAY 
-            FROM(SELECT a.ID,a.NAME, b.OPERATION_NAME, a.Shift FROM erpsystem.setup_emplist a
-            INNER JOIN linebalancing.bundle_group_by_employee_detail b
-            ON RIGHT(a.ID,5)=b.EMPLOYEE
-            WHERE a.StartDate='${startDate}'
-            GROUP BY a.ID)tb1
-            INNER JOIN (SELECT * FROM pr2k.employee_timesheet p WHERE DATE <= '${dayGetData}')tb2
-            ON tb1.ID = tb2.EMPLOYEE
-            GROUP BY tb1.ID)tb3
-            INNER JOIN (SELECT WORK_HRS, EMPLOYEE FROM pr2k.employee_timesheet p WHERE DATE = '${dayGetData}')tb4
-            ON tb4.EMPLOYEE = tb3.IDD)tb5
-            INNER JOIN (SELECT CODE_TRAINING, ID, REDUCE_DATE FROM amt.amt_tracking)tb6
-            ON tb5.IDD = tb6.ID)tb7
-            INNER JOIN (SELECT d.EMPLOYEE,d.EARNED_HOURS FROM pr2k.employee_scanticket d WHERE d.DATE = '${format_time(dayGetData)}')tb8
-            ON RIGHT(tb7.IDD,5) = tb8.EMPLOYEE
-            GROUP BY tb7.IDD)tb9
-            INNER JOIN (SELECT * FROM amt.tagets_training_tracking)tb10
-            ON tb9.DAY_WORKING_REAL = tb10.DAY AND tb9.CODE_TRAINING = tb10.CODE_TRAINING`;
-            data.query(sql_data, (err, employeeList) => {
-                if (err) throw err;
-                data.release();
-                // console.log("data",employeeList)
-                res.send(employeeList);
-            })
-        })
-    })
-
-    // get code Training
-
-    app.get('/api/amt/getcodetraining', (req, res) => {
-        connect_amt.getConnection((err, data) => {
-            if (err) throw err;
-            let sql_data = `SELECT DISTINCT CODE_TRAINING FROM amt.tagets_training_tracking`;
-            data.query(sql_data, (err, code_training_list) => {
-                if (err) throw err;
-                data.release();
-                res.send(code_training_list);
-            })
-        })
-    })
+    
 
     // get style detail
     app.get('/api/amt/getstyledetail', (req, res) => {
@@ -448,61 +166,10 @@ module.exports = function (app, passport) {
         })
     })
 
-    // get employee detail by ID
-    app.get('/api/amt/getemployeedetail/:tagId', (req, res) => {
-        let id = req.params.tagId
-        connect_amt.getConnection((err, data) => {
-            if (err) throw err
-            let sql_data = `SELECT * FROM (SELECT * FROM (SELECT a.ID, a.Name, a.Line, a.StartDate, a.Shift FROM ERPSYSTEM.setup_emplist a
-                WHERE a.ID = '${id}')t1
-                INNER JOIN (SELECT COUNT(p.TIME_IN) as TIME_WORKED, p.EMPLOYEE FROM pr2k.employee_timesheet p WHERE p.EMPLOYEE = '${id}')t2
-                ON t1.ID = t2.EMPLOYEE)t3 
-                INNER JOIN (SELECT * FROM amt.amt_tracking a WHERE a.ID = '${id}')t4
-                ON t3.ID = t4.ID`
-            data.query(sql_data, (err, employeeData) => {
-                if (err) throw err;
-                data.release();
-                console.log(employeeData);
-                res.send(employeeData);
-            })
-        })
-    })
+    
 
-    // get operation name
-    app.get('/api/amt/getoperationname/:style', (req, res) => {
-        let STYLE_DETAIL = req.params.style;
-        console.log(STYLE_DETAIL);
-        connect_amt.getConnection((err, operationNameList) => {
-            if (err) throw err;
-            let sql_data = `SELECT DISTINCT OPERATION_NAME FROM linebalancing.bundle_group_by_employee_detail b WHERE b.STYLE_DETAIL != 'NULL' AND b.STYLE_DETAIL = '${STYLE_DETAIL}' AND b.OPERATION_NAME != 'null'`
-            operationNameList.query(sql_data, (err, operationList) => {
-                if (err) throw err;
-                operationNameList.release();
-                res.send(operationList);
-            })
-        })
-    })
 
-    // get employee detail then change info
-    app.get('/api/amt/getemployeeoption/:tagId', (req, res) => {
-        let today = new Date();
-        let year = today.getFullYear();
-        let month = today.getMonth();
-        let day = today.getDate();
-        console.log(year, month, day);
-        connect_hrsystem.getConnection((err, data) => {
-            let id = req.params.tagId;
-            if (err) throw err;
-            let sql_data = `SELECT a.ID, a.Name, a.Line, a.StartDate, a.Shift FROM ERPSYSTEM.setup_emplist a
-                WHERE a.ID = '${id}'`;
-            data.query(sql_data, (err, employeeDetail) => {
-                if (err) throw err;
-                data.release();
-                console.log("employeeDetail", employeeDetail);
-                res.send(employeeDetail);
-            })
-        })
-    })
+
 
     // upload file Employee info (home page)
 
@@ -566,31 +233,6 @@ module.exports = function (app, passport) {
             });
         })
     });
-
-
-    // update employee detail
-    app.post('/api/amt/updateemployeedetail', (req, res) => {
-        connect_amt.getConnection((err, data) => {
-            if (err) throw err;
-            let { ID, OPERATION_NAME, TIME_TRAINING, REDUCE_DATE, NOTE } = req.body;
-            let sql_query = `INSERT INTO amt.amt_tracking(ID,OPERATION_NAME,TIME_TRAINING,REDUCE_DATE,NOTE) VALUES('${ID}','${OPERATION_NAME}','${TIME_TRAINING}','${REDUCE_DATE}','${NOTE}')`;
-            data.query(sql_query, (err, fields) => {
-                if (err) {
-                    res.send({
-                        message: 'fail',
-                        status: '404'
-                    })
-                }
-                res.send({
-                    message: 'successfully',
-                    status: 200
-                })
-            })
-
-        })
-    })
-
-
 
 
     // go to tutorials page
