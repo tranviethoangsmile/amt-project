@@ -44,13 +44,13 @@ def update_spantime_employee_info():
     month = now.strftime("%m")
     print("month:", month)
 
-    day = int(now.strftime("%d")) - 2
+    day = int(now.strftime("%d")) - 3
     if day < 0 :
-        day = day + 2
+        day = day + 3
     if day < 10 :
         day = '0' +  str(day) 
     print("day:", day)
-    sql_up= """SELECT tb2.*, tb3.StartTime, SUM(tb3.SpanTime) FROM (SELECT tb1.* FROM (SELECT * FROM amt.amt_tracking b
+    sql_up= """SELECT tb2.*, tb3.StartTime, ROUND(SUM(tb3.SpanTime),2) FROM (SELECT tb1.* FROM (SELECT * FROM amt.amt_tracking b
     WHERE b.ID NOT IN (SELECT ID FROM amt.employee_stop_working))tb
     INNER JOIN (SELECT a.ID,a.NAME, a.Shift, a.Line FROM erpsystem.setup_emplist AS a)tb1
     ON tb1.ID = tb.ID) tb2

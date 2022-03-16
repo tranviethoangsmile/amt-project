@@ -45,9 +45,9 @@ def insert_reduce_day():
     month = now.strftime("%m")
     print("month:", month)
 
-    day = int(now.strftime("%d")) - 12
+    day = int(now.strftime("%d")) - 4
     if day < 0 :
-        day = day + 12
+        day = day + 4
     if day < 10 :
         day = '0' +  str(day) 
     print("day:", day)

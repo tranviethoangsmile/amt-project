@@ -44,9 +44,9 @@ def insert_irr_tracking():
     month = now.strftime("%m")
     print("month:", month)
 
-    day = int(now.strftime("%d")) - 3
+    day = int(now.strftime("%d")) - 15
     if day < 0 :
-        day = day + 3
+        day = day + 15
     if day < 10 :
         day = '0' +  str(day) 
     print("day:", day)

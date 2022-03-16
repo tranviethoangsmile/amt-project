@@ -44,9 +44,9 @@ def update_dowtime_employee_info():
     month = now.strftime("%m")
     print("month:", month)
 
-    day = int(now.strftime("%d")) - 3
+    day = int(now.strftime("%d")) - 4
     if day < 0 :
-        day = day + 3
+        day = day + 4
     if day < 10 :
         day = '0' +  str(day) 
     print("day:", day)
