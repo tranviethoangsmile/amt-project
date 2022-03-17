@@ -50,7 +50,7 @@ def insert_irr_tracking():
     if day < 10 :
         day = '0' +  str(day) 
     print("day:", day)
-    sql_up= """SELECT tb6.ID, tb6.DATE, tb7.ID AS IRR, COUNT(tb7.IRR_NAME) AS QUANTITY, tb7.IRR_NAME AS IRR_NAME  FROM (SELECT * FROM (SELECT * FROM (SELECT * FROM (SELECT *  FROM amt.amt_tracking b
+    sql_irr_tracking= """SELECT tb6.ID, tb6.DATE, tb7.ID AS IRR, COUNT(tb7.IRR_NAME) AS QUANTITY, tb7.IRR_NAME AS IRR_NAME  FROM (SELECT * FROM (SELECT * FROM (SELECT * FROM (SELECT *  FROM amt.amt_tracking b
     WHERE b.ID NOT IN (SELECT ID AS IDD FROM amt.employee_stop_working))tb
     INNER JOIN (SELECT a.ID AS IDD,a.NAME AS NAMEE, a.Shift AS Shiftt, a.Line FROM erpsystem.setup_emplist AS a)tb1
     ON tb1.IDD = tb.ID)tb2
@@ -61,17 +61,17 @@ def insert_irr_tracking():
     INNER JOIN (SELECT a.ID, a.IRR_NAME FROM pr2k.qc_irr_code a)tb7
     ON tb7.ID = tb6.IRR
     GROUP BY ID, IRR_NAME;""".format(year = year, month = month, day = day)
-    print(sql_up)
-    myCursor.execute(sql_up)
-    result= myCursor.fetchall()
-    print(result)
-    for x in result:
+    print(sql_irr_tracking)
+    myCursor.execute(sql_irr_tracking)
+    result_irr= myCursor.fetchall()
+    print(result_irr)
+    for x in result_irr:
         print(str(x[3]))
-        sql_up="""INSERT INTO amt.amt_irr_tracking (ID, DATE, IRR,QUANTITY, IRR_NAME)
+        sql_irr_tracking="""INSERT INTO amt.amt_irr_tracking (ID, DATE, IRR,QUANTITY, IRR_NAME)
          VALUES('{ID}','{DATE}','{IRR}','{QUANTITY}','{IRR_NAME}')
          """.format(ID = str(x[0]), DATE = str(x[1]), IRR = str(x[2]), QUANTITY = str(x[3]), IRR_NAME = str(x[4]))
-        print(sql_up)
-        myCursor.execute(sql_up)
+        print(sql_irr_tracking)
+        myCursor.execute(sql_irr_tracking)
         mydb.commit()
 insert_irr_tracking()
 # schedule.every().saturday.at("11:59").do(update_employee_info)

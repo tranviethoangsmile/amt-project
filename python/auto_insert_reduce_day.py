@@ -45,24 +45,25 @@ def insert_reduce_day():
     month = now.strftime("%m")
     print("month:", month)
 
-    day = int(now.strftime("%d")) - 4
+
+    day = int(now.strftime("%d")) - 1
     if day < 0 :
         day = day + 4
     if day < 10 :
         day = '0' +  str(day) 
     print("day:", day)
-    sql_up= """SELECT ID, DAY_TRAINING, ROUND(SUM(DOWTIME) + SUM(SPAN_TIME),2) AS STAND_OFF,floor(((ROUND(SUM(DOWTIME)+ SUM(SPAN_TIME),2) - 2.5)/7.39) + 1) AS REDUCE_DAY 
-    FROM amt.employee_profile WHERE DAY_TRACKING <= '{year}{month}{day}'
+    sql_reduce_day= """SELECT ID, DAY_TRAINING, ROUND(SUM(DOWTIME) + SUM(SPAN_TIME),2) AS STAND_OFF,floor(((ROUND(SUM(DOWTIME)+ SUM(SPAN_TIME),2) - 2.5)/7.39) + 1) AS REDUCE_DAY 
+    FROM amt.employee_profile WHERE DAY_TRACKING <= '{year}-{month}-{day}'
     GROUP BY ID;""".format(year = year, month = month, day = day)
-    print(sql_up)
-    myCursor.execute(sql_up)
-    result= myCursor.fetchall()
-    print(result)
-    for x in result:
+    print(sql_reduce_day)
+    myCursor.execute(sql_reduce_day)
+    result_reduce_day= myCursor.fetchall()
+    print(result_reduce_day)
+    for x in result_reduce_day:
         print(str(x[3]))
-        sql_up="""UPDATE amt.employee_profile a SET a.REDUCE_DAY = '{REDUCE_DAY}' WHERE a.ID = '{ID}' AND DAY_TRACKING = '{year}{month}{day}'""".format(REDUCE_DAY = str(x[3]), ID = str(x[0]),year = year, month = month, day = day )
-        print(sql_up)
-        myCursor.execute(sql_up)
+        sql_reduce_day="""UPDATE amt.employee_profile a SET a.REDUCE_DAY = '{REDUCE_DAY}' WHERE a.ID = '{ID}' AND DAY_TRACKING = '{year}-{month}-{day}'""".format(REDUCE_DAY = str(x[3]), ID = str(x[0]),year = year, month = month, day = day )
+        print(sql_reduce_day)
+        myCursor.execute(sql_reduce_day)
         mydb.commit()
 insert_reduce_day()
 # schedule.every().saturday.at("11:59").do(update_employee_info)
