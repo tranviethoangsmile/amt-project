@@ -123,12 +123,110 @@ module.exports = function (app, passport) {
 
     var amt_upload = multer({ storage: amt_storage })
 
+    // get irr list by day_tracking
+
+    app.post('/api/amt/get_irr_by_day_tracking', (req,res) => {
+        let {START_DATE, DAY_TRACKING} = req.body;
+        let time = DAY_TRACKING.split('-');
+        let year = time[0];
+        let month = time[1];
+        let day = time [2];
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT b.ID, b.DATE,b.IRR,b.QUANTITY,b.IRR_NAME, SUM(QUANTITY) AS TOTAL FROM (SELECT ID FROM amt.amt_tracking WHERE LEFT(START_DATE,10) = '2022-02-14')a
+            INNER JOIN (SELECT * FROM amt.amt_irr_tracking WHERE DATE = '${year}${month}${day}')b
+            ON a.ID = b.ID
+            GROUP BY b.IRR_NAME;`;
+            data.query(sql_data, (err, irr_list) => {
+                if (err) throw err;
+                data.release();
+                res.send(irr_list);
+            })
+        })
+    })
+
+    // get employee_profile by start_date and day_tracking
+    app.post('/api/amt/get_info_employee_by_start_date', (req,res) => {
+        let {START_DATE, DAY_TRACKING} = req.body;
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT * FROM (SELECT ID, NAME, START_DATE, CODE_TRAINING,EFF, DAY_TRAINING,DAY_TRACKING, REDUCE_DAY, (DAY_TRAINING - REDUCE_DAY) AS DAY_TRAINING_REAL 
+            FROM amt.employee_profile WHERE LEFT(START_DATE,10) = '${START_DATE}' AND DAY_TRACKING = '${DAY_TRACKING}')b
+            LEFT JOIN (SELECT * FROM amt.tagets_training_tracking)tb
+            ON tb.CODE_TRAINING = b.CODE_TRAINING AND tb.DAY = b.DAY_TRAINING_REAL;`;
+            data.query(sql_data, (err, employee_profile_list) => {
+                if (err) throw err;
+                data.release();
+                res.send(employee_profile_list);
+            })
+        })
+    })
+
+    // get start_date list
+
+    app.get('/api/amt/get_start_date_list', (req,res) => {
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT LEFT(START_DATE,10) AS START_DATE FROM amt.amt_tracking GROUP BY START_DATE`;
+            data.query(sql_data, (err, employee_list) => {
+                if (err) throw err;
+                data.release();
+                res.send(employee_list);
+            })
+        })
+    })
+
+
+    // get employee quantity
+    app.get('/api/amt/get_employee_quantity', (req,res) => {
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT * FROM amt.amt_tracking`;
+            data.query(sql_data, (err, employee_list) => {
+                if (err) throw err;
+                data.release();
+                res.send(employee_list);
+            })
+        })
+    })
+
+    
+    // get employee stoped
+    app.get('/api/amt/get_employee_stoped', (req,res) => {
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT * FROM amt.employee_stop_working`;
+            data.query(sql_data, (err, employee_list) => {
+                if (err) throw err;
+                data.release();
+                res.send(employee_list);
+            })
+        })
+    })
+
+       // get irr
+       app.get('/api/amt/get_irr', (req,res) => {
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT * FROM amt.amt_irr_tracking`;
+            data.query(sql_data, (err, irr_list) => {
+                if (err) throw err;
+                data.release();
+                res.send(irr_list);
+            })
+        })
+    })
 
 
 
 
-
-
+  // go to amt detail
+  app.get('/detail', isLoggedIn, (req, res) => {
+    res.render('detail.ejs', {
+        user: req.user[0].user, // Lấy thông tin user trong session và truyền nó qua template
+        note: req.user[0].note
+    });
+})
 
    
 
@@ -158,10 +256,10 @@ module.exports = function (app, passport) {
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
             let sql_data = `SELECT DISTINCT STYLE_DETAIL FROM linebalancing.bundle_group_by_employee_detail b WHERE b.STYLE_DETAIL != 'NULL'`;
-            data.query(sql_data, (err, styleDetailList) => {
+            data.query(sql_data, (err, employee_list) => {
                 if (err) throw err;
                 data.release();
-                res.send(styleDetailList);
+                res.send(employee_list);
             })
         })
     })
@@ -384,7 +482,7 @@ module.exports = function (app, passport) {
     }), function (req, res) {
         var depart = req.user[0].Department;
         if (req.user[0].Department == "F&M") {
-            res.redirect('/home')
+            res.redirect('/system')
         }
         else {
             if (req.user[0].Department == "HR") {
@@ -404,8 +502,8 @@ module.exports = function (app, passport) {
         res.redirect('/login');
     })
 
-    app.get('/home', isLoggedIn, function (req, res) {
-        res.render('home.ejs', {
+    app.get('/system', isLoggedIn, function (req, res) {
+        res.render('system.ejs', {
             note: req.user[0].note,
             user: req.user[0].user // Lấy thông tin user trong session và truyền nó qua template
         });

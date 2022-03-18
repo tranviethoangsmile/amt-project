@@ -37,14 +37,10 @@ from datetime import datetime
 def update_dowtime_employee_info():
     print("auto update employee info")
     now = datetime.now()
-
     year = now.strftime("%Y")
     print("year:", year)
-
     month = now.strftime("%m")
     print("month:", month)
-   
-
     day = int(now.strftime("%d")) - 1
     if day < 0 :
         day = day + 4
@@ -73,7 +69,8 @@ def update_dowtime_employee_info():
         day_month_year = year_tracking + '-' + month_tracking + '-' + day_tracking
         print(day_tracking)
  
-        sql_dowtime="""UPDATE amt.employee_profile a SET a.DOWTIME = '{x5}' WHERE a.ID = '{x0}' AND DAY_TRACKING = '{x4}'""".format(x0 = str(x[0]), x5 = str(x[5]), x4 = day_month_year )
+        sql_dowtime="""UPDATE amt.employee_profile a SET a.DOWTIME = '{x5}' WHERE a.ID = '{x0}' AND DAY_TRACKING = '{x4}'
+        """.format(x0 = str(x[0]), x5 = str(x[5]), x4 = day_month_year )
       
         print(sql_dowtime)
         myCursor.execute(sql_dowtime)

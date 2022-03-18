@@ -41,10 +41,12 @@ def insert_irr_tracking():
     year = now.strftime("%Y")
     print("year:", year)
 
-    month = now.strftime("%m")
+    month = int(now.strftime("%m")) - 1
     print("month:", month)
+    if month < 10 : 
+        month = '0' + str(month)
 
-    day = int(now.strftime("%d")) - 15
+    day = int(now.strftime("%d")) - 4
     if day < 0 :
         day = day + 15
     if day < 10 :
@@ -75,10 +77,10 @@ def insert_irr_tracking():
         mydb.commit()
 insert_irr_tracking()
 # schedule.every().saturday.at("11:59").do(update_employee_info)
-schedule.every().day.at("13:40").do(insert_irr_tracking)
+# schedule.every().day.at("13:40").do(insert_irr_tracking)
 # schedule.every(5).minutes.do(insert_irr_tracking)
 # print(datetime.datetime.now())
 # print('shedule start')
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)
