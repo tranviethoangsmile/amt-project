@@ -62,14 +62,14 @@ require('./app/fm.js')(app, passport); // Load routes truyền vào app và pass
 require('./app/ecf.js')(app, passport); // Load routes truyền vào app và passport đã config ở trên
 var entries = [];
 app.locals.entries = entries;
-const port = process.env.PORT || 81;
+const port = process.env.PORT || 80;
 app.use(logger("dev"));
 
 // app.use(bodyParser.urlencoded({ extended: false }));
 
 
 var server = require("http").Server(app);
-server.listen(port, () => {
+server.listen(port,'10.113.90.198', () => {
     console.log('APP RUNNING ON ' + port)
 })
 

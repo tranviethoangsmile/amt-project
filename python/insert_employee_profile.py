@@ -70,7 +70,7 @@ def update_employee_info():
     result_employee_profile= myCursor.fetchall()
     print(result_employee_profile)
     for x in result_employee_profile:
-        sql_employee_profile="""INSERT INTO employee_profile (ID, NAME,SHIFT,SHIFT_REAL,START_DATE,OPERATION_NAME,OPERATION_NAME_REAL,CODE_TRAINING,DAY_TRACKING,TECHNICIANS,WORK_HRS, EARNED_HOURS)
+        sql_employee_profile="""INSERT INTO employee_profile (ID, NAME,SHIFT,SHIFT_REAL,START_DATE,OPERATION_NAME,OPERATION_NAME_REAL,CODE_TRAINING,DAY_TRACKING,TECHNICIANS,WORK_HRS, EFF)
          VALUES ('{ID}','{NAME}','{SHIFT}','{SHIFT_REAL}','{START_DATE}','{OPERATION_NAME}', '{OPERATION_NAME_REAL}','{CODE_TRAINING}','{DAY_TRACKING}','{TECHNICIANS}','{WORK_HRS}','{EARNED_HOURS}')
          """.format(ID = str(x[0]), NAME = str(x[1]), SHIFT = str(x[2]), SHIFT_REAL = str(x[3]), START_DATE = str(x[4]), OPERATION_NAME = str(x[5]), OPERATION_NAME_REAL = str(x[6]), CODE_TRAINING = str(x[7]), DAY_TRACKING = str(x[8]), TECHNICIANS = str(x[9]), WORK_HRS = str(x[10]), EARNED_HOURS = str(x[11]))
         print(sql_employee_profile)

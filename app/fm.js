@@ -123,6 +123,81 @@ module.exports = function (app, passport) {
 
     var amt_upload = multer({ storage: amt_storage })
 
+     // get percent irr training of employee by id
+     app.post('/api/amt/get_data_irr_training/', (req,res) => {
+        let {ID, DAY_TRACKING} = req.body;
+        day_end_tracking = DAY_TRACKING.split('-');
+        let year = day_end_tracking[0];
+        let month = day_end_tracking[1];
+        let day_start = day_end_tracking[2]
+        let day_end = parseInt(day_end_tracking[2]) - 6;
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT COUNT(IRR_NAME)AS QUANTITY, IRR_NAME FROM amt.amt_irr_tracking WHERE ID = '${ID}' AND DATE <= '${year}${month}${day_start}' AND  DATE >= '${year}${month}${day_end}'
+            GROUP BY IRR_NAME;`;
+            data.query(sql_data, (err, irr_list) => {
+                if (err) throw err;
+                data.release();
+                res.send(irr_list);
+            })
+        })
+    })
+
+
+    // get employee name
+
+    app.get('/api/amt/get_name_employee/:tagID', (req,res) => {
+        let id = req.params.tagID 
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT NAME FROM amt.amt_tracking WHERE ID = '${id}'`;
+            data.query(sql_data, (err, employee) => {
+                if (err) throw err;
+                data.release();
+                res.send(employee);
+            })
+        })
+    })
+    // get data eff training of employee by id
+    app.post('/api/amt/get_data_eff_training/', (req,res) => {
+        let {ID, DAY_TRACKING} = req.body;
+        day_end_tracking = DAY_TRACKING.split('-');
+        let year = day_end_tracking[0];
+        let month = day_end_tracking[1];
+        let day_end = parseInt(day_end_tracking[2]) - 6;
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT EFF,DAY_TRACKING FROM amt.employee_profile 
+            WHERE ID = '${ID}' AND DAY_TRACKING <= '${DAY_TRACKING}' AND DAY_TRACKING >= '${year}-${month}-${day_end}'`;
+            data.query(sql_data, (err, data_list) => {
+                if (err) throw err;
+                data.release();
+                res.send(data_list);
+            })
+        })
+    })
+
+    // get data irr training of employee by id
+    app.post('/api/amt/get_data_irr_training/', (req,res) => {
+        let {ID, DAY_TRACKING} = req.body;
+        day_end_tracking = DAY_TRACKING.split('-');
+        let year = day_end_tracking[0];
+        let month = day_end_tracking[1];
+        let day_start = day_end_tracking[2]
+        let day_end = parseInt(day_end_tracking[2]) - 6;
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT SUM(QUANTITY) AS QUANTITY, IRR_NAME,DATE FROM amt.amt_irr_tracking 
+            WHERE ID = '${ID}' AND DATE <= '${year}${month}${day_start}' AND  DATE >= '${year}${month}${day_end}' 
+            GROUP BY DATE`;
+            data.query(sql_data, (err, irr_list) => {
+                if (err) throw err;
+                data.release();
+                res.send(irr_list);
+            })
+        })
+    })
+
     // get irr list by day_tracking
 
     app.post('/api/amt/get_irr_by_day_tracking', (req,res) => {

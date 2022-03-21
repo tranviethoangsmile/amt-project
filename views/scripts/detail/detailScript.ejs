@@ -20,250 +20,333 @@
         Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
 
-    var ctx = document.getElementById("chart-bars").getContext("2d");
-    new Chart(ctx, {
-        type: "bar",
-        data: {
-            labels: ["M", "T", "W", "T", "F", "S", "S"],
-            datasets: [{
-                label: "Sales",
-                tension: 0.4,
-                borderWidth: 0,
-                borderRadius: 4,
-                borderSkipped: false,
-                backgroundColor: "rgba(255, 255, 255, .8)",
-                data: [50, 20, 10, 22, 50, 10, 40],
-                maxBarThickness: 6
-            },],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false,
-                }
+    get_name_employee = (id) => {
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
             },
-            interaction: {
-                intersect: false,
-                mode: 'index',
+            url: "/api/amt/get_name_employee/" + id,
+            type: "GET",
+        }).done((employee) => {
+            $("#employee_name_tracking").text(employee[0].NAME);
+        }).fail((e) => {
+            console.error(e);
+        })
+    }
+
+
+    get_data_eff_training = (id) => {
+        let employee = {
+            ID: id,
+            DAY_TRACKING: $("#day_tracking").val(),
+        }
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
             },
-            scales: {
-                y: {
-                    grid: {
-                        drawBorder: false,
-                        display: true,
-                        drawOnChartArea: true,
-                        drawTicks: false,
-                        borderDash: [5, 5],
-                        color: 'rgba(255, 255, 255, .2)'
+            url: "/api/amt/get_data_eff_training/",
+            type: "POST",
+            data: JSON.stringify(employee)
+        }).done((arrData) => {
+            console.log(arrData);
+            $("#day_number_eff").text(`${arrData.length} ngày gần nhất`);
+            let labels_data = [];
+            let data_EFF = [];
+            switch (arrData.length) {
+                case 1:
+                    labels_data = [arrData[0].DAY_TRACKING];
+                    data_EFF = [arrData[0].EFF];
+                    break;
+                case 2:
+                    labels_data = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING];
+                    data_EFF = [arrData[0].EFF, arrData[1].EFF];
+                    break;
+                case 3:
+                    labels_data = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING];
+                    data_EFF = [arrData[0].EFF, arrData[1].EFF, arrData[2].EFF];
+                    break;
+                case 4:
+                    labels_data = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING, arrData[3].DAY_TRACKING];
+                    data_EFF = [arrData[0].EFF, arrData[1].EFF, arrData[2].EFF, arrData[3].EFF];
+                    break;
+                case 5:
+                    labels_data = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING, arrData[3].DAY_TRACKING, arrData[4].DAY_TRACKING];
+                    data_EFF = [arrData[0].EFF, arrData[1].EFF, arrData[2].EFF, arrData[3].EFF, arrData[4].EFF];
+                    break;
+                case 6:
+                    labels_data = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING, arrData[3].DAY_TRACKING, arrData[4].DAY_TRACKING, arrData[5].DAY_TRACKING];
+                    data_EFF = [arrData[0].EFF, arrData[1].EFF, arrData[2].EFF, arrData[3].EFF, arrData[4].EFF, arrData[5].EFF];
+                    break;
+                case 7:
+                    labels_data = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING, arrData[3].DAY_TRACKING, arrData[4].DAY_TRACKING, arrData[5].DAY_TRACKING, arrData[6].DAY_TRACKING];
+                    data_EFF = [arrData[0].EFF, arrData[1].EFF, arrData[2].EFF, arrData[3].EFF, arrData[4].EFF, arrData[5].EFF, arrData[6].EFF];
+                    break;
+            }
+            var ctx = document.getElementById("chart-bars").getContext("2d");
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: labels_data,
+                    datasets: [{
+                        label: "Hiệu suất: ",
+                        tension: 0.4,
+                        borderWidth: 0,
+                        borderRadius: 4,
+                        borderSkipped: false,
+                        backgroundColor: "rgba(255, 255, 255, .8)",
+                        data: data_EFF,
+                        maxBarThickness: 6
+                    },],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                        }
                     },
-                    ticks: {
-                        suggestedMin: 0,
-                        suggestedMax: 500,
-                        beginAtZero: true,
-                        padding: 10,
-                        font: {
-                            size: 14,
-                            weight: 300,
-                            family: "Roboto",
-                            style: 'normal',
-                            lineHeight: 2
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                drawBorder: false,
+                                display: true,
+                                drawOnChartArea: true,
+                                drawTicks: false,
+                                borderDash: [5, 5],
+                                color: 'rgba(255, 255, 255, .2)'
+                            },
+                            ticks: {
+                                suggestedMin: 0,
+                                suggestedMax: 500,
+                                beginAtZero: true,
+                                padding: 10,
+                                font: {
+                                    size: 14,
+                                    weight: 300,
+                                    family: "Roboto",
+                                    style: 'normal',
+                                    lineHeight: 2
+                                },
+                                color: "#fff"
+                            },
                         },
-                        color: "#fff"
+                        x: {
+                            grid: {
+                                drawBorder: false,
+                                display: true,
+                                drawOnChartArea: true,
+                                drawTicks: false,
+                                borderDash: [5, 5],
+                                color: 'rgba(255, 255, 255, .2)'
+                            },
+                            ticks: {
+                                display: true,
+                                color: '#f8f9fa',
+                                padding: 10,
+                                font: {
+                                    size: 14,
+                                    weight: 300,
+                                    family: "Roboto",
+                                    style: 'normal',
+                                    lineHeight: 2
+                                },
+                            }
+                        },
                     },
                 },
-                x: {
-                    grid: {
-                        drawBorder: false,
-                        display: true,
-                        drawOnChartArea: true,
-                        drawTicks: false,
-                        borderDash: [5, 5],
-                        color: 'rgba(255, 255, 255, .2)'
-                    },
-                    ticks: {
-                        display: true,
-                        color: '#f8f9fa',
-                        padding: 10,
-                        font: {
-                            size: 14,
-                            weight: 300,
-                            family: "Roboto",
-                            style: 'normal',
-                            lineHeight: 2
-                        },
-                    }
+            });
+        }).fail((e) => {
+            console.error(e);
+        })
+    }
+
+
+
+    get_data_irr_training = (id) => {
+        let employee = {
+            ID: id,
+            DAY_TRACKING: $("#day_tracking").val(),
+        }
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/get_data_irr_training/",
+            type: "POST",
+            data: JSON.stringify(employee)
+        }).done((irr_data) => {
+            $("#day_number_irr").text(`${irr_data.length} ngày gần nhất`);
+            let label_data = [];
+            let data_irr = [];
+            switch (irr_data.length) {
+                case 1:
+                    label_data = [irr_data[0].DATE];
+                    data_irr = [irr_data[0].QUANTITY];
+                    break;
+                case 2:
+                    label_data = [irr_data[0].DATE, irr_data[1].DATE];
+                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY];
+                    break;
+                case 3:
+                    label_data = [irr_data[0].DATE, irr_data[1].DATE, irr_data[2].DATE];
+                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY, irr_data[2].QUANTITY];
+                    break;
+                case 4:
+                    label_data = [irr_data[0].DATE, irr_data[1].DATE, irr_data[2].DATE, irr_data[3].DATE];
+                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY, irr_data[2].QUANTITY, irr_data[3].QUANTITY];
+                    break;
+                case 5:
+                    label_data = [irr_data[0].DATE, irr_data[1].DATE, irr_data[2].DATE, irr_data[3].DATE, irr_data[4].DATE];
+                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY, irr_data[2].QUANTITY, irr_data[3].QUANTITY, irr_data[4].QUANTITY];
+                    break;
+                case 6:
+                    label_data = [irr_data[0].DATE, irr_data[1].DATE, irr_data[2].DATE, irr_data[3].DATE, irr_data[4].DATE, irr_data[5].DATE];
+                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY, irr_data[2].QUANTITY, irr_data[3].QUANTITY, irr_data[4].QUANTITY, irr_data[5].QUANTITY];
+                    break;
+                case 7:
+                    label_data = [irr_data[0].DATE, irr_data[1].DATE, irr_data[2].DATE, irr_data[3].DATE, irr_data[4].DATE, irr_data[5].DATE, irr_data[6].DATE];
+                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY, irr_data[2].QUANTITY, irr_data[3].QUANTITY, irr_data[4].QUANTITY, irr_data[5].QUANTIT, irr_data[6].QUANTIT];
+                    break;
+            }
+
+            var irr_chart = document.getElementById("chart-line").getContext("2d");
+            new Chart(irr_chart, {
+                type: "line",
+                data: {
+                    labels: label_data,
+                    datasets: [{
+                        label: "Lỗi",
+                        tension: 0,
+                        borderWidth: 0,
+                        pointRadius: 5,
+                        pointBackgroundColor: "rgba(255, 255, 255, .8)",
+                        pointBorderColor: "transparent",
+                        borderColor: "rgba(255, 255, 255, .8)",
+                        borderColor: "rgba(255, 255, 255, .8)",
+                        borderWidth: 4,
+                        backgroundColor: "transparent",
+                        fill: true,
+                        data: data_irr,
+                        maxBarThickness: 6
+
+                    }],
                 },
-            },
-        },
-    });
-
-
-    var ctx2 = document.getElementById("chart-line").getContext("2d");
-
-    new Chart(ctx2, {
-        type: "line",
-        data: {
-            labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-            datasets: [{
-                label: "Mobile apps",
-                tension: 0,
-                borderWidth: 0,
-                pointRadius: 5,
-                pointBackgroundColor: "rgba(255, 255, 255, .8)",
-                pointBorderColor: "transparent",
-                borderColor: "rgba(255, 255, 255, .8)",
-                borderColor: "rgba(255, 255, 255, .8)",
-                borderWidth: 4,
-                backgroundColor: "transparent",
-                fill: true,
-                data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
-                maxBarThickness: 6
-
-            }],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false,
-                }
-            },
-            interaction: {
-                intersect: false,
-                mode: 'index',
-            },
-            scales: {
-                y: {
-                    grid: {
-                        drawBorder: false,
-                        display: true,
-                        drawOnChartArea: true,
-                        drawTicks: false,
-                        borderDash: [5, 5],
-                        color: 'rgba(255, 255, 255, .2)'
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                        }
                     },
-                    ticks: {
-                        display: true,
-                        color: '#f8f9fa',
-                        padding: 10,
-                        font: {
-                            size: 14,
-                            weight: 300,
-                            family: "Roboto",
-                            style: 'normal',
-                            lineHeight: 2
-                        },
-                    }
-                },
-                x: {
-                    grid: {
-                        drawBorder: false,
-                        display: false,
-                        drawOnChartArea: false,
-                        drawTicks: false,
-                        borderDash: [5, 5]
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
                     },
-                    ticks: {
-                        display: true,
-                        color: '#f8f9fa',
-                        padding: 10,
-                        font: {
-                            size: 14,
-                            weight: 300,
-                            family: "Roboto",
-                            style: 'normal',
-                            lineHeight: 2
+                    scales: {
+                        y: {
+                            grid: {
+                                drawBorder: false,
+                                display: true,
+                                drawOnChartArea: true,
+                                drawTicks: false,
+                                borderDash: [5, 5],
+                                color: 'rgba(255, 255, 255, .2)'
+                            },
+                            ticks: {
+                                display: true,
+                                color: '#f8f9fa',
+                                padding: 10,
+                                font: {
+                                    size: 14,
+                                    weight: 300,
+                                    family: "Roboto",
+                                    style: 'normal',
+                                    lineHeight: 2
+                                },
+                            }
                         },
-                    }
-                },
-            },
-        },
-    });
-
-    var ctx3 = document.getElementById("chart-line-tasks").getContext("2d");
-
-    new Chart(ctx3, {
-        type: "line",
-        data: {
-            labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-            datasets: [{
-                label: "Mobile apps",
-                tension: 0,
-                borderWidth: 0,
-                pointRadius: 5,
-                pointBackgroundColor: "rgba(255, 255, 255, .8)",
-                pointBorderColor: "transparent",
-                borderColor: "rgba(255, 255, 255, .8)",
-                borderWidth: 4,
-                backgroundColor: "transparent",
-                fill: true,
-                data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-                maxBarThickness: 6
-
-            }],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false,
-                }
-            },
-            interaction: {
-                intersect: false,
-                mode: 'index',
-            },
-            scales: {
-                y: {
-                    grid: {
-                        drawBorder: false,
-                        display: true,
-                        drawOnChartArea: true,
-                        drawTicks: false,
-                        borderDash: [5, 5],
-                        color: 'rgba(255, 255, 255, .2)'
+                        x: {
+                            grid: {
+                                drawBorder: false,
+                                display: false,
+                                drawOnChartArea: false,
+                                drawTicks: false,
+                                borderDash: [5, 5]
+                            },
+                            ticks: {
+                                display: true,
+                                color: '#f8f9fa',
+                                padding: 10,
+                                font: {
+                                    size: 14,
+                                    weight: 300,
+                                    family: "Roboto",
+                                    style: 'normal',
+                                    lineHeight: 2
+                                },
+                            }
+                        },
                     },
-                    ticks: {
-                        display: true,
-                        padding: 10,
-                        color: '#f8f9fa',
-                        font: {
-                            size: 14,
-                            weight: 300,
-                            family: "Roboto",
-                            style: 'normal',
-                            lineHeight: 2
-                        },
-                    }
                 },
-                x: {
-                    grid: {
-                        drawBorder: false,
-                        display: false,
-                        drawOnChartArea: false,
-                        drawTicks: false,
-                        borderDash: [5, 5]
-                    },
-                    ticks: {
-                        display: true,
-                        color: '#f8f9fa',
-                        padding: 10,
-                        font: {
-                            size: 14,
-                            weight: 300,
-                            family: "Roboto",
-                            style: 'normal',
-                            lineHeight: 2
-                        },
-                    }
-                },
+            });
+        }).fail((e) => {
+            console.error(e);
+        })
+    }
+
+    // get Percent irr 
+
+    get_percent_irr = (id) => {
+        let employee = {
+            ID: id,
+            DAY_TRACKING: $("#day_tracking").val(),
+        }
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
             },
-        },
-    });
+            url: "/api/amt/get_percent_irr_training/",
+            type: "POST",
+            data: JSON.stringify(employee)
+        }).done((irr_data) => {
+
+            var ctx3 = document.getElementById("chart-line-tasks").getContext("2d");
+            const data = {
+                labels: [
+                    'Red',
+                    'Blue',
+                    'Yellow'
+                ],
+                datasets: [{
+                    label: 'My First Dataset',
+                    data: [300, 50, 100],
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 205, 86)'
+                    ],
+                    hoverOffset: 2
+                }]
+            };
+            new Chart(ctx3, {
+                type: 'doughnut',
+                data: data,
+            });
+        }).fail((e) => {
+            console.error(e)
+        })
+    }
+
 </script>
 <script>
     $(document).ready(() => {
@@ -276,10 +359,23 @@
         load_time();
     }
 
+    none_chart = () => {
+
+        $("#chart_views_employee").hide();
+    }
+
+    // theo dõi chi tiết employee
+    see_employee_detail = (id) => {
+        $("#chart_views_employee").show();
+        get_data_eff_training(id);
+        get_data_irr_training(id);
+        get_name_employee(id);
+    }
+
     // nhận số lượng lỗi
     get_irr_by_day_tracking = (start_date, day_tracking) => {
         let data = {
-            START_DATE : start_date,
+            START_DATE: start_date,
             DAY_TRACKING: day_tracking
         }
         $.ajax({
@@ -292,12 +388,15 @@
             data: JSON.stringify(data)
         }).done((irr_list) => {
             let total = 0;
-            irr_list.sort(function(a,b){
-               return b.TOTAL - a.TOTAL
+            irr_list.sort(function (a, b) {
+                return b.TOTAL - a.TOTAL
             })
             console.log(irr_list);
-            console.log(irr_list);
-            $.each(irr_list, (index,item) => {
+            $.each(irr_list, (index, item) => {
+                $("#top_irr_" + index).text(item.IRR_NAME);
+                $("#top_irr_number_" + index).text(item.TOTAL);
+            })
+            $.each(irr_list, (index, item) => {
                 total += parseInt(item.TOTAL);
             })
             $("#total_irr").text(total);
@@ -309,6 +408,7 @@
     // nhận thông tin chi tiết qua ngày bắt đầu
     get_info_employee_by_start_date = () => {
         $("#employee_profile_tab tbody").empty();
+        none_chart();
         let day_tracking = {
             START_DATE: $("#start_date").val(),
             DAY_TRACKING: $("#day_tracking").val(),
@@ -334,7 +434,7 @@
                 }
                 $("#employee_profile_tab tbody").append(
                     `
-                    <tr>
+                    <tr ondblclick = "see_employee_detail(${item.ID})">
                         <td>${item.ID}</td>
                         <td>${item.NAME}</td>
                         <td>${item.DAY_TRACKING}</td>
