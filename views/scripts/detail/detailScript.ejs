@@ -35,7 +35,7 @@
         })
     }
 
-
+    var eff_chart = Object;
     get_data_eff_training = (id) => {
         let employee = {
             ID: id,
@@ -50,125 +50,97 @@
             type: "POST",
             data: JSON.stringify(employee)
         }).done((arrData) => {
-            console.log(arrData);
+            console.log(arrData.length);
             $("#day_number_eff").text(`${arrData.length} ngày gần nhất`);
-            let labels_data = [];
-            let data_EFF = [];
+            let labels_date = '';
+            let data_EFF = '';
+            let data_tagets = '';
             switch (arrData.length) {
                 case 1:
-                    labels_data = [arrData[0].DAY_TRACKING];
+                    labels_date = [arrData[0].DAY_TRACKING];
                     data_EFF = [arrData[0].EFF];
+                    data_tagets = [arrData[0].TAGETS];
                     break;
                 case 2:
-                    labels_data = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING];
+                    labels_date = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING];
                     data_EFF = [arrData[0].EFF, arrData[1].EFF];
+                    data_tagets = [arrData[0].TAGETS, arrData[1].TAGETS];
                     break;
                 case 3:
-                    labels_data = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING];
+                    labels_date = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING];
                     data_EFF = [arrData[0].EFF, arrData[1].EFF, arrData[2].EFF];
+                    data_tagets = [arrData[0].TAGETS, arrData[1].TAGETS, arrData[2].TAGETS];
                     break;
                 case 4:
-                    labels_data = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING, arrData[3].DAY_TRACKING];
+                    labels_date = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING, arrData[3].DAY_TRACKING];
                     data_EFF = [arrData[0].EFF, arrData[1].EFF, arrData[2].EFF, arrData[3].EFF];
+                    data_tagets = [arrData[0].TAGETS, arrData[1].TAGETS, arrData[2].TAGETS, arrData[3].TAGETS];
                     break;
                 case 5:
-                    labels_data = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING, arrData[3].DAY_TRACKING, arrData[4].DAY_TRACKING];
+                    labels_date = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING, arrData[3].DAY_TRACKING, arrData[4].DAY_TRACKING];
                     data_EFF = [arrData[0].EFF, arrData[1].EFF, arrData[2].EFF, arrData[3].EFF, arrData[4].EFF];
+                    data_tagets = [arrData[0].TAGETS, arrData[1].TAGETS, arrData[2].TAGETS, arrData[3].TAGETS, arrData[4].TAGETS];
                     break;
                 case 6:
-                    labels_data = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING, arrData[3].DAY_TRACKING, arrData[4].DAY_TRACKING, arrData[5].DAY_TRACKING];
+                    labels_date = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING, arrData[3].DAY_TRACKING, arrData[4].DAY_TRACKING, arrData[5].DAY_TRACKING];
                     data_EFF = [arrData[0].EFF, arrData[1].EFF, arrData[2].EFF, arrData[3].EFF, arrData[4].EFF, arrData[5].EFF];
+                    data_tagets = [arrData[0].TAGETS, arrData[1].TAGETS, arrData[2].TAGETS, arrData[3].TAGETS, arrData[4].TAGETS, arrData[5].TAGETS];
                     break;
                 case 7:
-                    labels_data = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING, arrData[3].DAY_TRACKING, arrData[4].DAY_TRACKING, arrData[5].DAY_TRACKING, arrData[6].DAY_TRACKING];
+                    labels_date = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING, arrData[3].DAY_TRACKING, arrData[4].DAY_TRACKING, arrData[5].DAY_TRACKING,arrData[6].DAY_TRACKING];
                     data_EFF = [arrData[0].EFF, arrData[1].EFF, arrData[2].EFF, arrData[3].EFF, arrData[4].EFF, arrData[5].EFF, arrData[6].EFF];
+                    data_tagets = [arrData[0].TAGETS, arrData[1].TAGETS, arrData[2].TAGETS, arrData[3].TAGETS, arrData[4].TAGETS, arrData[5].TAGETS, arrData[6].TAGETS];
                     break;
             }
-            var ctx = document.getElementById("chart-bars").getContext("2d");
-            new Chart(ctx, {
-                type: "bar",
-                data: {
-                    labels: labels_data,
-                    datasets: [{
-                        label: "Hiệu suất: ",
-                        tension: 0.4,
-                        borderWidth: 0,
-                        borderRadius: 4,
-                        borderSkipped: false,
-                        backgroundColor: "rgba(255, 255, 255, .8)",
-                        data: data_EFF,
-                        maxBarThickness: 6
-                    },],
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false,
-                        }
-                    },
-                    interaction: {
-                        intersect: false,
-                        mode: 'index',
-                    },
-                    scales: {
-                        y: {
-                            grid: {
-                                drawBorder: false,
-                                display: true,
-                                drawOnChartArea: true,
-                                drawTicks: false,
-                                borderDash: [5, 5],
-                                color: 'rgba(255, 255, 255, .2)'
-                            },
-                            ticks: {
-                                suggestedMin: 0,
-                                suggestedMax: 500,
-                                beginAtZero: true,
-                                padding: 10,
-                                font: {
-                                    size: 14,
-                                    weight: 300,
-                                    family: "Roboto",
-                                    style: 'normal',
-                                    lineHeight: 2
-                                },
-                                color: "#fff"
-                            },
-                        },
-                        x: {
-                            grid: {
-                                drawBorder: false,
-                                display: true,
-                                drawOnChartArea: true,
-                                drawTicks: false,
-                                borderDash: [5, 5],
-                                color: 'rgba(255, 255, 255, .2)'
-                            },
-                            ticks: {
-                                display: true,
-                                color: '#f8f9fa',
-                                padding: 10,
-                                font: {
-                                    size: 14,
-                                    weight: 300,
-                                    family: "Roboto",
-                                    style: 'normal',
-                                    lineHeight: 2
-                                },
-                            }
-                        },
-                    },
-                },
+
+            var eff = document.getElementById("chart-bars").getContext('2d');
+
+            Chart.defaults.global.defaultFontFamily = "Lato";
+            Chart.defaults.global.defaultFontSize = 18;
+
+            var dataFirst = {
+                label: "Đường cong",
+                data: data_tagets,
+                lineTension: 0,
+                fill: false,
+                borderColor: 'red'
+            };
+
+            var dataSecond = {
+                label: "Hiệu suất",
+                data: data_EFF,
+                lineTension: 0,
+                fill: false,
+                borderColor: 'blue'
+            };
+
+            var training_data = {
+                labels: labels_date,
+                datasets: [dataFirst, dataSecond]
+            };
+
+            var chartOptions = {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        boxWidth: 30,
+                        fontColor: 'black'
+                    }
+                }
+            };
+
+            eff_chart = new Chart(eff, {
+                type: 'line',
+                data: training_data,
+                options: chartOptions
             });
         }).fail((e) => {
             console.error(e);
         })
     }
 
-
-
+    var irr_chart_tracking = Object;
     get_data_irr_training = (id) => {
         let employee = {
             ID: id,
@@ -218,7 +190,7 @@
             }
 
             var irr_chart = document.getElementById("chart-line").getContext("2d");
-            new Chart(irr_chart, {
+            irr_chart_tracking = new Chart(irr_chart, {
                 type: "line",
                 data: {
                     labels: label_data,
@@ -270,7 +242,7 @@
                                     weight: 300,
                                     family: "Roboto",
                                     style: 'normal',
-                                    lineHeight: 2
+                                    lineHeight: 1
                                 },
                             }
                         },
@@ -291,7 +263,7 @@
                                     weight: 300,
                                     family: "Roboto",
                                     style: 'normal',
-                                    lineHeight: 2
+                                    lineHeight: 1
                                 },
                             }
                         },
@@ -303,14 +275,17 @@
         })
     }
 
-    // get Percent irr 
 
-    get_percent_irr = (id) => {
+
+
+    // get Percent irr 
+    var percent_irr = Object;
+    get_percent_irr = async (id) => {
         let employee = {
             ID: id,
             DAY_TRACKING: $("#day_tracking").val(),
         }
-        $.ajax({
+        await $.ajax({
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -319,26 +294,50 @@
             type: "POST",
             data: JSON.stringify(employee)
         }).done((irr_data) => {
+            console.log(irr_data)
+            var labels_irr = [];
+            var data_irr = [];
+            var backgroundColor_irr = [];
+            switch (irr_data.length) {
+                case 1:
+                    labels_irr = [irr_data[0].IRR_NAME];
+                    data_irr = [irr_data[0].QUANTITY];
+                    backgroundColor_irr = ['#49a3f1'];
+                    break;
+                case 2:
+                    labels_irr = [irr_data[0].IRR_NAME, irr_data[1].IRR_NAME];
+                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY];
+                    backgroundColor_irr = ['#49a3f1', '#66BB6A'];
+                    break;
+                case 3:
+                    labels_irr = [irr_data[0].IRR_NAME, irr_data[1].IRR_NAME, irr_data[2].IRR_NAME];
+                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY, irr_data[2].QUANTITY];
+                    backgroundColor_irr = ['#49a3f1', '#66BB6A', '#EC407A'];
+                    break;
+                case 4:
+                    labels_irr = [irr_data[0].IRR_NAME, irr_data[1].IRR_NAME, irr_data[2].IRR_NAME, irr_data[3].IRR_NAME];
+                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY, irr_data[2].QUANTITY, irr_data[3].QUANTITY];
+                    backgroundColor_irr = ['#49a3f1', '#66BB6A', '#EC407A', '#FFA726'];
+                    break;
+                case 5:
+                    labels_irr = [irr_data[0].IRR_NAME, irr_data[1].IRR_NAME, irr_data[2].IRR_NAME, irr_data[3].IRR_NAME, irr_data[4].IRR_NAME];
+                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY, irr_data[2].QUANTITY, irr_data[3].QUANTITY, irr_data[4].QUANTITY];
+                    backgroundColor_irr = ['#49a3f1', '#66BB6A', '#EC407A', '#FFA726', '#EF5350'];
+                    break;
 
-            var ctx3 = document.getElementById("chart-line-tasks").getContext("2d");
+            }
+
             const data = {
-                labels: [
-                    'Red',
-                    'Blue',
-                    'Yellow'
-                ],
+                labels: labels_irr,
                 datasets: [{
-                    label: 'My First Dataset',
-                    data: [300, 50, 100],
-                    backgroundColor: [
-                        'rgb(255, 99, 132)',
-                        'rgb(54, 162, 235)',
-                        'rgb(255, 205, 86)'
-                    ],
+                    label: 'Percent Irr',
+                    data: data_irr,
+                    backgroundColor: backgroundColor_irr,
                     hoverOffset: 2
                 }]
             };
-            new Chart(ctx3, {
+            var ctx3 = document.getElementById("chart-line-tasks").getContext("2d");
+            percent_irr = new Chart(ctx3, {
                 type: 'doughnut',
                 data: data,
             });
@@ -347,30 +346,50 @@
         })
     }
 
-</script>
-<script>
+
+
     $(document).ready(() => {
         init();
     })
 
 
+
+    // hàm khỏi đầu
     init = () => {
         get_start_date_list();
         load_time();
     }
-
-    none_chart = () => {
-
-        $("#chart_views_employee").hide();
-    }
-
     // theo dõi chi tiết employee
     see_employee_detail = (id) => {
         $("#chart_views_employee").show();
         get_data_eff_training(id);
         get_data_irr_training(id);
         get_name_employee(id);
+        get_percent_irr(id);
     }
+    // ẩn chart theo dõi > hủy
+    none_chart = () => {
+        $("#chart_views_employee").hide();
+        destroy_percent(percent_irr);
+        destroy_eff(eff_chart);
+        destroy_irr(irr_chart_tracking);
+    }
+    // hủy chart eff
+    destroy_eff = (eff) => {
+        eff.destroy();
+    }
+    // hủy chart irr
+    destroy_irr = (irr) => {
+        irr.destroy();
+    }
+    // hủy chart percent
+    destroy_percent = (percent) => {
+        percent.destroy();
+    }
+
+
+
+
 
     // nhận số lượng lỗi
     get_irr_by_day_tracking = (start_date, day_tracking) => {
@@ -408,7 +427,7 @@
     // nhận thông tin chi tiết qua ngày bắt đầu
     get_info_employee_by_start_date = () => {
         $("#employee_profile_tab tbody").empty();
-        none_chart();
+        // none_chart();
         let day_tracking = {
             START_DATE: $("#start_date").val(),
             DAY_TRACKING: $("#day_tracking").val(),
