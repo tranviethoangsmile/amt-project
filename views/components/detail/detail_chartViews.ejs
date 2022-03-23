@@ -1,52 +1,65 @@
 <div class="row mt-2" id="chart_views_employee" style="display: none;">
   <h3 onclick="none_chart()" id="employee_name_tracking"></h3>
-    <div class="col-lg-4 col-md-6 mt-4 mb-4">
-      <div class="card z-index-2 ">
-        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-          <div class="bg-gradient-info text-white shadow-primary border-radius-lg py-3 pe-1">
-            <div class="chart">
-              <canvas id="chart-bars" class="chart-canvas" height="170"></canvas>
-            </div>
+  <div class="col-lg-4 col-md-6 mt-4 mb-4">
+    <div class="card z-index-2 ">
+      <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+        <div class="bg-gradient-info text-white shadow-primary border-radius-lg py-3 pe-1">
+          <div class="chart">
+            <canvas id="chart-bars" class="chart-canvas" height="170"></canvas>
           </div>
-        </div>
-        <div class="card-body">
-          <h6 class="mb-0 ">Hiệu Suất</h6>
-          <p class="text-sm " id="day_number_eff"></p>
         </div>
       </div>
+      <div class="card-body">
+        <h6 class="mb-0 ">Hiệu Suất</h6>
+        <p class="text-sm " id="day_number_eff"></p>
+      </div>
     </div>
-    <div class="col-lg-4 col-md-6 mt-4 mb-4">
-      <div class="card z-index-2  ">
-        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-          <div class="bg-gradient-success shadow-success border-radius-lg py-3 pe-1">
-            <div class="chart">
-              <canvas id="chart-line" class="chart-canvas" height="170"></canvas>
-            </div>
+  </div>
+  <div class="col-lg-4 col-md-6 mt-4 mb-4">
+    <div class="card z-index-2  ">
+      <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+        <div class="bg-gradient-success shadow-success border-radius-lg py-3 pe-1">
+          <div class="chart">
+            <canvas id="chart-line" class="chart-canvas" height="170"></canvas>
           </div>
         </div>
-        <div class="card-body">
-          <h6 class="mb-0 ">Lỗi theo ngày</h6>
-          <p class="text-sm " id="day_number_irr"></p>
-          <!-- <div class="d-flex ">
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <h6 class="mb-0 ">Lỗi theo ngày</h6>
+            <p class="text-sm " id="day_number_irr"></p>
+          </div>
+          <div class="col-md-6" id="btn_show_detail_irr">
+          </div>
+        </div>
+
+        <!-- <div class="d-flex ">
             <i class="material-icons text-sm my-auto me-1">schedule</i>
             <p class="mb-0 text-sm"> updated 4 min ago </p>
           </div> -->
-        </div>
       </div>
     </div>
-    <div class="col-lg-4 col-md-6 mt-4 mb-4">
-      <div class="card z-index-2 ">
-        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-          <div class="bg-gradient-dark text-light shadow-dark border-radius-lg py-3 pe-1">
-            <div class="chart">
-              <canvas id="chart-line-tasks" class="chart-canvas" height="170"></canvas>
-            </div>
+  </div>
+  <div class="col-lg-4 col-md-6 mt-4 mb-4">
+    <div class="card z-index-2 ">
+      <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+        <div class="bg-gradient-dark text-light shadow-dark border-radius-lg py-3 pe-1">
+          <div class="chart">
+            <canvas id="chart-line-tasks" class="chart-canvas" height="170"></canvas>
           </div>
         </div>
-        <div class="card-body">
-          <h6 class="mb-0">Tỷ lệ lỗi</h6>
-          <p class="text-sm">(SL)</p>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <h6 class="mb-0">Lý do không đạt</h6>
+            <p class="text-sm">(SL)</p>
+          </div>
+          <div class="col-md-6" id="btn_show_detail_reason">
+          </div>
         </div>
       </div>
     </div>
   </div>
+</div>

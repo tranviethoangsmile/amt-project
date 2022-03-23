@@ -1,4 +1,30 @@
 <script>
+    $(document).ready(() => {
+        init();
+
+        $("#note_season_not_pass").validate({
+            ruler: {
+                season_not_pass: {
+                    required: true,
+                },
+                technician_note: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 255
+                }
+            },
+            messages: {
+                season_not_pass: {
+                    required: 'Phải chọn lý do',
+                },
+                technician_note: {
+                    required: 'Không được để trống',
+                    minlength: 'Nhập ít nhất 10 ký tự',
+                    maxlength: 'Nhập tối đa 255 ký tự'
+                }
+            }
+        });
+    })
     // table custom fixed thead
     var tableCont = document.querySelector('#table-cont')
     /**
@@ -52,47 +78,14 @@
         }).done((arrData) => {
             console.log(arrData.length);
             $("#day_number_eff").text(`${arrData.length} ngày gần nhất`);
-            let labels_date = '';
-            let data_EFF = '';
-            let data_tagets = '';
-            switch (arrData.length) {
-                case 1:
-                    labels_date = [arrData[0].DAY_TRACKING];
-                    data_EFF = [arrData[0].EFF];
-                    data_tagets = [arrData[0].TAGETS];
-                    break;
-                case 2:
-                    labels_date = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING];
-                    data_EFF = [arrData[0].EFF, arrData[1].EFF];
-                    data_tagets = [arrData[0].TAGETS, arrData[1].TAGETS];
-                    break;
-                case 3:
-                    labels_date = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING];
-                    data_EFF = [arrData[0].EFF, arrData[1].EFF, arrData[2].EFF];
-                    data_tagets = [arrData[0].TAGETS, arrData[1].TAGETS, arrData[2].TAGETS];
-                    break;
-                case 4:
-                    labels_date = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING, arrData[3].DAY_TRACKING];
-                    data_EFF = [arrData[0].EFF, arrData[1].EFF, arrData[2].EFF, arrData[3].EFF];
-                    data_tagets = [arrData[0].TAGETS, arrData[1].TAGETS, arrData[2].TAGETS, arrData[3].TAGETS];
-                    break;
-                case 5:
-                    labels_date = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING, arrData[3].DAY_TRACKING, arrData[4].DAY_TRACKING];
-                    data_EFF = [arrData[0].EFF, arrData[1].EFF, arrData[2].EFF, arrData[3].EFF, arrData[4].EFF];
-                    data_tagets = [arrData[0].TAGETS, arrData[1].TAGETS, arrData[2].TAGETS, arrData[3].TAGETS, arrData[4].TAGETS];
-                    break;
-                case 6:
-                    labels_date = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING, arrData[3].DAY_TRACKING, arrData[4].DAY_TRACKING, arrData[5].DAY_TRACKING];
-                    data_EFF = [arrData[0].EFF, arrData[1].EFF, arrData[2].EFF, arrData[3].EFF, arrData[4].EFF, arrData[5].EFF];
-                    data_tagets = [arrData[0].TAGETS, arrData[1].TAGETS, arrData[2].TAGETS, arrData[3].TAGETS, arrData[4].TAGETS, arrData[5].TAGETS];
-                    break;
-                case 7:
-                    labels_date = [arrData[0].DAY_TRACKING, arrData[1].DAY_TRACKING, arrData[2].DAY_TRACKING, arrData[3].DAY_TRACKING, arrData[4].DAY_TRACKING, arrData[5].DAY_TRACKING,arrData[6].DAY_TRACKING];
-                    data_EFF = [arrData[0].EFF, arrData[1].EFF, arrData[2].EFF, arrData[3].EFF, arrData[4].EFF, arrData[5].EFF, arrData[6].EFF];
-                    data_tagets = [arrData[0].TAGETS, arrData[1].TAGETS, arrData[2].TAGETS, arrData[3].TAGETS, arrData[4].TAGETS, arrData[5].TAGETS, arrData[6].TAGETS];
-                    break;
-            }
-
+            let labels_date = [];
+            let data_EFF = [];
+            let data_tagets = [];
+            $.each(arrData, (index, item) => {
+                labels_date.push(item.DAY_TRACKING);
+                data_EFF.push(item.EFF);
+                data_tagets.push(item.TAGETS);
+            })
             var eff = document.getElementById("chart-bars").getContext('2d');
 
             Chart.defaults.global.defaultFontFamily = "Lato";
@@ -142,6 +135,8 @@
 
     var irr_chart_tracking = Object;
     get_data_irr_training = (id) => {
+        $("#btn_show_detail_irr").empty();
+        $("#btn_show_detail_irr").append(`<button onclick = "show_irr_detail(${id})" class="btn btn-danger">Chi tiết</button>`)
         let employee = {
             ID: id,
             DAY_TRACKING: $("#day_tracking").val(),
@@ -158,37 +153,10 @@
             $("#day_number_irr").text(`${irr_data.length} ngày gần nhất`);
             let label_data = [];
             let data_irr = [];
-            switch (irr_data.length) {
-                case 1:
-                    label_data = [irr_data[0].DATE];
-                    data_irr = [irr_data[0].QUANTITY];
-                    break;
-                case 2:
-                    label_data = [irr_data[0].DATE, irr_data[1].DATE];
-                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY];
-                    break;
-                case 3:
-                    label_data = [irr_data[0].DATE, irr_data[1].DATE, irr_data[2].DATE];
-                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY, irr_data[2].QUANTITY];
-                    break;
-                case 4:
-                    label_data = [irr_data[0].DATE, irr_data[1].DATE, irr_data[2].DATE, irr_data[3].DATE];
-                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY, irr_data[2].QUANTITY, irr_data[3].QUANTITY];
-                    break;
-                case 5:
-                    label_data = [irr_data[0].DATE, irr_data[1].DATE, irr_data[2].DATE, irr_data[3].DATE, irr_data[4].DATE];
-                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY, irr_data[2].QUANTITY, irr_data[3].QUANTITY, irr_data[4].QUANTITY];
-                    break;
-                case 6:
-                    label_data = [irr_data[0].DATE, irr_data[1].DATE, irr_data[2].DATE, irr_data[3].DATE, irr_data[4].DATE, irr_data[5].DATE];
-                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY, irr_data[2].QUANTITY, irr_data[3].QUANTITY, irr_data[4].QUANTITY, irr_data[5].QUANTITY];
-                    break;
-                case 7:
-                    label_data = [irr_data[0].DATE, irr_data[1].DATE, irr_data[2].DATE, irr_data[3].DATE, irr_data[4].DATE, irr_data[5].DATE, irr_data[6].DATE];
-                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY, irr_data[2].QUANTITY, irr_data[3].QUANTITY, irr_data[4].QUANTITY, irr_data[5].QUANTIT, irr_data[6].QUANTIT];
-                    break;
-            }
-
+            $.each(irr_data, (index, item) => {
+                label_data.push(item.DATE);
+                data_irr.push(item.QUANTITY)
+            })
             var irr_chart = document.getElementById("chart-line").getContext("2d");
             irr_chart_tracking = new Chart(irr_chart, {
                 type: "line",
@@ -275,12 +243,47 @@
         })
     }
 
+    show_irr_detail = (id) => {
+        $("#irr_detail_show tbody").empty();
+        let employee = {
+            ID: id,
+            DAY_TRACKING: $("#day_tracking").val(),
+        }
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/get_irr_detail",
+            type: "POST",
+            data: JSON.stringify(employee)
+        }).done((irr_list) => {
+            $("#show_irr_detail").modal('show');
+            $.each(irr_list, (index, item) => {
+                $("#irr_detail_show tbody").append(
+                    `
+                        <tr>
+                            <td>${item.DATE}</td>
+                            <td>${item.IRR_NAME}</td>
+                            <td>${item.QUANTITY}</td>
+                        </tr>
+                    `
+                )
+            })
+
+        }).fail((e) => {
+            console.error(e);
+        })
+    }
 
 
 
-    // get Percent irr 
-    var percent_irr = Object;
-    get_percent_irr = async (id) => {
+
+    // get reason 
+    var reason_detail = Object;
+    get_season = async (id) => {
+        $("#btn_show_detail_reason").empty();
+        $("#btn_show_detail_reason").append(`<button onclick = "show_reason_detail(${id})" class="btn btn-danger">Chi tiết</button>`)
         let employee = {
             ID: id,
             DAY_TRACKING: $("#day_tracking").val(),
@@ -290,71 +293,84 @@
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            url: "/api/amt/get_percent_irr_training/",
+            url: "/api/amt/get_reason",
             type: "POST",
             data: JSON.stringify(employee)
-        }).done((irr_data) => {
-            console.log(irr_data)
-            var labels_irr = [];
-            var data_irr = [];
-            var backgroundColor_irr = [];
-            switch (irr_data.length) {
-                case 1:
-                    labels_irr = [irr_data[0].IRR_NAME];
-                    data_irr = [irr_data[0].QUANTITY];
-                    backgroundColor_irr = ['#49a3f1'];
-                    break;
-                case 2:
-                    labels_irr = [irr_data[0].IRR_NAME, irr_data[1].IRR_NAME];
-                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY];
-                    backgroundColor_irr = ['#49a3f1', '#66BB6A'];
-                    break;
-                case 3:
-                    labels_irr = [irr_data[0].IRR_NAME, irr_data[1].IRR_NAME, irr_data[2].IRR_NAME];
-                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY, irr_data[2].QUANTITY];
-                    backgroundColor_irr = ['#49a3f1', '#66BB6A', '#EC407A'];
-                    break;
-                case 4:
-                    labels_irr = [irr_data[0].IRR_NAME, irr_data[1].IRR_NAME, irr_data[2].IRR_NAME, irr_data[3].IRR_NAME];
-                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY, irr_data[2].QUANTITY, irr_data[3].QUANTITY];
-                    backgroundColor_irr = ['#49a3f1', '#66BB6A', '#EC407A', '#FFA726'];
-                    break;
-                case 5:
-                    labels_irr = [irr_data[0].IRR_NAME, irr_data[1].IRR_NAME, irr_data[2].IRR_NAME, irr_data[3].IRR_NAME, irr_data[4].IRR_NAME];
-                    data_irr = [irr_data[0].QUANTITY, irr_data[1].QUANTITY, irr_data[2].QUANTITY, irr_data[3].QUANTITY, irr_data[4].QUANTITY];
-                    backgroundColor_irr = ['#49a3f1', '#66BB6A', '#EC407A', '#FFA726', '#EF5350'];
-                    break;
-
-            }
-
-            const data = {
-                labels: labels_irr,
-                datasets: [{
-                    label: 'Percent Irr',
-                    data: data_irr,
-                    backgroundColor: backgroundColor_irr,
-                    hoverOffset: 2
-                }]
-            };
+        }).done((reason_data) => {
+            console.log(reason_data);
+            var labels_reason = [''];
+            var data_reason = [0];
+            $.each(reason_data, (index, item) => {
+                labels_reason.push(item.REASON);
+                data_reason.push(item.QUANTITY);
+            })
+            console.log(labels_reason);
+            console.log(data_reason);
             var ctx3 = document.getElementById("chart-line-tasks").getContext("2d");
-            percent_irr = new Chart(ctx3, {
-                type: 'doughnut',
-                data: data,
+            reason_detail = new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: labels_reason,
+                    datasets: [
+                        {
+                            label: "SL",
+                            backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850", "red", 'blue'],
+                            data: data_reason
+                        }
+                    ]
+                },
+                options: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Lý do không đạt'
+                    }
+                }
             });
         }).fail((e) => {
             console.error(e)
         })
     }
 
+    show_reason_detail = (id) => {
+        $("#reason_detail_show tbody").empty();
+        let employee = {
+            ID: id,
+            DAY_TRACKING: $("#day_tracking").val(),
+        }
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/get_reason_detail",
+            type: "POST",
+            data: JSON.stringify(employee)
+        }).done((reasons) => {
+            $("#show_reason_detail").modal('show');
+            $.each(reasons, (index, item) => {
+                $("#reason_detail_show tbody").append(
+                    `
+                        <tr>
+                            <td>${item.DAY_TRACKING}</td>
+                            <td>${item.REASON}</td>
+                            <td>${item.TECHNICIANS_NOTE}</td>
+                        </tr>
+                        `
+                )
+            })
+        }).fail((e) => {
+            console.error(e);
+        })
+    }
 
 
-    $(document).ready(() => {
-        init();
-    })
 
 
 
-    // hàm khỏi đầu
+
+
+    // hàm khỏi đầu 
     init = () => {
         get_start_date_list();
         load_time();
@@ -365,12 +381,12 @@
         get_data_eff_training(id);
         get_data_irr_training(id);
         get_name_employee(id);
-        get_percent_irr(id);
+        get_season(id);
     }
     // ẩn chart theo dõi > hủy
     none_chart = () => {
         $("#chart_views_employee").hide();
-        destroy_percent(percent_irr);
+        destroy_reason(reason_detail);
         destroy_eff(eff_chart);
         destroy_irr(irr_chart_tracking);
     }
@@ -383,7 +399,7 @@
         irr.destroy();
     }
     // hủy chart percent
-    destroy_percent = (percent) => {
+    destroy_reason = (percent) => {
         percent.destroy();
     }
 
@@ -392,9 +408,31 @@
 
 
     // nhận số lượng lỗi
-    get_irr_by_day_tracking = (start_date, day_tracking) => {
+    get_irr_by_day_tracking = (group_line, day_tracking) => {
+        $("#top_irr_0").text('');
+        $("#top_irr_number_0").text('');
+        $("#top_irr_1").text('');
+        $("#top_irr_number_1").text('');
+         $("#top_irr_1").text('');
+        $("#top_irr_number_2").text('');
+         $("#top_irr_1").text('');
+        $("#top_irr_number_2").text('');
+         $("#top_irr_2").text('');
+        $("#top_irr_number_3").text('');
+         $("#top_irr_3").text('');
+        $("#top_irr_number_3").text('');
+        $("#top_irr_4").text('');
+        $("#top_irr_number_4").text('');
+        $("#top_irr_5").text('');
+        $("#top_irr_number_5").text('');
+        $("#top_irr_6").text('');
+        $("#top_irr_number_6").text('');
+        $("#top_irr_7").text('');
+        $("#top_irr_number_7").text('');
+        $("#top_irr_8").text('');
+        $("#top_irr_number_8").text('');
         let data = {
-            START_DATE: start_date,
+            GROUP_LINE: group_line,
             DAY_TRACKING: day_tracking
         }
         $.ajax({
@@ -408,15 +446,15 @@
         }).done((irr_list) => {
             let total = 0;
             irr_list.sort(function (a, b) {
-                return b.TOTAL - a.TOTAL
+                return b.QUANTITY - a.QUANTITY
             })
             console.log(irr_list);
             $.each(irr_list, (index, item) => {
                 $("#top_irr_" + index).text(item.IRR_NAME);
-                $("#top_irr_number_" + index).text(item.TOTAL);
+                $("#top_irr_number_" + index).text(item.QUANTITY);
             })
             $.each(irr_list, (index, item) => {
-                total += parseInt(item.TOTAL);
+                total += parseInt(item.QUANTITY);
             })
             $("#total_irr").text(total);
         }).fail((e) => {
@@ -425,20 +463,20 @@
     }
 
     // nhận thông tin chi tiết qua ngày bắt đầu
-    get_info_employee_by_start_date = () => {
+    get_info_employee_by_group_line = () => {
         $("#employee_profile_tab tbody").empty();
         // none_chart();
         let day_tracking = {
-            START_DATE: $("#start_date").val(),
+            GROUP_LINE: $("#group_line_list").val(),
             DAY_TRACKING: $("#day_tracking").val(),
         }
-        get_irr_by_day_tracking(day_tracking.START_DATE, day_tracking.DAY_TRACKING);
+        get_irr_by_day_tracking(day_tracking.GROUP_LINE, day_tracking.DAY_TRACKING);
         $.ajax({
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            url: "/api/amt/get_info_employee_by_start_date",
+            url: "/api/amt/get_info_employee_by_group_line",
             type: "post",
             data: JSON.stringify(day_tracking)
         }).done((employee_profile) => {
@@ -458,6 +496,7 @@
                         <td>${item.NAME}</td>
                         <td>${item.DAY_TRACKING}</td>
                         <td style="color:${item.EFF > item.TAGETS ? '#43A047' : '#EC407A'};">${item.EFF > item.TAGETS ? 'ĐẠT' : 'KHÔNG ĐẠT'}</td>
+                        <td><button onclick = "why_not_pass(${item.ID})" class = "btn btn-outline-primary">ghi chú<butotn></td>
                     </tr>
                     `
                 )
@@ -467,6 +506,67 @@
         }).fail((e) => {
             console.error(e);
         })
+    }
+
+    // show modal 
+    why_not_pass = (id) => {
+        $("#id_of_employee").val(id);
+        $("#why_not_pass").modal('show');
+    }
+
+    cancel = () => {
+        $("#id_of_employee").val('');
+        $("#technician_note").val('');
+        $('#why_not_pass').modal('hide');
+        $("#show_irr_detail").modal('hide');
+        $("#show_reason_detail").modal('hide')
+    }
+
+    // lưu thông tin lý do không đạt
+    save_reason_not_pass = () => {
+        let reason = {
+            ID: $("#id_of_employee").val(),
+            REASON: $("#reason_not_pass").val(),
+            DAY_TRACKING: $("#day_tracking").val(),
+            TECHNICIANS_NOTE: $("#technician_note").val()
+        }
+
+        if (reason.ID === ' ' || reason.REASON === '--Chọn--' || reason.DAY_TRACKING === ' ' || reason.TECHNICIANS_NOTE === ' ' || reason.TECHNICIANS_NOTE.length < 10) {
+            return;
+        }
+        Swal.fire({
+            title: 'Bạn có muốn lưu thay đổi này không?',
+            showCancelButton: true,
+            confirmButtonText: 'Lưu',
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    url: "/api/amt/save_reason_not_pass",
+                    type: "post",
+                    data: JSON.stringify(reason)
+                }).done((res) => {
+                    if (res.status === '200') {
+                        $.notify('lưu thành công', 'success')
+                        $("#id_of_employee").val('');
+                        $("#technician_note").val('');
+                        $('#why_not_pass').modal('hide');
+                    } else {
+                        $.notify('lưu thất bại', 'error')
+                    }
+                }).fail((e) => {
+                    console.error(e);
+                })
+            } else if (result.isDenied) {
+                Swal.fire('Chưa được lưu', '', 'info')
+            }
+        })
+
+
     }
 
     // lấy danh sách ngày vào
@@ -480,9 +580,9 @@
             type: "get",
         }).done((data) => {
             $.each(data, (index, item) => {
-                $("#start_date").append(
+                $("#group_line_list").append(
                     `
-                    <option value = "${item.START_DATE}">${item.START_DATE}</option>
+                    <option value = "${item.GROUP_LINE}">${item.GROUP_LINE}</option>
                     `
                 )
             })

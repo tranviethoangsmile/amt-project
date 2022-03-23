@@ -1,0 +1,37 @@
+<div class="modal fade" id="show_reason_detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Lý do không đạt</h5>
+            </div>
+            <div class="modal-body">
+               <table class="table table-hover" id="reason_detail_show" >
+                   <thead>
+                       <tr>
+                           <th>Ngày</th>
+                           <th>Lý do</th>
+                           <th>Ghi chú</th>
+                       </tr>
+                   </thead>
+                   <tbody>
+                   </tbody>
+               </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="cancel()" data-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    label {
+        font-weight: bold;
+        color: red;
+    }
+
+    fieldset {
+        border-radius: 5%;
+    }
+</style>

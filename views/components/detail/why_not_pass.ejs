@@ -1,0 +1,50 @@
+<div class="modal fade" id="why_not_pass" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Lý do không đạt</h5>
+            </div>
+            <div class="modal-body">
+                <form class="form-control" id="note_season_not_pass" name="note_season_not_pass">
+                    <input style="display: none;" id="id_of_employee"/>
+                    <fieldset>
+                        <div class="form-group">
+                            <label for="reason_not_pass">Lý do: </label>
+                            <select id="reason_not_pass" class="form-control" name="reason_not_pass" required>
+                                <option>--Chọn--</option>
+                                <option value="Chất lượng">Chất lượng</option>
+                                <option value="Máy hư">Máy hư</option>
+                                <option value="Không có hàng">Không có hàng</option>
+                                <option value="Mất cân bằng chuyền">Mất cân bằng chuyền</option>
+                                <option value="Kỹ năng">Kỹ năng</option>
+                                <option value="Hỗ trợ việc khác">Hỗ trợ việc khác</option>
+                                <option value="Lý do khác">Lý do khác</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="technician_note">Ghi chú: </label>
+                            <textarea name="technician_note" type="text" class="form-control" id="technician_note"
+                                placeholder="ghi chú" required maxlength="255" minlength="10"></textarea>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="cancel()" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="save_reason_not_pass()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    label {
+        font-weight: bold;
+        color: red;
+    }
+
+    fieldset {
+        border-radius: 5%;
+    }
+</style>
