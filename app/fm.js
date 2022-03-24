@@ -123,6 +123,90 @@ module.exports = function (app, passport) {
 
     var amt_upload = multer({ storage: amt_storage })
 
+    // get description code
+
+    app.post('/api/amt/get_description_code', (req, res) => {
+        let code_old = req.body.Code
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT Description FROM linebalancing.setup_operation_standard_code WHERE Code = '${code_old}';`;
+            console.log(sql_data);
+            data.query(sql_data, (err, Description) => {
+                if (err) throw err;
+                data.release();
+                res.send(Description);
+            })
+        })
+
+    })
+
+    // delete code standard success
+
+    app.post('/api/amt/delete_code_standard_success', (req, res) => {
+        let CODE_SUCCESS = req.body.CODE
+        if (CODE_SUCCESS < 10) {
+            CODE_SUCCESS = '0' + CODE_SUCCESS
+        }
+        console.log(CODE_SUCCESS)
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `DELETE FROM amt.code_reduce_day_success WHERE CODE = '${CODE_SUCCESS}';`;
+            console.log(sql_data);
+            data.query(sql_data, (err, code_list) => {
+                if (err) {
+                    res.send({
+                        status: 500,
+                        message: 'Lỗi hệ thống'
+                    })
+                }
+                data.release();
+                res.send({
+                    status: 200,
+                    message: 'Xóa thành công'
+                });
+            })
+        })
+    })
+
+    // get code standard success
+
+    app.get('/api/amt/get_code_standard_success', (req, res) => {
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT * FROM amt.code_reduce_day_success`;
+            console.log(sql_data);
+            data.query(sql_data, (err, code_list) => {
+                if (err) throw err;
+                data.release();
+                res.send(code_list);
+            })
+        })
+    })
+
+
+    // get code standard list
+
+    app.get('/api/amt/get_code_standard', (req, res) => {
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT Code FROM linebalancing.setup_operation_standard_code`;
+            console.log(sql_data);
+            data.query(sql_data, (err, code_list) => {
+                if (err) throw err;
+                data.release();
+                res.send(code_list);
+            })
+        })
+    })
+
+    // go to amt action page
+    app.get('/action', isLoggedIn, (req, res) => {
+        res.render('action.ejs', {
+            user: req.user[0].user, // Lấy thông tin user trong session và truyền nó qua template
+            note: req.user[0].note
+        });
+    })
+
     // get reason detail by id
     app.post('/api/amt/get_reason_detail', (req, res) => {
         let { ID, DAY_TRACKING } = req.body;
@@ -137,7 +221,7 @@ module.exports = function (app, passport) {
             WHERE ID = '${ID}' AND REASON IS NOT NULL AND DAY_TRACKING <= '${DAY_TRACKING}' AND  DAY_TRACKING >= '${year}-${month}-${day_end}'`;
             console.log(sql_data);
             data.query(sql_data, (err, reason_list) => {
-                if(err) throw err;
+                if (err) throw err;
                 data.release();
                 res.send(reason_list);
             })
@@ -225,11 +309,32 @@ module.exports = function (app, passport) {
         let id = req.params.tagID
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
-            let sql_data = `SELECT NAME FROM amt.amt_tracking WHERE ID = '${id}'`;
+            let sql_data = `SELECT ID,NAME,SHIFT,OPERATION_NAME, TECHNICIAN FROM amt.amt_tracking WHERE ID = '${id}'`;
             data.query(sql_data, (err, employee) => {
                 if (err) throw err;
                 data.release();
                 res.send(employee);
+            })
+        })
+    })
+
+    // get data eff detail by ID
+    app.post('/api/amt/get_eff_detail', (req, res) => {
+        let { ID, DAY_TRACKING } = req.body;
+        day_end_tracking = DAY_TRACKING.split('-');
+        let year = day_end_tracking[0];
+        let month = day_end_tracking[1];
+        let day_end = parseInt(day_end_tracking[2]) - 6;
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT tb1.ID, tb1.EFF,tb1.DAY_TRACKING, tb2.TAGETS FROM (SELECT  ID,EFF,DAY_TRACKING, DAY_TRAINING,CODE_TRAINING FROM amt.employee_profile 
+                WHERE ID = '${ID}' AND DAY_TRACKING <= '${year}-${month}-${day_end_tracking[2]}' AND DAY_TRACKING >= '${year}-${month}-${day_end}')tb1
+                INNER JOIN (SELECT * FROM amt.tagets_training_tracking)tb2
+                ON tb1.DAY_TRAINING = tb2.DAY AND tb1.CODE_TRAINING = tb2.CODE_TRAINING`;
+            data.query(sql_data, (err, eff_list) => {
+                if (err) throw err;
+                data.release();
+                res.send(eff_list);
             })
         })
     })

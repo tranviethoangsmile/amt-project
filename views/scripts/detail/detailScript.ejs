@@ -55,7 +55,57 @@
             url: "/api/amt/get_name_employee/" + id,
             type: "GET",
         }).done((employee) => {
+            $("#id_employee_tracking").text(employee[0].ID);
             $("#employee_name_tracking").text(employee[0].NAME);
+            $("#shift_employee_tracking").text(employee[0].SHIFT);
+            $("#operation_employee_tracking").text(employee[0].OPERATION_NAME);
+        }).fail((e) => {
+            console.error(e);
+        })
+    }
+
+    show_profile_employee = (id) => {
+        alert(id);
+    }
+
+    // hiển thị chi tiết EFF
+    show_eff_detail = (id) => {
+        $("#btn_show_profile").empty();
+        $("#eff_detail_show tbody").empty();
+        let employee = {
+            ID: id,
+            DAY_TRACKING: $("#day_tracking").val(),
+        }
+
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/get_eff_detail",
+            type: "POST",
+            data: JSON.stringify(employee)
+        }).done((eff_list) => {
+            console.log(eff_list)
+            $("#show_eff_detail").modal('show');
+            $("#btn_show_profile").append(
+                `
+                <button type="button" class="btn btn-success" onclick="show_profile_employee(${eff_list[0].ID})">Xem Profile</button>
+                `
+                )
+            $.each(eff_list, (index,item) => {
+                $("#eff_detail_show tbody").append(
+                    `
+                    <tr>
+                        <td>${item.DAY_TRACKING}</td>
+                        <td>${item.EFF}</td>
+                        <td>${item.TAGETS}</td>
+                        <td>${Math.floor((item.EFF / item.TAGETS)* 100)} %</td>
+                        <td style="color:${item.EFF > item.TAGETS ? '#43A047' : '#EC407A'};">${item.EFF > item.TAGETS ? 'ĐẠT' : 'KHÔNG ĐẠT'}</td>
+                    </tr>
+                    `
+                )
+            })
         }).fail((e) => {
             console.error(e);
         })
@@ -63,6 +113,8 @@
 
     var eff_chart = Object;
     get_data_eff_training = (id) => {
+        $("#btn_show_detail_eff").empty();
+        $("#btn_show_detail_eff").append(`<button onclick = "show_eff_detail(${id})" class="btn btn-danger">Chi tiết</button>`)
         let employee = {
             ID: id,
             DAY_TRACKING: $("#day_tracking").val(),
@@ -81,11 +133,18 @@
             let labels_date = [];
             let data_EFF = [];
             let data_tagets = [];
+            let percent_eff = 0;
+            let total_eff = 0;
+            let total_tagets = 0;
             $.each(arrData, (index, item) => {
+                total_eff += parseInt(item.EFF);
+                total_tagets += parseInt(item.TAGETS);
                 labels_date.push(item.DAY_TRACKING);
                 data_EFF.push(item.EFF);
                 data_tagets.push(item.TAGETS);
             })
+            percent_eff = Math.floor((total_eff / total_tagets) * 100)
+            $("#percent_eff").text(percent_eff);
             var eff = document.getElementById("chart-bars").getContext('2d');
 
             Chart.defaults.global.defaultFontFamily = "Lato";
@@ -481,9 +540,14 @@
             data: JSON.stringify(day_tracking)
         }).done((employee_profile) => {
             $("#total_employee").text(employee_profile.length);
+            let eff_total = 0;
+            let tagets_total = 0;
+            let eff_percent = 0;
             let pass = 0;
             let not_pass = 0;
             $.each(employee_profile, (index, item) => {
+                eff_total += parseInt(item.EFF);
+                tagets_total += parseInt(item.TAGETS);
                 if (item.EFF > item.TAGETS) {
                     pass++
                 } else {
@@ -501,6 +565,12 @@
                     `
                 )
             })
+            let eff_medium =Math.floor(eff_total / employee_profile.length);
+            $("#eff_medium").text(eff_medium);
+            let tagets_medium =Math.floor(tagets_total / employee_profile.length);
+            $("#tagets_medium").text(tagets_medium);
+            percent_eff = Math.floor((eff_total / tagets_total)* 100)
+            $("#eff_percent").text(`${percent_eff} %`);
             $("#pass").text(pass);
             $("#not_pass").text(not_pass);
         }).fail((e) => {
@@ -520,6 +590,7 @@
         $('#why_not_pass').modal('hide');
         $("#show_irr_detail").modal('hide');
         $("#show_reason_detail").modal('hide')
+        $("#show_eff_detail").modal('hide')
     }
 
     // lưu thông tin lý do không đạt

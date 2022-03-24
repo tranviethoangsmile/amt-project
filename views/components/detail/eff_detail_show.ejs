@@ -1,17 +1,19 @@
-<div class="modal fade" id="show_irr_detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="show_eff_detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Chi tiết lỗi theo từng ngày</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Chi tiết hiệu suất từng ngày</h5>
             </div>
             <div class="modal-body">
-               <table class="table table-bordered" id="irr_detail_show" >
+               <table class="table table-bordered text-center" id="eff_detail_show" >
                    <thead>
                        <tr>
                            <th>Ngày</th>
-                           <th>Lỗi</th>
-                           <th>Số lượng</th>
+                           <th>Hiệu suất</th>
+                           <th>Chỉ tiêu</th>
+                           <th>Tỷ lệ</th>
+                           <th></th>
                        </tr>
                    </thead>
                    <tbody>
@@ -20,6 +22,8 @@
                </table>
             </div>
             <div class="modal-footer">
+                <div class="col-md-6" id="btn_show_profile">
+                </div>
                 <button type="button" class="btn btn-secondary" onclick="cancel()" data-dismiss="modal">Thoát</button>
             </div>
         </div>

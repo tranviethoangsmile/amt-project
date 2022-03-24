@@ -1,5 +1,18 @@
 <div class="row mt-2" id="chart_views_employee" style="display: none;">
-  <h3 onclick="none_chart()" id="employee_name_tracking"></h3>
+  <div class="row">
+    <div class="col-2">
+      <h3 onclick="none_chart()" id="id_employee_tracking"></h3>
+    </div>
+    <div class="col-5">
+      <h3 onclick="none_chart()" id="employee_name_tracking"></h3>
+    </div>
+    <div class="col-2">
+      <h3 onclick="none_chart()" id="shift_employee_tracking"></h3>
+    </div>
+    <div class="col-3">
+      <h3 onclick="none_chart()" id="operation_employee_tracking"></h3>
+    </div>
+  </div>
   <div class="col-lg-4 col-md-6 mt-4 mb-4">
     <div class="card z-index-2 ">
       <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
@@ -10,8 +23,17 @@
         </div>
       </div>
       <div class="card-body">
-        <h6 class="mb-0 ">Hiệu Suất</h6>
-        <p class="text-sm " id="day_number_eff"></p>
+        <div class="row">
+          <div class="col-md-5">
+            <h6 class="mb-0 ">Hiệu Suất</h6>
+            <p class="text-sm " id="day_number_eff"></p>
+          </div>
+          <div class="col-md-2">
+            <p id="percent_eff"></p>%
+          </div>
+          <div class="col-md-5" id="btn_show_detail_eff">
+          </div>
+        </div>
       </div>
     </div>
   </div>

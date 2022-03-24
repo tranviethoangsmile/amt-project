@@ -7,32 +7,30 @@
     <link rel="apple-touch-icon" sizes="76x76" href="./logo/hbilogo.png">
     <link rel="icon" type="image/png" href="./logo/hbilogo.png">
     <title>
-        AMT detail
+        AMT SYSTEM
     </title>
     <!--     Fonts and icons     -->
     <%-include ('./layout/link'); %>
 </head>
 
 <body class="g-sidenav-show  bg-gray-200">
-    <%-include ('./components/detail/detail_sidebar'); %>
+    <%-include ('./components/action/action_sidebar'); %>
         <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
             <!-- Navbar -->
-            <%-include ('./components/detail/detail_navbar'); %>
+            <%-include ('./components/action/action_navbar'); %>
                 <!-- End Navbar -->
                 <div class="container-fluid py-4">
-                    <%-include ('./components/detail/detail_overviews'); %>
-                        <%-include ('./components/detail/detail_chartViews'); %>
-                            <%-include ('./components/detail/detail_detailViews'); %>
-                                <%-include ('./layout/footer'); %>
+            <%-include ('./components/action/action_update'); %>
+                    
+                    <%-include ('./layout/footer'); %>
                 </div>
-                <%-include ('./components/detail/why_not_pass'); %>
-                <%-include ('./components/detail/irr_detail_show'); %>
-                <%-include ('./components/detail/eff_detail_show'); %>
-                <%-include ('./components/detail/reason_detail_show'); %>
+                <%-include ('./components/action/action_upload_new_employee'); %>
         </main>
         <%-include ('./layout/setting'); %>
             <%-include ('./layout/script'); %>
-                <%-include ('./scripts/detail/detailScript'); %>
+            <%-include ('./scripts/action/actionScript'); %>
+
+
 </body>
 
 </html>

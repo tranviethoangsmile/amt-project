@@ -1,0 +1,88 @@
+<div class="row">
+    <div class="col-xl-6 col-sm-6 mb-xl-0 mb-2">
+        <div class="card">
+            <div class="card-header p-3 pt-2">
+                <div
+                    class="icon icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                    <i class="material-icons opacity-10">person</i>
+                </div>
+                <div class="text-end pt-1">
+                    <p class="text-sm mb-0 text-capitalize">Nhân Viên Mới</p>
+                    <button class="btn btn-success" onclick="handle_file()">Cập nhật</button>
+                </div>
+            </div>
+            <hr class="dark horizontal my-0">
+
+        </div>
+    </div>
+    <div class="col-xl-6 col-sm-6 mb-xl-0 mb-2">
+        <div class="card">
+            <div class="card-header p-3 pt-2">
+                <div
+                    class="icon icon-shape bg-gradient-success shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+                    <i class="material-icons opacity-10">trending_up</i>
+                </div>
+                <div class="text-end pt-1">
+                    <p class="text-sm mb-0 text-capitalize">Đường cong</p>
+                    <button class="btn btn-success">Cập nhật</button>
+                </div>
+            </div>
+            <hr class="dark horizontal my-0">
+
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-xl-6 col-sm-6 mb-xl-0 mb-2">
+        <div class="card">
+            <div class="card-header p-3 pt-2">
+                <div
+                    class="icon icon-shape bg-gradient-dark shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                    <i class="material-icons opacity-10">person</i>
+                </div>
+                <div class="text-end pt-1">
+                    <p class="text-sm mb-0 text-capitalize">Thôi việc</p>
+                    <button class="btn btn-success">Cập nhật</button>
+                </div>
+            </div>
+            <hr class="dark horizontal my-0">
+
+        </div>
+    </div>
+    <div class="col-xl-6 col-sm-6">
+        <div class="card">
+            <div class="card-header p-3 pt-2">
+                <div
+                    class="icon icon-shape bg-gradient-secondary shadow-success text-center border-radius mt-n4 position-absolute">
+                    <i class="material-icons opacity-10">error</i>
+                </div>
+                <div class="mt-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="code_standard_list">Code: </label>
+                            <select onchange="get_description_code()" class="form-control" id="code_standard_list">
+                                <option>--Chọn--</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="description">Nội dung : </label>
+                            <input id="description" class="form-control"/>
+                        </div>
+                    </div>
+                    <button onclick="add_new_code_success()" class="btn btn-success">Thêm</button>
+                </div>
+            </div>
+            <table class="table table-borderless text-center" id="code_standard_success">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Nội dung</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
