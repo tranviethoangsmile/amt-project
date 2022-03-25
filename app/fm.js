@@ -123,6 +123,48 @@ module.exports = function (app, passport) {
 
     var amt_upload = multer({ storage: amt_storage })
 
+
+    app.get('/api/amt/get_data_of_week/:tagWeek', (req, res) => {
+        let week = req.params.tagWeek;
+        console.log(week);
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT tb3.ID,tb3.GROUP_LINE, ROUND(SUM(tb3.EFF)/COUNT(tb3.EFF),2) AS EFF, 
+            ROUND(SUM(tb3.TAGETS)/COUNT(tb3.TAGETS),2)AS TAGETS, SUM(tb4.QUANTITY) AS QUANTITY FROM 
+            (SELECT tb1.ID, tb1.GROUP_LINE, tb1.DAY_TRACKING, tb1.EFF, tb2.TAGETS FROM 
+            (SELECT ID, GROUP_LINE,CODE_TRAINING, DAY_TRACKING,DAY_TRAINING, REDUCE_DAY, EFF, (DAY_TRAINING - REDUCE_DAY) AS DAY_TRAINING_REAL 
+            FROM amt.employee_profile WHERE WEEK(DAY_TRACKING) = '${week}')tb1
+            LEFT JOIN (SELECT * FROM amt.tagets_training_tracking)tb2
+            ON tb1.CODE_TRAINING = tb2.CODE_TRAINING AND (tb1.DAY_TRAINING - tb1.REDUCE_DAY) = tb2.DAY)tb3
+            LEFT JOIN (SELECT * FROM amt.amt_irr_tracking WHERE WEEK(DATE) = '${week}')tb4
+            ON tb3.ID = tb4.ID
+            GROUP BY tb3.ID;`;
+            console.log(sql_data);
+            data.query(sql_data, (err, group_line_info_list) => {
+                if (err) throw err;
+                data.release();
+                res.send(group_line_info_list);
+            })
+        })
+    })
+
+    // go to system page 
+    app.get('/system', isLoggedIn, function (req, res) {
+        res.render('system.ejs', {
+            note: req.user[0].note,
+            user: req.user[0].user // Lấy thông tin user trong session và truyền nó qua template
+        });
+    })
+
+
+    // go to amt detail
+    app.get('/profile', isLoggedIn, (req, res) => {
+        res.render('profile.ejs', {
+            user: req.user[0].user, // Lấy thông tin user trong session và truyền nó qua template
+            note: req.user[0].note
+        });
+    })
+
     // get description code
 
     app.post('/api/amt/get_description_code', (req, res) => {
@@ -755,12 +797,7 @@ module.exports = function (app, passport) {
         res.redirect('/login');
     })
 
-    app.get('/system', isLoggedIn, function (req, res) {
-        res.render('system.ejs', {
-            note: req.user[0].note,
-            user: req.user[0].user // Lấy thông tin user trong session và truyền nó qua template
-        });
-    })
+
 
     app.get('/spare', isLoggedIn, function (req, res) {
         res.render('spare.ejs', {

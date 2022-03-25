@@ -46,7 +46,7 @@ def update_employee_info():
     month = now.strftime("%m")
     print("month:", month)
 
-    day = int(now.strftime("%d")) - 1
+    day = int(now.strftime("%d")) - 2
     if day < 0 :
         day = day + 1
     if day < 10 :
