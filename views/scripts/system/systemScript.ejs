@@ -260,10 +260,11 @@
     init = () => {
         load_week();
         get_data_of_week();
+        get_group_line_of_week();
     }
 
     load_week = () => {
-        for(let i = 1; i <= getWeek(new Date()); i ++) {
+        for (let i = 1; i <= getWeek(new Date()); i++) {
             $("#week_get_data").append(
                 `
                 <option value = "${i}" selected>${i}</option>
@@ -272,7 +273,65 @@
         }
     }
 
+    var group_line = [];
+    get_group_line_of_week = () => {
+        let week = $("#week_get_data").val()
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/get_group_line_of_week/" + week,
+            type: "get",
+        }).done((data) => {
+            group_line = data;
+        }).fail((e) => {
+            console.error(e);
+        })
+    }
+
+     // nhận danh sách lỗi của tuần
+     get_irr_of_week = () => {
+        let week = $("#week_get_data").val();
+         $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/get_irr_of_week/" + week,
+            type: "get",
+        }).done((data) => {
+            let bali_pass = 0;
+            let rit_pass = 0;
+            let bali_not = 0;
+            let rit_not = 0;
+            console.log(data);
+            $.each(data,(index, item) => {
+                if(item.SHIFT == 'BAL'&& item.QUANTITY > 3){
+                    bali_not ++;
+                }
+                if(item.SHIFT == 'BAL' && (item.QUANTITY <= 3 || item.QUANTITY == null )){
+                   bali_pass ++;
+                }
+                if(item.SHIFT == 'RIT' && (item.QUANTITY <= 3 || item.QUANTITY == null )){
+                    rit_pass ++;
+                }
+                if(item.SHIFT == 'RIT' && item.QUANTITY > 3){
+                    rit_not ++;
+                }
+            })
+            $("#bali_qc_pass").text(bali_pass)
+            $("#bali_qc_not").text(bali_not);
+            $("#rit_qc_pass").text(rit_pass)
+            $("#rit_qc_not").text(rit_not)
+        }).fail((e)=>{
+            console.log(e);
+        })
+    }
+
+    // nhận data tu
     get_data_of_week = () => {
+        $("#amt_report tbody").empty();
         let week = $("#week_get_data").val()
         $.ajax({
             headers: {
@@ -282,15 +341,63 @@
             url: "/api/amt/get_data_of_week/" + week,
             type: "get",
         }).done((data) => {
+            console.log(data)
+            let bal_qua = 0;
+            let rit_qua = 0;
+            let bali_pass = 0;
+            let rit_pass = 0;
+            let bali_not = 0;
+            let rit_not = 0;
+            $.each(data, (index, item) => {
+                if (item.SHIFT == 'BAL') {
+                    bal_qua += parseInt(item.QUANTITY);
+                } else {
+                    rit_qua += parseInt(item.QUANTITY)
+                }
+                
+                if(item.SHIFT == 'BAL' && item.DES == 'ĐẠT'){
+                    bali_pass += item.QUANTITY;
+                }
+                if(item.SHIFT == 'BAL' && item.DES == 'KHÔNG'){
+                    bali_not += item.QUANTITY;
+                }
+
+                if(item.SHIFT == 'RIT' && item.DES == 'ĐẠT'){
+                    rit_pass += item.QUANTITY;
+                }
+                if(item.SHIFT == 'RIT' && item.DES == 'KHÔNG'){
+                    rit_not += item.QUANTITY;
+                }
+                
+
+            })
+
+            $("#amt_report tbody").append(
+                `
+                <tr>
+                    <td>BAL</td>
+                    <td>${bal_qua}</td>
+                    <td>${bali_pass}</td>
+                    <td>${bali_not}</td>
+                    <td id="bali_qc_pass"></td>
+                    <td id="bali_qc_not"></td>
+                </tr>
+                <tr>
+                    <td>RIT</td>
+                    <td>${rit_qua}</td>
+                    <td>${rit_pass}</td>
+                    <td>${rit_not}</td>
+                    <td id="rit_qc_pass"></td>
+                    <td id="rit_qc_not"></td>
+                </tr>
+                `
+            )
+            get_irr_of_week();
         }).fail((e) => {
             console.error(e);
         })
-        
+
     }
-
-
-
-
     function getWeek(dt) {
         var calc = function (o) {
             if (o.dtmin.getDay() != 1) {
@@ -318,10 +425,5 @@
             return ayData.w;
         }
     }
-
-
-
-
-
 
 </script>

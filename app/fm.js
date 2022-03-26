@@ -123,22 +123,42 @@ module.exports = function (app, passport) {
 
     var amt_upload = multer({ storage: amt_storage })
 
+    // get data of week
+    app.get('/api/amt/get_irr_of_week/:tagWeek', (req, res) => {
+        let week = req.params.tagWeek;
+        console.log(week);
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT a.ID, a.SHIFT, SUM(b.QUANTITY)AS QUANTITY FROM (SELECT ID,LEFT(SHIFT,3) AS SHIFT FROM amt.employee_profile WHERE WEEK(DAY_TRACKING) = '${week}'
+            GROUP BY ID)a
+            LEFT JOIN (SELECT * FROM amt.amt_irr_tracking WHERE WEEK(DATE) = '${week}')b
+            ON a.ID = b.ID
+            GROUP BY a.ID;`;
+            console.log(sql_data);
+            data.query(sql_data, (err, irr_list) => {
+                if (err) throw err;
+                data.release();
+                res.send(irr_list);
+            })
+        })
+    })
 
+    
+
+    // get data of week
     app.get('/api/amt/get_data_of_week/:tagWeek', (req, res) => {
         let week = req.params.tagWeek;
         console.log(week);
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
-            let sql_data = `SELECT tb3.ID,tb3.GROUP_LINE, ROUND(SUM(tb3.EFF)/COUNT(tb3.EFF),2) AS EFF, 
-            ROUND(SUM(tb3.TAGETS)/COUNT(tb3.TAGETS),2)AS TAGETS, SUM(tb4.QUANTITY) AS QUANTITY FROM 
-            (SELECT tb1.ID, tb1.GROUP_LINE, tb1.DAY_TRACKING, tb1.EFF, tb2.TAGETS FROM 
-            (SELECT ID, GROUP_LINE,CODE_TRAINING, DAY_TRACKING,DAY_TRAINING, REDUCE_DAY, EFF, (DAY_TRAINING - REDUCE_DAY) AS DAY_TRAINING_REAL 
+            let sql_data = `SELECT SHIFT, DES, COUNT(ID) AS QUANTITY FROM (SELECT tb1.ID,tb1.SHIFT,tb1.GROUP_LINE, ROUND(SUM(tb1.EFF)/COUNT(tb1.EFF),2) AS EFF,
+            ROUND(SUM(tb2.TAGETS)/COUNT(tb2.TAGETS),2) AS TAGETS, IF(EFF>TAGETS, 'ĐẠT','KHÔNG') AS DES
+            FROM (SELECT ID, GROUP_LINE,LEFT(SHIFT,3)AS SHIFT,CODE_TRAINING, DAY_TRACKING,DAY_TRAINING, REDUCE_DAY, EFF, (DAY_TRAINING - REDUCE_DAY) AS DAY_TRAINING_REAL 
             FROM amt.employee_profile WHERE WEEK(DAY_TRACKING) = '${week}')tb1
             LEFT JOIN (SELECT * FROM amt.tagets_training_tracking)tb2
-            ON tb1.CODE_TRAINING = tb2.CODE_TRAINING AND (tb1.DAY_TRAINING - tb1.REDUCE_DAY) = tb2.DAY)tb3
-            LEFT JOIN (SELECT * FROM amt.amt_irr_tracking WHERE WEEK(DATE) = '${week}')tb4
-            ON tb3.ID = tb4.ID
-            GROUP BY tb3.ID;`;
+            ON tb1.CODE_TRAINING = tb2.CODE_TRAINING AND (tb1.DAY_TRAINING - tb1.REDUCE_DAY) = tb2.DAY
+            GROUP BY tb1.ID)abc
+            GROUP BY SHIFT, DES ;`;
             console.log(sql_data);
             data.query(sql_data, (err, group_line_info_list) => {
                 if (err) throw err;
