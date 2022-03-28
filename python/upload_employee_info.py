@@ -38,23 +38,20 @@ print('Mechani_HeadCount: ',len(datafull))
 print(datafull)
 # Begin Update
 for i in range(0,len(datafull)):
-    # STT=str(datafull.iloc[i,0])
-    # IDMechanic=str(datafull.iloc[i,1]) 
-    # NameMechanic=str(datafull.iloc[i,2])
-    # print(STT)
     ID=str(datafull.iloc[i,0])
     NAME=str(datafull.iloc[i,1]) 
     SHIFT=str(datafull.iloc[i,2])
     OPERATION_NAME=str(datafull.iloc[i,3])
     CODE_TRANNING=str(datafull.iloc[i,4]) 
     START_DATE=str(datafull.iloc[i,5])
-    TECHNICIAN=str(datafull.iloc[i,6])
+    TECH_ID = str(datafull.iloc[i,6])
+    TECHNICIAN=str(datafull.iloc[i,7])
     print(ID)
    
    
-    query=('INSERT INTO amt_tracking(ID,NAME,SHIFT,OPERATION_NAME,CODE_TRAINING,START_DATE,TECHNICIAN)'
-        + 'values (%s, %s, %s, %s, %s, %s, %s)')
-    values=(ID,NAME,SHIFT,OPERATION_NAME,CODE_TRANNING,START_DATE,TECHNICIAN)
+    query=('INSERT INTO amt_tracking(ID,NAME,SHIFT,OPERATION_NAME,CODE_TRAINING,START_DATE,TECH_ID,TECHNICIAN)'
+        + 'values (%s, %s, %s, %s, %s, %s,%s, %s)')
+    values=(ID,NAME,SHIFT,OPERATION_NAME,CODE_TRANNING,START_DATE,TECH_ID,TECHNICIAN)
     print(query)
     mycursor.execute(query, values)
     mydb.commit()

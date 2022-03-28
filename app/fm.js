@@ -123,13 +123,78 @@ module.exports = function (app, passport) {
 
     var amt_upload = multer({ storage: amt_storage })
 
-    // get data of week
+    // get data irr of group_line in week
+    app.post('/api/amt/get_irr_of_group_line_in_week', (req, res) => {
+        let { GROUP_LINE, week } = req.body;
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT a.ID, a.SHIFT,a.GROUP_LINE, SUM(b.QUANTITY)AS QUANTITY 
+            FROM (SELECT ID,LEFT(SHIFT,3) AS SHIFT, GROUP_LINE 
+            FROM amt.employee_profile WHERE WEEK(DAY_TRACKING) = '${week}' AND GROUP_LINE = '${GROUP_LINE}'
+            GROUP BY ID)a
+            LEFT JOIN (SELECT * FROM amt.amt_irr_tracking WHERE WEEK(DATE) = '${week}')b
+            ON a.ID = b.ID
+            GROUP BY a.ID;            
+            `;
+            console.log(sql_data);
+            data.query(sql_data, (err, irr_list) => {
+                if (err) throw err;
+                data.release();
+                res.send(irr_list);
+            })
+        })
+    })
+
+
+    // get data of group line in week
+    app.post('/api/amt/get_data_of_group_line_in_week', (req, res) => {
+        let { GROUP_LINE, week } = req.body;
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT GROUP_LINE,SHIFT,DES, COUNT(ID)AS SL FROM 
+            (SELECT tb1.ID,tb1.SHIFT, tb1.GROUP_LINE, ROUND(SUM(tb1.EFF)/COUNT(tb1.EFF),2) AS EFF,
+            ROUND(SUM(tb2.TAGETS)/COUNT(tb2.TAGETS),2) AS TAGETS, IF( EFF>TAGETS, 'ĐẠT', 'KHÔNG') AS DES
+            FROM (SELECT ID, GROUP_LINE,CODE_TRAINING,LEFT(SHIFT,3) AS SHIFT,
+            DAY_TRACKING,DAY_TRAINING, REDUCE_DAY, EFF, (DAY_TRAINING - REDUCE_DAY) AS DAY_TRAINING_REAL 
+            FROM amt.employee_profile WHERE WEEK(DAY_TRACKING) = '${week}' AND GROUP_LINE = '${GROUP_LINE}')tb1
+            LEFT JOIN (SELECT * FROM amt.tagets_training_tracking)tb2
+            ON tb1.CODE_TRAINING = tb2.CODE_TRAINING AND (tb1.DAY_TRAINING - tb1.REDUCE_DAY) = tb2.DAY
+            GROUP BY tb1.ID)abc
+            GROUP BY SHIFT, GROUP_LINE, DES ORDER BY GROUP_LINE, SHIFT, DES;`;
+            console.log(sql_data);
+            data.query(sql_data, (err, group_line_list) => {
+                if (err) throw err;
+                data.release();
+                res.send(group_line_list);
+            })
+        })
+    })
+
+    // get group_line_of_week
+
+    app.get('/api/amt/get_group_line_of_week/:tagWeek', (req, res) => {
+        let week = req.params.tagWeek;
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT GROUP_LINE FROM amt.employee_profile WHERE WEEK(DAY_TRACKING) = '${week}'
+            GROUP BY GROUP_LINE;`;
+            console.log(sql_data);
+            data.query(sql_data, (err, group_line_list) => {
+                if (err) throw err;
+                data.release();
+                res.send(group_line_list);
+            })
+        })
+    })
+
+    // get data irr of week
     app.get('/api/amt/get_irr_of_week/:tagWeek', (req, res) => {
         let week = req.params.tagWeek;
         console.log(week);
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
-            let sql_data = `SELECT a.ID, a.SHIFT, SUM(b.QUANTITY)AS QUANTITY FROM (SELECT ID,LEFT(SHIFT,3) AS SHIFT FROM amt.employee_profile WHERE WEEK(DAY_TRACKING) = '${week}'
+            let sql_data = `SELECT a.ID, a.SHIFT, SUM(b.QUANTITY)AS QUANTITY 
+            FROM (SELECT ID,LEFT(SHIFT,3) AS SHIFT FROM amt.employee_profile WHERE WEEK(DAY_TRACKING) = '${week}'
             GROUP BY ID)a
             LEFT JOIN (SELECT * FROM amt.amt_irr_tracking WHERE WEEK(DATE) = '${week}')b
             ON a.ID = b.ID
@@ -143,7 +208,7 @@ module.exports = function (app, passport) {
         })
     })
 
-    
+
 
     // get data of week
     app.get('/api/amt/get_data_of_week/:tagWeek', (req, res) => {

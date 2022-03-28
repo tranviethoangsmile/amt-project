@@ -260,7 +260,6 @@
     init = () => {
         load_week();
         get_data_of_week();
-        get_group_line_of_week();
     }
 
     load_week = () => {
@@ -273,7 +272,58 @@
         }
     }
 
-    var group_line = [];
+
+    get_irr_of_group_line_in_week = (group_line) => {
+        let gr_and_week = {
+            GROUP_LINE: group_line,
+            week: $("#week_get_data").val()
+        }
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/get_irr_of_group_line_in_week",
+            type: "POST",
+            data: JSON.stringify(gr_and_week)
+        }).done((data) => {
+            console.log('irr list', data)
+            let bal_pass = 0;
+            let bal_not = 0;
+            let rit_pass = 0;
+            let rit_not = 0;
+            let id_bal_pass = '';
+            let id_bal_not = '';
+            let id_rit_pass = '';
+            let id_rit_not = '';
+            $.each(data, (index, item) => {
+                id_bal_pass = item.GROUP_LINE + '_bal_qc_pass'
+                id_bal_not = item.GROUP_LINE + '_bal_qc_not'
+                id_rit_pass = item.GROUP_LINE + '_rit_qc_pass'
+                id_rit_not = item.GROUP_LINE + '_rit_qc_not'
+                if (item.QUANTITY > 3 && item.SHIFT == 'BAL') {
+                    bal_not++;
+                }
+                if ((item.QUANTITY <= 3 || item.QUANTITY == null) && item.SHIFT == 'BAL') {
+                    bal_pass++;
+                }
+                if (item.QUANTITY > 3 && item.SHIFT == 'RIT') {
+                    rit_not++;
+                }
+                if ((item.QUANTITY <= 3 || item.QUANTITY == null) && item.SHIFT == 'RIT') {
+                    rit_pass++;
+                }
+            });
+            document.getElementById(`${id_bal_pass}`).innerText = bal_pass;
+            document.getElementById(`${id_bal_not}`).innerText = bal_not;
+            document.getElementById(`${id_rit_pass}`).innerText = rit_pass;
+            document.getElementById(`${id_rit_not}`).innerText = rit_not;
+        }).fail((e) => {
+            console.error(e);
+        })
+    }
+
+    // nhận danh sách group line
     get_group_line_of_week = () => {
         let week = $("#week_get_data").val()
         $.ajax({
@@ -284,16 +334,94 @@
             url: "/api/amt/get_group_line_of_week/" + week,
             type: "get",
         }).done((data) => {
-            group_line = data;
+            console.log("data", data);
+            if (data != null) {
+                for (let i = 0; i < data.length; i++) {
+                    get_data_of_group_line_in_week(data[i].GROUP_LINE);
+                };
+            }
         }).fail((e) => {
             console.error(e);
         })
     }
 
-     // nhận danh sách lỗi của tuần
-     get_irr_of_week = () => {
+    // nhận dữ liệu của group_line trong tuần
+    get_data_of_group_line_in_week = (group_line) => {
+        $("#amt_report_group_line_detail tbody").empty();
+        let gr_and_week = {
+            GROUP_LINE: group_line,
+            week: $("#week_get_data").val()
+        }
+        console.log(gr_and_week);
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/get_data_of_group_line_in_week",
+            type: "POST",
+            data: JSON.stringify(gr_and_week)
+        }).done((data) => {
+            console.log(data);
+            let hc_bal = 0;
+            let hc_rit = 0;
+            let bal_pass = 0;
+            let bal_not = 0;
+            let rit_pass = 0;
+            let rit_not = 0;
+            $.each(data, (index, item) => {
+                if (item.SHIFT == 'BAL') {
+                    hc_bal += item.SL
+                }
+                if (item.SHIFT == 'RIT') {
+                    hc_rit += item.SL
+                }
+                if (item.SHIFT == 'BAL' && item.DES == 'ĐẠT') {
+                    bal_pass += item.SL;
+                }
+                if (item.SHIFT == 'BAL' && item.DES == 'KHÔNG') {
+                    bal_not += item.SL;
+                }
+                if (item.SHIFT == 'RIT' && item.DES == 'ĐẠT') {
+                    rit_pass += item.SL;
+                }
+                if (item.SHIFT == 'RIT' && item.DES == 'KHÔNG') {
+                    rit_not += item.SL;
+                }
+            })
+            $("#amt_report_group_line_detail tbody").append(
+                `
+                <tr>
+                    <td rowspan="2">${group_line}</td>
+                    <td>BALI</td>
+                    <td>${hc_bal}</td>
+                    <td>${bal_pass}</td>
+                    <td>${bal_not}</td>
+                    <td id="${group_line}_bal_qc_pass"></td>
+                    <td id="${group_line}_bal_qc_not"></td>
+                </tr>
+                <tr>
+                    <td>RIT</td>
+                    <td>${hc_rit}</td>
+                    <td>${rit_pass}</td>
+                    <td>${rit_not}</td>
+                    <td id="${group_line}_rit_qc_pass"></td>
+                    <td id="${group_line}_rit_qc_not"></td>
+                </tr>
+                `
+            )
+            $.each(data, (index, item) => {
+                get_irr_of_group_line_in_week(item.GROUP_LINE);
+            })
+        }).fail((e) => {
+            console.error(e);
+        })
+    }
+
+    // nhận danh sách lỗi của tuần
+    get_irr_of_week = () => {
         let week = $("#week_get_data").val();
-         $.ajax({
+        $.ajax({
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -306,32 +434,33 @@
             let bali_not = 0;
             let rit_not = 0;
             console.log(data);
-            $.each(data,(index, item) => {
-                if(item.SHIFT == 'BAL'&& item.QUANTITY > 3){
-                    bali_not ++;
+            $.each(data, (index, item) => {
+                if (item.SHIFT == 'BAL' && item.QUANTITY > 3) {
+                    bali_not++;
                 }
-                if(item.SHIFT == 'BAL' && (item.QUANTITY <= 3 || item.QUANTITY == null )){
-                   bali_pass ++;
+                if (item.SHIFT == 'BAL' && (item.QUANTITY <= 3 || item.QUANTITY == null)) {
+                    bali_pass++;
                 }
-                if(item.SHIFT == 'RIT' && (item.QUANTITY <= 3 || item.QUANTITY == null )){
-                    rit_pass ++;
+                if (item.SHIFT == 'RIT' && (item.QUANTITY <= 3 || item.QUANTITY == null)) {
+                    rit_pass++;
                 }
-                if(item.SHIFT == 'RIT' && item.QUANTITY > 3){
-                    rit_not ++;
+                if (item.SHIFT == 'RIT' && item.QUANTITY > 3) {
+                    rit_not++;
                 }
             })
             $("#bali_qc_pass").text(bali_pass)
             $("#bali_qc_not").text(bali_not);
             $("#rit_qc_pass").text(rit_pass)
             $("#rit_qc_not").text(rit_not)
-        }).fail((e)=>{
+        }).fail((e) => {
             console.log(e);
         })
     }
 
-    // nhận data tu
+    // nhận data tuần
     get_data_of_week = () => {
         $("#amt_report tbody").empty();
+        $("#amt_report_group_line_detail tbody").empty();
         let week = $("#week_get_data").val()
         $.ajax({
             headers: {
@@ -354,21 +483,21 @@
                 } else {
                     rit_qua += parseInt(item.QUANTITY)
                 }
-                
-                if(item.SHIFT == 'BAL' && item.DES == 'ĐẠT'){
+
+                if (item.SHIFT == 'BAL' && item.DES == 'ĐẠT') {
                     bali_pass += item.QUANTITY;
                 }
-                if(item.SHIFT == 'BAL' && item.DES == 'KHÔNG'){
+                if (item.SHIFT == 'BAL' && item.DES == 'KHÔNG') {
                     bali_not += item.QUANTITY;
                 }
 
-                if(item.SHIFT == 'RIT' && item.DES == 'ĐẠT'){
+                if (item.SHIFT == 'RIT' && item.DES == 'ĐẠT') {
                     rit_pass += item.QUANTITY;
                 }
-                if(item.SHIFT == 'RIT' && item.DES == 'KHÔNG'){
+                if (item.SHIFT == 'RIT' && item.DES == 'KHÔNG') {
                     rit_not += item.QUANTITY;
                 }
-                
+
 
             })
 
@@ -393,6 +522,7 @@
                 `
             )
             get_irr_of_week();
+            get_group_line_of_week();
         }).fail((e) => {
             console.error(e);
         })
