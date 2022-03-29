@@ -619,7 +619,8 @@ module.exports = function (app, passport) {
         let { GROUP_LINE, DAY_TRACKING } = req.body;
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
-            let sql_data = `SELECT * FROM (SELECT ID, NAME, START_DATE, CODE_TRAINING,EFF, DAY_TRAINING,DAY_TRACKING, REDUCE_DAY, (DAY_TRAINING - REDUCE_DAY) AS DAY_TRAINING_REAL 
+            let sql_data = `SELECT * FROM (SELECT ID, NAME, START_DATE, CODE_TRAINING,EFF, DAY_TRAINING,DAY_TRACKING, 
+            REDUCE_DAY, (DAY_TRAINING - REDUCE_DAY) AS DAY_TRAINING_REAL 
             FROM amt.employee_profile WHERE GROUP_LINE = '${GROUP_LINE}' AND DAY_TRACKING = '${DAY_TRACKING}')b
             LEFT JOIN (SELECT * FROM amt.tagets_training_tracking)tb
             ON tb.CODE_TRAINING = b.CODE_TRAINING AND tb.DAY = b.DAY_TRAINING_REAL;`;

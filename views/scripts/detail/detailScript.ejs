@@ -65,6 +65,11 @@
         })
     }
 
+    search_employee_of_technician = () => {
+      let id_tech = $("#technician_id_search").val()
+      alert(id_tech);
+    }
+
     show_profile_employee = (id) => {
         $("#show_profile_employee").modal('show');
     }
@@ -91,7 +96,7 @@
             $("#show_eff_detail").modal('show');
             $("#btn_show_profile").append(
                 `
-                <button type="button" class="btn btn-success" onclick="show_profile_employee(${eff_list[0].ID})">Xem Profile</button>
+                <button type="button" class="btn btn-success" onclick="show_profile_employee(${eff_list[0].ID})" disabled>Xem Profile</button>
                 `
                 )
             $.each(eff_list, (index,item) => {
