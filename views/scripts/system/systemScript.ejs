@@ -1,259 +1,26 @@
 <script>
-    var win = navigator.platform.indexOf('Win') > -1;
-    if (win && document.querySelector('#sidenav-scrollbar')) {
-        var options = {
-            damping: '0.5'
-        }
-        Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-    }
-
-    var ctx = document.getElementById("chart-bars").getContext("2d");
-    new Chart(ctx, {
-        type: "bar",
-        data: {
-            labels: ["M", "T", "W", "T", "F", "S", "S"],
-            datasets: [{
-                label: "Sales",
-                tension: 0.4,
-                borderWidth: 0,
-                borderRadius: 4,
-                borderSkipped: false,
-                backgroundColor: "rgba(255, 255, 255, .8)",
-                data: [50, 20, 10, 22, 50, 10, 40],
-                maxBarThickness: 6
-            },],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false,
-                }
-            },
-            interaction: {
-                intersect: false,
-                mode: 'index',
-            },
-            scales: {
-                y: {
-                    grid: {
-                        drawBorder: false,
-                        display: true,
-                        drawOnChartArea: true,
-                        drawTicks: false,
-                        borderDash: [5, 5],
-                        color: 'rgba(255, 255, 255, .2)'
-                    },
-                    ticks: {
-                        suggestedMin: 0,
-                        suggestedMax: 500,
-                        beginAtZero: true,
-                        padding: 10,
-                        font: {
-                            size: 14,
-                            weight: 300,
-                            family: "Roboto",
-                            style: 'normal',
-                            lineHeight: 2
-                        },
-                        color: "#fff"
-                    },
-                },
-                x: {
-                    grid: {
-                        drawBorder: false,
-                        display: true,
-                        drawOnChartArea: true,
-                        drawTicks: false,
-                        borderDash: [5, 5],
-                        color: 'rgba(255, 255, 255, .2)'
-                    },
-                    ticks: {
-                        display: true,
-                        color: '#f8f9fa',
-                        padding: 10,
-                        font: {
-                            size: 14,
-                            weight: 300,
-                            family: "Roboto",
-                            style: 'normal',
-                            lineHeight: 2
-                        },
-                    }
-                },
-            },
-        },
-    });
-
-
-    var ctx2 = document.getElementById("chart-line").getContext("2d");
-
-    new Chart(ctx2, {
-        type: "line",
-        data: {
-            labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-            datasets: [{
-                label: "Mobile apps",
-                tension: 0,
-                borderWidth: 0,
-                pointRadius: 5,
-                pointBackgroundColor: "rgba(255, 255, 255, .8)",
-                pointBorderColor: "transparent",
-                borderColor: "rgba(255, 255, 255, .8)",
-                borderColor: "rgba(255, 255, 255, .8)",
-                borderWidth: 4,
-                backgroundColor: "transparent",
-                fill: true,
-                data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
-                maxBarThickness: 6
-
-            }],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false,
-                }
-            },
-            interaction: {
-                intersect: false,
-                mode: 'index',
-            },
-            scales: {
-                y: {
-                    grid: {
-                        drawBorder: false,
-                        display: true,
-                        drawOnChartArea: true,
-                        drawTicks: false,
-                        borderDash: [5, 5],
-                        color: 'rgba(255, 255, 255, .2)'
-                    },
-                    ticks: {
-                        display: true,
-                        color: '#f8f9fa',
-                        padding: 10,
-                        font: {
-                            size: 14,
-                            weight: 300,
-                            family: "Roboto",
-                            style: 'normal',
-                            lineHeight: 2
-                        },
-                    }
-                },
-                x: {
-                    grid: {
-                        drawBorder: false,
-                        display: false,
-                        drawOnChartArea: false,
-                        drawTicks: false,
-                        borderDash: [5, 5]
-                    },
-                    ticks: {
-                        display: true,
-                        color: '#f8f9fa',
-                        padding: 10,
-                        font: {
-                            size: 14,
-                            weight: 300,
-                            family: "Roboto",
-                            style: 'normal',
-                            lineHeight: 2
-                        },
-                    }
-                },
-            },
-        },
-    });
-
-    var ctx3 = document.getElementById("chart-line-tasks").getContext("2d");
-
-    new Chart(ctx3, {
-        type: "line",
-        data: {
-            labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-            datasets: [{
-                label: "Mobile apps",
-                tension: 0,
-                borderWidth: 0,
-                pointRadius: 5,
-                pointBackgroundColor: "rgba(255, 255, 255, .8)",
-                pointBorderColor: "transparent",
-                borderColor: "rgba(255, 255, 255, .8)",
-                borderWidth: 4,
-                backgroundColor: "transparent",
-                fill: true,
-                data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-                maxBarThickness: 6
-
-            }],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false,
-                }
-            },
-            interaction: {
-                intersect: false,
-                mode: 'index',
-            },
-            scales: {
-                y: {
-                    grid: {
-                        drawBorder: false,
-                        display: true,
-                        drawOnChartArea: true,
-                        drawTicks: false,
-                        borderDash: [5, 5],
-                        color: 'rgba(255, 255, 255, .2)'
-                    },
-                    ticks: {
-                        display: true,
-                        padding: 10,
-                        color: '#f8f9fa',
-                        font: {
-                            size: 14,
-                            weight: 300,
-                            family: "Roboto",
-                            style: 'normal',
-                            lineHeight: 2
-                        },
-                    }
-                },
-                x: {
-                    grid: {
-                        drawBorder: false,
-                        display: false,
-                        drawOnChartArea: false,
-                        drawTicks: false,
-                        borderDash: [5, 5]
-                    },
-                    ticks: {
-                        display: true,
-                        color: '#f8f9fa',
-                        padding: 10,
-                        font: {
-                            size: 14,
-                            weight: 300,
-                            family: "Roboto",
-                            style: 'normal',
-                            lineHeight: 2
-                        },
-                    }
-                },
-            },
-        },
-    });
-</script>
-<script>
     $(document).ready(() => {
+        var tableCont = document.querySelector('#table-cont')
+        /**
+         * scroll handle
+         * @param {event} e -- scroll event
+         */
+        function scrollHandle(e) {
+            var scrollTop = this.scrollTop;
+            this.querySelector('thead').style.transform = 'translateY(' + scrollTop + 'px)';
+        }
+        var tableCont = document.querySelector('#table-cont-reason')
+        /**
+         * scroll handle
+         * @param {event} e -- scroll event
+         */
+        function scrollHandle(e) {
+            var scrollTop = this.scrollTop;
+            this.querySelector('thead').style.transform = 'translateY(' + scrollTop + 'px)';
+        }
+
+
+        tableCont.addEventListener('scroll', scrollHandle)
         init();
     })
 
@@ -272,7 +39,83 @@
         }
     }
 
+    // Nhận lý do không đạt của group_line trong tuần
+    get_reason_of_group_line_in_week = () => {
+        $("#reason_of_group_line_in_week tbody").empty();
+        let gr_and_week = {
+            GROUP_LINE: $("#group_line_in_week").val(),
+            week: $("#week_get_data").val()
+        }
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/get_reason_of_group_line_in_week",
+            type: "POST",
+            data: JSON.stringify(gr_and_week)
+        }).done((reason_list) => {
+            let total = 0;
+            $.each(reason_list, (index, item) => {
+                total += item.SL;
+            })
+            reason_list.sort((a, b) => {
+                return b.SL - a.SL
+            })
+            $.each(reason_list, (index,item) => {
+                $("#reason_of_group_line_in_week tbody").append(
+                    `
+                    <tr>
+                        <td>${item.REASON}</td>
+                        <td>${item.SL}</td>
+                        <td>${Math.floor((item.SL / total) * 100)}%</td>
+                    </tr>
+                    `
+                )
+            })
+        }).fail((e) =>{
+            console.error(e);
+        })
+    }
 
+    // nhận lý do không đạt của tuần
+
+    get_reasoon_in_week = () => {
+        $("#reason_in_week tbody").empty();
+        let week = $("#week_get_data").val();
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/get_reason_in_week/" + week,
+            type: "get",
+        }).done((reason_list) => {
+            let total = 0;
+            $.each(reason_list, (index, item) => {
+                total += item.SL;
+            })
+            reason_list.sort((a, b) => {
+                return b.SL - a.SL
+            })
+            $.each(reason_list, (index, item) => {
+
+                $("#reason_in_week tbody").append(
+                    `
+                    <tr>
+                        <td>${item.REASON}</td>
+                        <td>${item.SL}</td>
+                        <td>${Math.floor((item.SL / total) * 100)}%</td>
+                    </tr>
+                    `
+                )
+            })
+        }).fail((e) => {
+            console.error(e);
+        })
+    }
+
+    // nhận lỗi của group_line trong tuần
     get_irr_of_group_line_in_week = (group_line) => {
         let gr_and_week = {
             GROUP_LINE: group_line,
@@ -296,11 +139,15 @@
             let id_bal_not = '';
             let id_rit_pass = '';
             let id_rit_not = '';
+            let id_total_qc_pass = '';
+            let id_total_qc_not = '';
             $.each(data, (index, item) => {
                 id_bal_pass = item.GROUP_LINE + '_bal_qc_pass'
                 id_bal_not = item.GROUP_LINE + '_bal_qc_not'
                 id_rit_pass = item.GROUP_LINE + '_rit_qc_pass'
                 id_rit_not = item.GROUP_LINE + '_rit_qc_not'
+                id_total_qc_pass = item.GROUP_LINE + '_total_qc_pass'
+                id_total_qc_not = item.GROUP_LINE + '_total_qc_not'
                 if (item.QUANTITY > 3 && item.SHIFT == 'BAL') {
                     bal_not++;
                 }
@@ -314,10 +161,13 @@
                     rit_pass++;
                 }
             });
+
             document.getElementById(`${id_bal_pass}`).innerText = bal_pass;
             document.getElementById(`${id_bal_not}`).innerText = bal_not;
             document.getElementById(`${id_rit_pass}`).innerText = rit_pass;
             document.getElementById(`${id_rit_not}`).innerText = rit_not;
+            document.getElementById(`${id_total_qc_pass}`).innerText = rit_pass + bal_pass;
+            document.getElementById(`${id_total_qc_not}`).innerText = rit_not + bal_not;
         }).fail((e) => {
             console.error(e);
         })
@@ -335,6 +185,13 @@
             type: "get",
         }).done((data) => {
             console.log("data", data);
+            $.each(data, (index, item) => {
+                $("#group_line_in_week").append(
+                        `
+                        <option value="${item.GROUP_LINE}">${item.GROUP_LINE}</option>
+                        `
+                )
+            })
             if (data != null) {
                 for (let i = 0; i < data.length; i++) {
                     get_data_of_group_line_in_week(data[i].GROUP_LINE);
@@ -391,7 +248,7 @@
             })
             $("#amt_report_group_line_detail tbody").append(
                 `
-                <tr>
+                <tr style="background-color: #f2e0d7; color: black; font-weight: bold">
                     <td rowspan="2">${group_line}</td>
                     <td>BALI</td>
                     <td>${hc_bal}</td>
@@ -400,13 +257,22 @@
                     <td id="${group_line}_bal_qc_pass"></td>
                     <td id="${group_line}_bal_qc_not"></td>
                 </tr>
-                <tr>
+                <tr style="background-color: #f2e0d7; color: black; font-weight: bold">
                     <td>RIT</td>
                     <td>${hc_rit}</td>
                     <td>${rit_pass}</td>
                     <td>${rit_not}</td>
                     <td id="${group_line}_rit_qc_pass"></td>
                     <td id="${group_line}_rit_qc_not"></td>
+                </tr>
+                <tr  style="background-color: #bb8e75;color: black; font-weight: bold;">
+                    <td>TỔNG</td>
+                    <td></td>
+                    <td>${hc_bal + hc_rit}</td>
+                    <td>${bal_pass + rit_pass}</td>
+                    <td>${rit_not + bal_not}</td>
+                    <td id="${group_line}_total_qc_pass"></td>
+                    <td id="${group_line}_total_qc_not"></td>
                 </tr>
                 `
             )
@@ -452,6 +318,8 @@
             $("#bali_qc_not").text(bali_not);
             $("#rit_qc_pass").text(rit_pass)
             $("#rit_qc_not").text(rit_not)
+            $("#total_qc_pass").text(bali_pass + rit_pass);
+            $("#total_qc_not").text(bali_not + rit_not);
         }).fail((e) => {
             console.log(e);
         })
@@ -460,8 +328,9 @@
     // nhận data tuần
     get_data_of_week = () => {
         $("#amt_report tbody").empty();
+        $("#reason_in_week tbody").empty();
         $("#amt_report_group_line_detail tbody").empty();
-        let week = $("#week_get_data").val()
+        let week = $("#week_get_data").val();
         $.ajax({
             headers: {
                 'Accept': 'application/json',
@@ -503,7 +372,7 @@
 
             $("#amt_report tbody").append(
                 `
-                <tr>
+                <tr style="background-color: #f2e0d7; color: black; font-weight: bold">
                     <td>BAL</td>
                     <td>${bal_qua}</td>
                     <td>${bali_pass}</td>
@@ -511,7 +380,7 @@
                     <td id="bali_qc_pass"></td>
                     <td id="bali_qc_not"></td>
                 </tr>
-                <tr>
+                <tr style="background-color: #f2e0d7; color: black; font-weight: bold">
                     <td>RIT</td>
                     <td>${rit_qua}</td>
                     <td>${rit_pass}</td>
@@ -519,10 +388,19 @@
                     <td id="rit_qc_pass"></td>
                     <td id="rit_qc_not"></td>
                 </tr>
+                <tr  style="background-color: #bb8e75;color: black; font-weight: bold;">
+                    <td>Tổng</td>
+                    <td>${bal_qua + rit_qua}</td>
+                    <td>${bali_pass + rit_pass}</td>
+                    <td>${bali_not + rit_not}</td>
+                    <td id="total_qc_pass"></td>
+                    <td id="total_qc_not"></td>
+                </tr>
                 `
             )
             get_irr_of_week();
             get_group_line_of_week();
+            get_reasoon_in_week();
         }).fail((e) => {
             console.error(e);
         })

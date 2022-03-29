@@ -10,7 +10,52 @@
     }
 
     add_new_code_success = () => {
-        alert("ok");
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+            title: 'Chú ý?',
+            text: "Bạn muốn lưu code này lại không?",
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: 'Lưu',
+            cancelButtonText: 'Hủy',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let info = {
+                    CODE: $("#code_standard_list").val(),
+                    DESCRIPTION: $("#description").val()
+                }
+                $.ajax({
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    url: "/api/amt/insert_code_success",
+                    type: "POST",
+                    data: JSON.stringify(info)
+                }).done((responseText) => {
+                    if(responseText.status == 200) {
+                        $.notify('thêm thành công', 'success');
+                        get_code_standard_success();
+                    }else {
+                        Swal.fire(
+                            'Trùng lặp!',
+                            'Code bạn vừa thêm đã tồn tại',
+                            'warning'
+                        )
+                    }
+                }).fail((e) => {
+                    console.error(e);
+                })
+
+            }
+        })
     }
 
     // nhận nội dung của code 
@@ -79,6 +124,7 @@
     // nhận code standard list đã thêm
 
     get_code_standard_success = () => {
+        $("#code_standard_success tbody").empty();
         $.ajax({
             headers: {
                 'Accept': 'application/json',
@@ -174,6 +220,7 @@
                         console.log(data)
                         if (data == 'success') {
                             $.notify('cập nhật thành công', 'success');
+                            clearInterval(timerInterval)
                         } else {
                             $.notify('cập nhật không thành công', 'error');
                             $("#handle_file").modal('show');

@@ -45,7 +45,7 @@ def update_employee_info():
 
     month = now.strftime("%m")
     print("month:", month)
-    day = int(now.strftime("%d")) - 22
+    day = int(now.strftime("%d")) - 2
     if day < 0 :
         day = day + 1
     if day < 10 :
@@ -206,10 +206,10 @@ def update_employee_info():
         mydb.commit()
 update_employee_info()
 # schedule.every().saturday.at("11:59").do(update_employee_info)
-schedule.every().day.at("09:30").do(update_employee_info)
+# schedule.every().day.at("09:30").do(update_employee_info)
 # schedule.every(5).minutes.do(update_employee_info)
 # print(datetime.datetime.now())
 # print('shedule start')
-while True:
-    schedule.run_pending()
-    time.sleep(1)        
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)        

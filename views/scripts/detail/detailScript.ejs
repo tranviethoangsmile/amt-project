@@ -2,28 +2,29 @@
     $(document).ready(() => {
         init();
 
-        $("#note_season_not_pass").validate({
-            ruler: {
-                season_not_pass: {
-                    required: true,
-                },
-                technician_note: {
-                    required: true,
-                    minlength: 10,
-                    maxlength: 255
-                }
-            },
-            messages: {
-                season_not_pass: {
-                    required: 'Phải chọn lý do',
-                },
-                technician_note: {
-                    required: 'Không được để trống',
-                    minlength: 'Nhập ít nhất 10 ký tự',
-                    maxlength: 'Nhập tối đa 255 ký tự'
-                }
-            }
-        });
+        // validate form nhập lý do không đạt
+        // $("#note_season_not_pass").validate({
+        //     ruler: {
+        //         season_not_pass: {
+        //             required: true,
+        //         },
+        //         technician_note: {
+        //             required: true,
+        //             minlength: 10,
+        //             maxlength: 255
+        //         }
+        //     },
+        //     messages: {
+        //         season_not_pass: {
+        //             required: 'Phải chọn lý do',
+        //         },
+        //         technician_note: {
+        //             required: 'Không được để trống',
+        //             minlength: 'Nhập ít nhất 10 ký tự',
+        //             maxlength: 'Nhập tối đa 255 ký tự'
+        //         }
+        //     }
+        // });
     })
     // table custom fixed thead
     var tableCont = document.querySelector('#table-cont')
@@ -602,9 +603,9 @@
             TECHNICIANS_NOTE: $("#technician_note").val()
         }
 
-        if (reason.ID === ' ' || reason.REASON === '--Chọn--' || reason.DAY_TRACKING === ' ' || reason.TECHNICIANS_NOTE === ' ' || reason.TECHNICIANS_NOTE.length < 10) {
-            return;
-        }
+        // if (reason.ID === ' ' || reason.REASON === '--Chọn--' || reason.DAY_TRACKING === ' ' || reason.TECHNICIANS_NOTE === ' ' || reason.TECHNICIANS_NOTE.length < 10) {
+        //     return;
+        // }
         Swal.fire({
             title: 'Bạn có muốn lưu thay đổi này không?',
             showCancelButton: true,

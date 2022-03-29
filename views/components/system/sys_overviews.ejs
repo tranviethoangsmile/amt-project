@@ -1,54 +1,103 @@
 <div class="row">
   <div class="card">
     <div class="row mt-3">
-      <table class="table text-center" id="amt_report">
-        <fieldset>
-          <legend style="color: blue; font-weight: bold;">Báo cáo AMT</legend>
-          <thead>
-            <tr style="background-color: #e32f6e; color: white;">
-              <th rowspan="2">CA</th>
-              <th rowspan="2">HC</th>
-              <th colspan="2">Hiệu suất</th>
-              <th colspan="2">Chất lượng</th>
-            </tr>
-            <tr>
-              <th>Đạt</th>
-              <th>Không đạt</th>
-              <th>Đạt</th>
-              <th>Không đạt</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </fieldset>
-      </table>
+      <div class="col-lg-8">
+        <table class="table text-center" id="amt_report">
+          <fieldset>
+            <legend style="color: blue; font-weight: bold;">Báo cáo AMT</legend>
+            <thead style="background-color: #CC977A; color: black;">
+              <tr>
+                <th rowspan="2">CA</th>
+                <th rowspan="2">HC</th>
+                <th colspan="2">Hiệu suất</th>
+                <th colspan="2">Chất lượng</th>
+              </tr>
+              <tr>
+                <th>Đạt</th>
+                <th>Không đạt</th>
+                <th>Đạt</th>
+                <th>Không đạt</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- hiển thi chi tiết -->
+            </tbody>
+          </fieldset>
+        </table>
+      </div>
+      <div class="col-lg-4 mt-lg-4">
+        <div class='table-cont' id='table-cont'>
+          <table class="table text-center" id="reason_in_week">
+            <fieldset>
+              <thead style="background-color: #D5B170; color: black">
+                <tr>
+                  <th>Lý do</th>
+                  <th>SL</th>
+                  <th>Tỷ lệ</th>
+                </tr>
+              </thead>
+              <tbody style="background-color: #CDC99D; color: black;">
+                <!-- hiển thị chi tiết -->
+              </tbody>
+            </fieldset>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
   <div class="card mt-lg-2">
     <div class="row mt-3">
-      <table class="table table-success text-center" id="amt_report_group_line_detail">
-        <fieldset>
-          <legend style="color: blue; font-weight: bold;">Tổng hợp nhóm chuyền</legend>
-          <thead>
-            <tr>
-              <th rowspan="2">Nhóm chuyền</th>
-              <th rowspan="2">Ca</th>
-              <th rowspan="2">HC</th>
-              <th colspan="2">Hiệu suất</th>
-              <th colspan="2">Chất lượng</th>
-            </tr>
-            <tr>
-              <th>Đạt</th>
-              <th>Không đạt</th>
-              <th>Đạt</th>
-              <th>Không đạt</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-          </tbody>
-        </fieldset>
-      </table>
+      <div class="col-lg-8">
+        <table class="table text-center" id="amt_report_group_line_detail">
+          <fieldset>
+            <legend style="color: blue; font-weight: bold;">Tổng hợp nhóm chuyền</legend>
+            <thead style="background-color: #CC977A; color: black;">
+              <tr>
+                <th rowspan="2">Nhóm chuyền</th>
+                <th rowspan="2">Ca</th>
+                <th rowspan="2">HC</th>
+                <th colspan="2">Hiệu suất</th>
+                <th colspan="2">Chất lượng</th>
+              </tr>
+              <tr>
+                <th>Đạt</th>
+                <th>Không đạt</th>
+                <th>Đạt</th>
+                <th>Không đạt</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </fieldset>
+        </table>
+      </div>
+      <div class="col-lg-4">
+        <div class="row">
+          <div class="col-6">
+            <span><u>Nhóm chuyền:</u></span>
+          </div>
+          <div class="col-6">
+            <select class="form-select"id="group_line_in_week" onchange="get_reason_of_group_line_in_week()">
+              <option>--Chọn--</option>
+            </select>
+          </div>
+        </div>
+        <div class='table-cont' id='table-cont-reason'>
+          <table class="table text-center" id="reason_of_group_line_in_week">
+            <thead style="background-color: #D5B170; color: black">
+              <tr>
+                <th>Lý do</th>
+                <th>SL</th>
+                <th>Tỷ lệ</th>
+              </tr>
+            </thead>
+            <tbody style="background-color: #CDC99D; color: black;">
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </div>

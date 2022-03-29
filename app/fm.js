@@ -123,6 +123,43 @@ module.exports = function (app, passport) {
 
     var amt_upload = multer({ storage: amt_storage })
 
+    app.post('/api/amt/get_reason_of_group_line_in_week', (req, res) => {
+        let { GROUP_LINE, week } = req.body;
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT GROUP_LINE, REASON, COUNT(REASON) AS SL 
+            FROM amt.employee_profile 
+            WHERE WEEK(DAY_TRACKING) = '${week}' AND REASON IS NOT NULL AND GROUP_LINE = '${GROUP_LINE}'
+            GROUP BY REASON;            
+            `;
+            console.log(sql_data);
+            data.query(sql_data, (err, reason_list) => {
+                if (err) throw err;
+                data.release();
+                res.send(reason_list);
+            })
+        })
+    })
+
+    // get reason in week
+    app.get('/api/amt/get_reason_in_week/:tagWeek', (req, res) => {
+        let week = req.params.tagWeek;
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT REASON, COUNT(REASON) AS SL 
+            FROM amt.employee_profile 
+            WHERE WEEK(DAY_TRACKING) = '${week}' AND REASON IS NOT NULL
+            GROUP BY REASON;            
+            `;
+            console.log(sql_data);
+            data.query(sql_data, (err, reason_list) => {
+                if (err) throw err;
+                data.release();
+                res.send(reason_list);
+            })
+        })
+    })
+
     // get data irr of group_line in week
     app.post('/api/amt/get_irr_of_group_line_in_week', (req, res) => {
         let { GROUP_LINE, week } = req.body;
@@ -295,6 +332,50 @@ module.exports = function (app, passport) {
         })
     })
 
+    // insert conde standard 
+    app.post('/api/amt/insert_code_success', (req, res) => {
+        let { CODE, DESCRIPTION } = req.body;
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql = `SELECT * FROM amt.code_reduce_day_success WHERE CODE = '${CODE}'`;
+            console.log(sql)
+            data.query(sql, (err, code_info) => {
+                if (err) throw err;
+                data.release();
+                console.log(code_info.length)
+                if (code_info.length >= 1) {
+                    res.send({
+                        status: 500,
+                        message: 'Lỗi hệ thống'
+                    })
+                } else {
+                    console.log('next')
+                    connect_amt.getConnection((err, data) => {
+                        if (err) {
+                            res.send({
+                                status: 500,
+                                message: 'Lỗi hệ thống'
+                            })
+                        }
+                        console.log('connected');
+                        let sql_data = `INSERT INTO amt.code_reduce_day_success (CODE, DESCRIPTION) 
+                        VALUES('${CODE}','${DESCRIPTION}')`;
+                        console.log(sql_data);
+                        data.query(sql_data, (err, code_list) => {
+                            if (err) throw err;
+                            data.release();
+                            res.send({
+                                status: 200,
+                                message: 'thêm thành công'
+                            });
+                        })
+                    })
+                }
+            })
+        })
+
+    })
+
     // get code standard success
 
     app.get('/api/amt/get_code_standard_success', (req, res) => {
@@ -380,12 +461,13 @@ module.exports = function (app, passport) {
 
     app.post('/api/amt/save_reason_not_pass', (req, res) => {
         let { ID, REASON, DAY_TRACKING, TECHNICIANS_NOTE } = req.body;
-        if (ID === ' ' || REASON === '--Chọn--' || DAY_TRACKING === ' ' || TECHNICIANS_NOTE === ' ' || TECHNICIANS_NOTE.length < 10) {
-            res.send({
-                status: '500',
-                message: 'fail'
-            })
-        }
+        // validate dữ liệu
+        // if (ID === ' ' || REASON === '--Chọn--' || DAY_TRACKING === ' ' || TECHNICIANS_NOTE === ' ' || TECHNICIANS_NOTE.length < 10) {
+        //     res.send({
+        //         status: '500',
+        //         message: 'fail'
+        //     })
+        // }
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
             let sql_data = `UPDATE amt.employee_profile SET REASON = '${REASON}',TECHNICIANS_NOTE = '${TECHNICIANS_NOTE}'  
