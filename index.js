@@ -69,7 +69,7 @@ app.use(logger("dev"));
 
 
 var server = require("http").Server(app);
-server.listen(port,'10.113.90.198', () => {
+server.listen(port,'localhost', () => {
     console.log('APP RUNNING ON ' + port)
 })
 

@@ -53,19 +53,15 @@ def update_day_training():
     print("day:", day)
     DAY_TRACKING = str(year) + '-' + str(month) + '-' + str(day)
     print(DAY_TRACKING)
-    sql_day_training="""SELECT tb.ID, COUNT(tb3.DATE) AS DAY_TRAINING FROM (SELECT * FROM amt.amt_tracking b 
-    WHERE b.ID NOT IN (SELECT ID FROM amt.employee_stop_working)) tb
-    LEFT JOIN (SELECT a.EMPLOYEE, a.DATE FROM pr2k.employee_timesheet a WHERE a.DATE <= '{year}-{month}-{day}')tb3
-    ON tb3.EMPLOYEE = tb.ID
-    GROUP BY tb.ID;
-    """.format(year = year, month = month, day = day )
+    sql_day_training="""SELECT ID,NAME,TECH_ID, TECHNICIAN  FROM amt.amt_tracking;
+    """
     print(sql_day_training)
     myCursor.execute(sql_day_training)
     result_day_training= myCursor.fetchall()
     print(result_day_training)
     for x in result_day_training:
-        sql_day_training="""UPDATE amt.employee_profile SET DAY_TRAINING = '{DAY_TRAINING}' WHERE ID = '{ID}' AND DAY_TRACKING = '{DAY_TRACKING}'
-        """.format(DAY_TRAINING = str(x[1]), ID = str(x[0]), DAY_TRACKING = DAY_TRACKING )
+        sql_day_training="""UPDATE amt.employee_profile SET TECH_ID = '{TECH_ID}' WHERE ID = '{ID}' AND NAME = '{NAME}' AND TECHNICIANS = '{TECHNICIAN}'
+        """.format(TECH_ID = str(x[2]), ID = str(x[0]), NAME = str(x[1]), TECHNICIAN = str(x[3]))
         print(sql_day_training)
         myCursor.execute(sql_day_training)
         mydb.commit()

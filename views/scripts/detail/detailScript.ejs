@@ -2,29 +2,7 @@
     $(document).ready(() => {
         init();
 
-        // validate form nhập lý do không đạt
-        // $("#note_season_not_pass").validate({
-        //     ruler: {
-        //         season_not_pass: {
-        //             required: true,
-        //         },
-        //         technician_note: {
-        //             required: true,
-        //             minlength: 10,
-        //             maxlength: 255
-        //         }
-        //     },
-        //     messages: {
-        //         season_not_pass: {
-        //             required: 'Phải chọn lý do',
-        //         },
-        //         technician_note: {
-        //             required: 'Không được để trống',
-        //             minlength: 'Nhập ít nhất 10 ký tự',
-        //             maxlength: 'Nhập tối đa 255 ký tự'
-        //         }
-        //     }
-        // });
+
     })
     // table custom fixed thead
     var tableCont = document.querySelector('#table-cont')
@@ -65,9 +43,58 @@
         })
     }
 
+    get_name_tech = () => {
+        $("#tech_name_search").text('')
+        let tech_id = $("#technician_id_search").val();
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/get_name_technician/" + tech_id,
+            type: "GET",
+        }).done((tech) => {
+            console.log(tech)
+            $("#tech_name_search").text(tech[0].TECHNICIAN)
+        }).fail((e) => {
+            console.error(e);
+        })
+    }
+
     search_employee_of_technician = () => {
-      let id_tech = $("#technician_id_search").val()
-      alert(id_tech);
+        $("#employee_profile_tab tbody").empty();
+        let id_tech_and_day_tracking = {
+            TECH_ID: $("#technician_id_search").val(),
+            DAY_TRACKING: $("#day_tracking").val(),
+        }
+
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/get_employee_detail_by_tech_id",
+            type: "POST",
+            data: JSON.stringify(id_tech_and_day_tracking)
+        }).done((employee_list) => {
+            $.each(employee_list, (index, item) => {
+                $("#employee_profile_tab tbody").append(
+                    `
+                    <tr ondblclick = "see_employee_detail(${item.ID})">
+                        <td>${item.ID}</td>
+                        <td>${item.NAME}</td>
+                        <td>${item.DAY_TRACKING}</td>
+                        <td style="color:${item.EFF > item.TAGETS ? '#43A047' : '#EC407A'};">${item.EFF > item.TAGETS ? 'ĐẠT' : 'KHÔNG ĐẠT'}</td>
+                        <td><button onclick = "why_not_pass(${item.ID})" class = "btn btn-outline-primary">ghi chú<butotn></td>
+                    </tr>
+                    `
+                )
+            })
+
+        }).fail((e) => {
+            console.error(e)
+        })
+
     }
 
     show_profile_employee = (id) => {
@@ -98,15 +125,15 @@
                 `
                 <button type="button" class="btn btn-success" onclick="show_profile_employee(${eff_list[0].ID})" disabled>Xem Profile</button>
                 `
-                )
-            $.each(eff_list, (index,item) => {
+            )
+            $.each(eff_list, (index, item) => {
                 $("#eff_detail_show tbody").append(
                     `
                     <tr>
                         <td>${item.DAY_TRACKING}</td>
                         <td>${item.EFF}</td>
                         <td>${item.TAGETS}</td>
-                        <td>${Math.floor((item.EFF / item.TAGETS)* 100)} %</td>
+                        <td>${Math.floor((item.EFF / item.TAGETS) * 100)} %</td>
                         <td style="color:${item.EFF > item.TAGETS ? '#43A047' : '#EC407A'};">${item.EFF > item.TAGETS ? 'ĐẠT' : 'KHÔNG ĐẠT'}</td>
                     </tr>
                     `
@@ -478,13 +505,13 @@
         $("#top_irr_number_0").text('');
         $("#top_irr_1").text('');
         $("#top_irr_number_1").text('');
-         $("#top_irr_1").text('');
+        $("#top_irr_1").text('');
         $("#top_irr_number_2").text('');
-         $("#top_irr_1").text('');
+        $("#top_irr_1").text('');
         $("#top_irr_number_2").text('');
-         $("#top_irr_2").text('');
+        $("#top_irr_2").text('');
         $("#top_irr_number_3").text('');
-         $("#top_irr_3").text('');
+        $("#top_irr_3").text('');
         $("#top_irr_number_3").text('');
         $("#top_irr_4").text('');
         $("#top_irr_number_4").text('');
@@ -498,7 +525,8 @@
         $("#top_irr_number_8").text('');
         let data = {
             GROUP_LINE: group_line,
-            DAY_TRACKING: day_tracking
+            DAY_TRACKING: day_tracking,
+            SHIFT: $("#shift_list").val(),
         }
         $.ajax({
             headers: {
@@ -534,6 +562,7 @@
         let day_tracking = {
             GROUP_LINE: $("#group_line_list").val(),
             DAY_TRACKING: $("#day_tracking").val(),
+            SHIFT: $("#shift_list").val(),
         }
         get_irr_by_day_tracking(day_tracking.GROUP_LINE, day_tracking.DAY_TRACKING);
         $.ajax({
@@ -545,6 +574,7 @@
             type: "post",
             data: JSON.stringify(day_tracking)
         }).done((employee_profile) => {
+            console.log(employee_profile);
             $("#total_employee").text(employee_profile.length);
             let eff_total = 0;
             let tagets_total = 0;
@@ -564,21 +594,22 @@
                     <tr ondblclick = "see_employee_detail(${item.ID})">
                         <td>${item.ID}</td>
                         <td>${item.NAME}</td>
+                        <td>${item.SHIFT}</td>
                         <td>${item.DAY_TRACKING}</td>
-                        <td style="color:${item.EFF > item.TAGETS ? '#43A047' : '#EC407A'};">${item.EFF > item.TAGETS ? 'ĐẠT' : 'KHÔNG ĐẠT'}</td>
+                        <td style="color:${item.EFF > item.TAGETS ? '#43A047' : '#EC407A'};">${item.EFF > item.TAGETS ? 'ĐẠT' : 'KHÔNG'}</td>
                         <td><button onclick = "why_not_pass(${item.ID})" class = "btn btn-outline-primary">ghi chú<butotn></td>
                     </tr>
                     `
                 )
             })
-            let eff_medium =Math.floor(eff_total / employee_profile.length);
-            $("#eff_medium").text(eff_medium);
-            let tagets_medium =Math.floor(tagets_total / employee_profile.length);
-            $("#tagets_medium").text(tagets_medium);
-            percent_eff = Math.floor((eff_total / tagets_total)* 100)
-            $("#eff_percent").text(`${percent_eff} %`);
+            let eff_medium = Math.floor(eff_total / employee_profile.length);
+            $("#eff_medium").text(eff_medium + ' %');
+            let tagets_medium = Math.floor(tagets_total / employee_profile.length);
+            $("#tagets_medium").text(tagets_medium + ' %');
+            percent_eff = Math.floor((eff_total / tagets_total) * 100);
             $("#pass").text(pass);
             $("#not_pass").text(not_pass);
+            $("#percent_eff_pass").text(Math.floor((pass / (pass + not_pass)) * 100) + ' %')
         }).fail((e) => {
             console.error(e);
         })
@@ -586,8 +617,20 @@
 
     // show modal 
     why_not_pass = (id) => {
-        $("#id_of_employee").val(id);
-        $("#why_not_pass").modal('show');
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/get_employee_id_and_name/" + id,
+            type: "GET",
+        }).done((employee) => {
+            $("#id_of_employee").val(employee[0].ID);
+            $("#name_of_employee").val(employee[0].NAME);
+            $("#why_not_pass").modal('show');
+        }).fail((e) => {
+            console.error(e);
+        })
     }
 
     cancel = () => {
@@ -599,6 +642,35 @@
         $("#show_eff_detail").modal('hide')
     }
 
+    change_reason = () => {
+        let reason = $("#reason_not_pass").val();
+        if (reason == 'Lý do khác') {
+            //  validate form nhập lý do không đạt
+            $("#note_season_not_pass").validate({
+                ruler: {
+                    season_not_pass: {
+                        required: true,
+                    },
+                    technician_note: {
+                        required: true,
+                        minlength: 10,
+                        maxlength: 255
+                    }
+                },
+                messages: {
+                    season_not_pass: {
+                        required: 'Phải chọn lý do',
+                    },
+                    technician_note: {
+                        required: 'Không được để trống',
+                        minlength: 'Nhập ít nhất 10 ký tự',
+                        maxlength: 'Nhập tối đa 255 ký tự'
+                    }
+                }
+            });
+        }
+    }
+
     // lưu thông tin lý do không đạt
     save_reason_not_pass = () => {
         let reason = {
@@ -608,9 +680,11 @@
             TECHNICIANS_NOTE: $("#technician_note").val()
         }
 
-        // if (reason.ID === ' ' || reason.REASON === '--Chọn--' || reason.DAY_TRACKING === ' ' || reason.TECHNICIANS_NOTE === ' ' || reason.TECHNICIANS_NOTE.length < 10) {
-        //     return;
-        // }
+        
+
+        if (reason.REASON ==='Lý do khác' && (reason.TECHNICIANS_NOTE === '' || reason.TECHNICIANS_NOTE.length < 10)) {
+            return;
+        }
         Swal.fire({
             title: 'Bạn có muốn lưu thay đổi này không?',
             showCancelButton: true,
@@ -656,13 +730,24 @@
             url: "/api/amt/get_start_date_list",
             type: "get",
         }).done((data) => {
+            let value = data[0].GROUP_LINE;
             $.each(data, (index, item) => {
-                $("#group_line_list").append(
+                if (item.GROUP_LINE == value) {
+                    $("#group_line_list").append(
+                        `
+                    <option value = "${item.GROUP_LINE}" selected>${item.GROUP_LINE}</option>
                     `
-                    <option value = "${item.GROUP_LINE}">${item.GROUP_LINE}</option>
-                    `
-                )
+                    )
+                } else {
+                    $("#group_line_list").append(
+                        `
+                        <option value = "${item.GROUP_LINE}">${item.GROUP_LINE}</option>
+                        `
+                    )
+                }
+
             })
+            get_info_employee_by_group_line();
         }).fail((e) => {
             console.error(e);
         })
@@ -681,9 +766,6 @@
         // let start_date = format_time(date1.setDate(date1.getDate() - 10));
         let day_get_data = format_time(date.setDate(date.getDate() - 2));
         $("#day_tracking").val(day_get_data);
-        // getDataAmtEmployee();
-        // change_start_date();
-
     }
 
 </script>

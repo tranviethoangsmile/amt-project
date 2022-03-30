@@ -82,12 +82,17 @@
       <div class="mx-3">
         <div class="input-group">
           <div class="form-control">
-            <span class="text-white"style="color: while; font-size: large; font-weight:bold; ">Mã Kỹ thuật</span>
-            <input style="background-color: beige;" type="search" id="technician_id_search" class="form-control" />
-            <div style="margin-left: 150px;">
-              <button type="button" class="btn btn-primary" onclick="search_employee_of_technician()">
-                <i class="fas fa-search"></i>
-              </button>
+            <span class="text-white"style="color: while; font-size: large; font-weight:bold; ">ID Kỹ thuật</span>
+            <input style="background-color: beige; padding-left: 5px; font-weight: bold;" type="number" id="technician_id_search" oninput="get_name_tech()" class="form-control" required/>
+            <div class="row">
+              <div class="col-8">
+                <span class="text-white"style="font-size: 0.9rem; font-weight:bold;" id="tech_name_search"></span>
+              </div>
+              <div class="col-4">
+                <button type="button" class="btn btn-primary mt-1" onclick="search_employee_of_technician()">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>

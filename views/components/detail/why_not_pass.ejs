@@ -7,14 +7,17 @@
             </div>
             <div class="modal-body">
                 <form class="form-control" id="note_season_not_pass" name="note_season_not_pass">
-                    <input style="display: none;" id="id_of_employee"/>
+                    <span>ID: </span>
+                    <input style="border: 1px; border-color: blue;" id="id_of_employee" readonly/>
+                    <span>Tên: </span>
+                    <input style="border: 1px; border-color: blue;" id="name_of_employee" class="form-input"/>
                     <fieldset>
                         <div class="form-group">
                             <label for="reason_not_pass">Lý do: </label>
-                            <select id="reason_not_pass" class="form-control" name="reason_not_pass" required>
+                            <select id="reason_not_pass" class="form-control" onchange="change_reason()" name="reason_not_pass" required>
                                 <option>--Chọn--</option>
                                 <option value="Chất lượng">Chất lượng</option>
-                                <option value="Máy hư">Máy hư</option>
+                                <option value="Máy hư">Máy hỏng</option>
                                 <option value="Không có hàng">Không có hàng</option>
                                 <option value="Mất cân bằng chuyền">Mất cân bằng chuyền</option>
                                 <option value="Kỹ năng">Kỹ năng</option>

@@ -69,7 +69,7 @@ FROM (SELECT tb2.ID, tb2.NAME, tb2.SHIFT, tb2.OPERATION_NAME, tb2.CODE_TRAINING,
     result_employee_profile= myCursor.fetchall()
     print(result_employee_profile)
     for x in result_employee_profile:
-        sql_employee_profile="""INSERT INTO employee_profile (ID, NAME,SHIFT,SHIFT_REAL,START_DATE,OPERATION_NAME,OPERATION_NAME_REAL,CODE_TRAINING,DAY_TRACKING,TECH_IDTECHNICIANS,WORK_HRS, EFF)
+        sql_employee_profile="""INSERT INTO employee_profile (ID, NAME,SHIFT,SHIFT_REAL,START_DATE,OPERATION_NAME,OPERATION_NAME_REAL,CODE_TRAINING,DAY_TRACKING,TECH_ID,TECHNICIANS,WORK_HRS, EFF)
          VALUES ('{ID}','{NAME}','{SHIFT}','{SHIFT_REAL}','{START_DATE}','{OPERATION_NAME}', '{OPERATION_NAME_REAL}','{CODE_TRAINING}','{DAY_TRACKING}',{TECH_ID},'{TECHNICIANS}','{WORK_HRS}','{EARNED_HOURS}')
          """.format(ID = str(x[0]), NAME = str(x[1]), SHIFT = str(x[2]), SHIFT_REAL = str(x[3]), START_DATE = str(x[4]), OPERATION_NAME = str(x[5]), OPERATION_NAME_REAL = str(x[6]), CODE_TRAINING = str(x[7]), DAY_TRACKING = str(x[8]),TECH_ID = str(x[9]), TECHNICIANS = str(x[10]), WORK_HRS = str(x[11]), EARNED_HOURS = str(x[12]))
         print(sql_employee_profile)
