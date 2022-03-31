@@ -36,6 +36,7 @@ var con = mysql.createPool({
     database: "erpsystem"
 
 });
+
 // create app AMT start  
 var connect_pr2k = mysql.createPool({
     connectionLimit: 30,
@@ -124,7 +125,7 @@ module.exports = function (app, passport) {
     var amt_upload = multer({ storage: amt_storage })
 
     // get name tachnician
-    app.get('/api/amt/get_name_technician/:tagID', (req,res) => {
+    app.get('/api/amt/get_name_technician/:tagID', (req, res) => {
         let tech_id = req.params.tagID;
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
@@ -141,12 +142,12 @@ module.exports = function (app, passport) {
 
     // get reason of group line in week
     app.post('/api/amt/get_reason_of_group_line_in_week', (req, res) => {
-        let { GROUP_LINE, week } = req.body;
+        let { GROUP_LINE,SHIFT, week } = req.body;
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
             let sql_data = `SELECT GROUP_LINE, REASON, COUNT(REASON) AS SL 
             FROM amt.employee_profile 
-            WHERE WEEK(DAY_TRACKING) = '${week}' AND REASON IS NOT NULL AND GROUP_LINE = '${GROUP_LINE}'
+            WHERE WEEK(DAY_TRACKING) = '${week}' AND REASON IS NOT NULL AND GROUP_LINE = '${GROUP_LINE}' AND  LEFT(SHIFT,3) = '${SHIFT}'
             GROUP BY REASON;            
             `;
             console.log(sql_data);
@@ -225,7 +226,6 @@ module.exports = function (app, passport) {
     })
 
     // get group_line_of_week
-
     app.get('/api/amt/get_group_line_of_week/:tagWeek', (req, res) => {
         let week = req.params.tagWeek;
         connect_amt.getConnection((err, data) => {
@@ -277,7 +277,7 @@ module.exports = function (app, passport) {
             LEFT JOIN (SELECT * FROM amt.tagets_training_tracking)tb2
             ON tb1.CODE_TRAINING = tb2.CODE_TRAINING AND (tb1.DAY_TRAINING - tb1.REDUCE_DAY) = tb2.DAY
             GROUP BY tb1.ID)abc
-            GROUP BY SHIFT, DES ;`;
+            GROUP BY SHIFT, DES;`;
             console.log(sql_data);
             data.query(sql_data, (err, group_line_info_list) => {
                 if (err) throw err;
@@ -410,7 +410,6 @@ module.exports = function (app, passport) {
 
 
     // get code standard list
-
     app.get('/api/amt/get_code_standard', (req, res) => {
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
@@ -475,9 +474,8 @@ module.exports = function (app, passport) {
     })
 
     // save season not pass
-
     app.post('/api/amt/save_reason_not_pass', (req, res) => {
-        let { ID, REASON, DAY_TRACKING, TECHNICIANS_NOTE } = req.body;
+        let { ID, REASON, CYCLE_TIME, DAY_TRACKING, TECHNICIANS_NOTE } = req.body;
         // validate dữ liệu
         // if (ID === ' ' || REASON === '--Chọn--' || DAY_TRACKING === ' ' || TECHNICIANS_NOTE === ' ' || TECHNICIANS_NOTE.length < 10) {
         //     res.send({
@@ -487,7 +485,8 @@ module.exports = function (app, passport) {
         // }
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
-            let sql_data = `UPDATE amt.employee_profile SET REASON = '${REASON}',TECHNICIANS_NOTE = '${TECHNICIANS_NOTE}'  
+            let sql_data = `UPDATE amt.employee_profile SET REASON = '${REASON}',
+            TECHNICIANS_NOTE = '${TECHNICIANS_NOTE}', CYCLE_TIME = '${CYCLE_TIME}'
             WHERE ID = '${ID}' AND DAY_TRACKING = '${DAY_TRACKING}'`;
             console.log(sql_data);
             data.query(sql_data, (err, respond) => {
@@ -565,7 +564,8 @@ module.exports = function (app, passport) {
         })
     })
 
-    app.get('/api/amt/get_employee_id_and_name/:tagId', (req,res) =>{
+    // get id and name of employee
+    app.get('/api/amt/get_employee_id_and_name/:tagId', (req, res) => {
         let id = req.params.tagId;
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
@@ -622,7 +622,6 @@ module.exports = function (app, passport) {
     })
 
     // get irr list by day_tracking
-
     app.post('/api/amt/get_irr_by_day_tracking', (req, res) => {
         let { GROUP_LINE, DAY_TRACKING, SHIFT } = req.body;
         let time = DAY_TRACKING.split('-');
@@ -645,23 +644,95 @@ module.exports = function (app, passport) {
         })
     })
 
-    // get empployee list by TECH_ID
-    app.post('/api/amt/get_employee_detail_by_tech_id', (req,res) => {
-        let {TECH_ID, DAY_TRACKING} = req.body;
+    // get irr list of employee profile 
+    app.get('/api/amt/get_irr_of_employee_profile/:tagId', (req,res) => {
+        let id = req.params.tagId;
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
-            let sql_data = `SELECT * FROM (SELECT ID, NAME, START_DATE, CODE_TRAINING,EFF, DAY_TRAINING,DAY_TRACKING, 
-                REDUCE_DAY, (DAY_TRAINING - REDUCE_DAY) AS DAY_TRAINING_REAL 
-                FROM amt.employee_profile WHERE TECH_ID = '${TECH_ID}' AND DAY_TRACKING = '${DAY_TRACKING}')b
-                LEFT JOIN (SELECT * FROM amt.tagets_training_tracking)tb
-                ON tb.CODE_TRAINING = b.CODE_TRAINING AND tb.DAY = b.DAY_TRAINING_REAL;`;
-            console.log('tech_id',sql_data)
-            data.query(sql_data, (err, employee_profile_list) => {
+            let sql_data = `SELECT QUANTITY FROM amt.amt_irr_tracking WHERE ID = '${id}'`;
+            console.log(sql_data);
+            data.query(sql_data, (err, irr_list) => {
                 if (err) throw err;
                 data.release();
-                res.send(employee_profile_list);
+                res.send(irr_list);
             })
         })
+        
+    })
+
+    // get empployee list by TECH_ID
+    app.post('/api/amt/get_employee_detail_by_tech_id', (req, res) => {
+        let { TECH_ID, DAY_TRACKING } = req.body;
+        if (TECH_ID == '') {
+            res.send({
+                status: 500,
+                message: 'does not exist'
+            })
+        } else {
+            connect_amt.getConnection((err, data) => {
+                if (err) {
+                    res.send({
+                        status: 500,
+                        message: 'does not exist'
+                    })
+                }
+                let search_tech = `SELECT TECH_ID, TECHNICIAN FROM amt.amt_tracking WHERE TECH_ID = ${TECH_ID} GROUP BY TECH_ID`;
+                console.log('tech_id', search_tech)
+                data.query(search_tech, (err, tech) => {
+                    if (err) {
+                        res.send({
+                            status: 500,
+                            message: 'does not exist'
+                        })
+                    }
+                    data.release();
+                    if (tech.length != 0) {
+                        connect_amt.getConnection((err, data) => {
+                            if (err) throw err;
+                            let sql_data = `SELECT * FROM (SELECT ID, NAME, SHIFT, START_DATE, CODE_TRAINING,EFF, DAY_TRAINING,DAY_TRACKING, 
+                                REDUCE_DAY, (DAY_TRAINING - REDUCE_DAY) AS DAY_TRAINING_REAL 
+                                FROM amt.employee_profile WHERE TECH_ID = '${TECH_ID}' AND DAY_TRACKING = '${DAY_TRACKING}')b
+                                LEFT JOIN (SELECT * FROM amt.tagets_training_tracking)tb
+                                ON tb.CODE_TRAINING = b.CODE_TRAINING AND tb.DAY = b.DAY_TRAINING_REAL;`;
+                            console.log('tech_id', sql_data)
+                            data.query(sql_data, (err, employee_profile_list) => {
+                                if (err) throw err;
+                                data.release();
+                                res.send({
+                                    status: 201,
+                                    employee_profile_list
+                                }
+                                );
+                            })
+                        })
+                    } else {
+                        connect_amt.getConnection((err, data) => {
+                            if (err) throw err;
+                            let search_employee_profile = `SELECT tb1.ID,tb1.NAME, tb1.SHIFT, tb1.GROUP_LINE, tb1.OPERATION_NAME, tb1.DAY_TRACKING, tb1.TECH_ID, tb1.TECHNICIANS, tb1.EFF, tb1.REASON,tb1.CYCLE_TIME,tb1.TECHNICIANS_NOTE,tb2.TAGETS   
+                            FROM (SELECT * FROM amt.employee_profile a WHERE a.ID = '${TECH_ID}')tb1
+                            LEFT JOIN (SELECT * FROM amt.tagets_training_tracking)tb2
+                            ON tb1.DAY_TRAINING = tb2.DAY AND tb1.CODE_TRAINING = tb2.CODE_TRAINING`;
+                            console.log('tech_id', search_employee_profile)
+                            data.query(search_employee_profile, (err, employee_profile) => {
+                                if (err) throw err;
+                                data.release();
+                                if (employee_profile != 0) {
+                                    res.send({
+                                        status: 200,
+                                        employee_profile
+                                    });
+                                } else {
+                                    res.send({
+                                        status: 500,
+                                        message: 'does not exist'
+                                    })
+                                }
+                            })
+                        })
+                    }
+                })
+            })
+        }
     })
     // get employee_profile by start_date and day_tracking
     app.post('/api/amt/get_info_employee_by_group_line', (req, res) => {

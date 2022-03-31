@@ -1,6 +1,6 @@
 <div class="modal fade" id="why_not_pass" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Lý do không đạt</h5>
@@ -15,8 +15,7 @@
                         <div class="form-group">
                             <label for="reason_not_pass">Lý do: </label>
                             <select id="reason_not_pass" class="form-control" onchange="change_reason()" name="reason_not_pass" required>
-                                <option>--Chọn--</option>
-                                <option value="Chất lượng">Chất lượng</option>
+                                <option value="Chất lượng" selected>Chất lượng</option>
                                 <option value="Máy hư">Máy hỏng</option>
                                 <option value="Không có hàng">Không có hàng</option>
                                 <option value="Mất cân bằng chuyền">Mất cân bằng chuyền</option>
@@ -24,6 +23,11 @@
                                 <option value="Hỗ trợ việc khác">Hỗ trợ việc khác</option>
                                 <option value="Lý do khác">Lý do khác</option>
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cycle_time">Chu kì đơn: </label>
+                            <textarea name="cycle_time" type="text" class="form-control" id="cycle_time"
+                                placeholder="chu kì đơn"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="technician_note">Ghi chú: </label>

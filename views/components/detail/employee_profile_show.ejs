@@ -1,0 +1,71 @@
+<div class="modal fade" id="employee_profile_show" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id="exampleModalLabel">Chi tiết nhân viên</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-1">
+                        <span>ID: </span>
+                        <h4 id="id_employee_profile"></h4>
+                    </div>
+                    <div class="col-3">
+                        <span>Tên: </span>
+                        <h4 id="name_employee_profile"></h4>
+                    </div>
+                    <div class="col-1">
+                        <span>Ca: </span>
+                        <h4 id="shift_employee_profile"></h4>
+                    </div>
+                    <div class="col-2">
+                        <span>Công đoạn: </span>
+                        <h4 id="operation_employee_profile"></h4>
+                    </div>
+
+                    <div class="col-1">
+                        <span>ID KT</span>
+                        <h4 id="id_tech_employee_profile"></h4>
+                    </div>
+                    <div class="col-3">
+                        <span>kỹ thuật:</span>
+                        <h4 id="name_tech_employee_profile"></h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="card z-index-2 ">
+                        <div class="card-header">
+                            <div class="bg-gradient-info text-white shadow-primary border-radius-lg py-3 pe-1">
+                                <div class="chart">
+                                    <canvas id="employee_chart_detail" class="chart-canvas" height="70"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class='table-cont-employee' id='table-cont-employee'>
+                <table class="table table-hover text-center" id="daily_employee_profile">
+                    <thead>
+                        <tr>
+                            <th>NGÀY</th>
+                            <th>ĐẠT/KHÔNG</th>
+                            <th>Lý do</th>
+                            <th>Ghi chú</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="cancel_employee_profile()"
+                    data-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>

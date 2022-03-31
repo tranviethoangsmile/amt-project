@@ -17,6 +17,19 @@
 
     tableCont.addEventListener('scroll', scrollHandle)
 
+     // table custom fixed thead
+     var tableCont_employee = document.querySelector('#table-cont-employee')
+    /**
+     * scroll handle
+     * @param {event} e -- scroll event
+     */
+    function scrollHandle(e) {
+        var scrollTop = this.scrollTop;
+        this.querySelector('thead').style.transform = 'translateY(' + scrollTop + 'px)';
+    }
+
+    tableCont_employee.addEventListener('scroll', scrollHandle)
+
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {
         var options = {
@@ -61,8 +74,26 @@
         })
     }
 
+    // // nhận lỗi của employee bằng ID. Tất cả.
+    // get_irr_of_employee_profile = (id) => {
+    //     let irr_list = [];
+    //     $.ajax({
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/json'
+    //         },
+    //         url: "/api/amt/get_irr_of_employee_profile/" + id,
+    //         type: "GET",
+    //     }).done((list) => {
+    //         result_func(list);
+    //     }).fail((e) => {
+    //         console.error(e);
+    //     })
+    // }
+
+   
+    var employee_profile_chart = Object;
     search_employee_of_technician = () => {
-        $("#employee_profile_tab tbody").empty();
         let id_tech_and_day_tracking = {
             TECH_ID: $("#technician_id_search").val(),
             DAY_TRACKING: $("#day_tracking").val(),
@@ -77,24 +108,113 @@
             type: "POST",
             data: JSON.stringify(id_tech_and_day_tracking)
         }).done((employee_list) => {
-            $.each(employee_list, (index, item) => {
-                $("#employee_profile_tab tbody").append(
-                    `
+            if (employee_list.status == 201) {
+                $("#employee_profile_tab tbody").empty();
+                $.each(employee_list.employee_profile_list, (index, item) => {
+                    $("#employee_profile_tab tbody").append(
+                        `
                     <tr ondblclick = "see_employee_detail(${item.ID})">
                         <td>${item.ID}</td>
                         <td>${item.NAME}</td>
+                        <td>${item.SHIFT}</td>
                         <td>${item.DAY_TRACKING}</td>
                         <td style="color:${item.EFF > item.TAGETS ? '#43A047' : '#EC407A'};">${item.EFF > item.TAGETS ? 'ĐẠT' : 'KHÔNG ĐẠT'}</td>
                         <td><button onclick = "why_not_pass(${item.ID})" class = "btn btn-outline-primary">ghi chú<butotn></td>
                     </tr>
                     `
-                )
-            })
+                    )
+                });
+            } else if (employee_list.status == 200) {
+                $("#technician_id_search").val('');
+                $("#daily_employee_profile tbody").empty();
+                $("#employee_profile_show").modal('show');
+                $("#id_employee_profile").text(employee_list.employee_profile[0].ID);
+                $("#name_employee_profile").text(employee_list.employee_profile[0].NAME);
+                $("#shift_employee_profile").text(employee_list.employee_profile[0].SHIFT);
+                $("#operation_employee_profile").text(employee_list.employee_profile[0].OPERATION_NAME);
+                $("#id_tech_employee_profile").text(employee_list.employee_profile[0].TECH_ID);
+                $("#name_tech_employee_profile").text(employee_list.employee_profile[0].TECHNICIANS);
+                let data_tagets = [];
+                let data_EFF = [];
+                let labels_date = [];
+                $.each(employee_list.employee_profile, (index, item) => {
+                    data_EFF.push(item.EFF);
+                    data_tagets.push(item.TAGETS);
+                    labels_date.push(item.DAY_TRACKING);
+                    $("#daily_employee_profile tbody").append(
+                        `
+                        <tr>
+                            <td>${item.DAY_TRACKING}</td>
+                            <td style="color:${item.EFF > item.TAGETS ? '#43A047' : '#EC407A'};font-weight:bold">${item.EFF > item.TAGETS ? 'ĐẠT' : 'KHÔNG'}</td>
+                            <td>${item.REASON}</td>
+                            <td>${item.TECHNICIANS_NOTE}</td>
+                        </tr>
+                        `
+                    )
+                })
+                var eff_chart_employee_profile  = document.getElementById("employee_chart_detail").getContext('2d');
+
+                Chart.defaults.global.defaultFontFamily = "Lato";
+                Chart.defaults.global.defaultFontSize = 18;
+                
+                var dataFirst = {
+                    label: "Đường cong",
+                    data: data_tagets,
+                    lineTension: 0,
+                    fill: false,
+                    borderColor: 'red'
+                };
+
+                var dataSecond = {
+                    label: "Hiệu suất",
+                    data: data_EFF,
+                    lineTension: 0,
+                    fill: false,
+                    borderColor: 'blue'
+                };
+
+                var training_data = {
+                    labels: labels_date,
+                    datasets: [dataFirst, dataSecond]
+                };
+
+                var chartOptions = {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            boxWidth: 30,
+                            fontColor: 'black'
+                        }
+                    }
+                };
+
+                employee_profile_chart = new Chart(eff_chart_employee_profile, {
+                    type: 'line',
+                    data: training_data,
+                    options: chartOptions
+                });
+            } else {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'warning',
+                    title: 'ID không tồn tại',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                $("#technician_id_search").show().focus();
+            }
+
 
         }).fail((e) => {
             console.error(e)
         })
 
+    }
+
+    cancel_employee_profile = () => {
+        employee_profile_chart.destroy();
+        $("#employee_profile_show").modal('hide');
     }
 
     show_profile_employee = (id) => {
@@ -640,6 +760,7 @@
         $("#show_irr_detail").modal('hide');
         $("#show_reason_detail").modal('hide')
         $("#show_eff_detail").modal('hide')
+        $("#employee_profile_show").modal('hide');
     }
 
     change_reason = () => {
@@ -676,13 +797,14 @@
         let reason = {
             ID: $("#id_of_employee").val(),
             REASON: $("#reason_not_pass").val(),
+            CYCLE_TIME: $("#cycle_time").val(),
             DAY_TRACKING: $("#day_tracking").val(),
             TECHNICIANS_NOTE: $("#technician_note").val()
         }
 
-        
 
-        if (reason.REASON ==='Lý do khác' && (reason.TECHNICIANS_NOTE === '' || reason.TECHNICIANS_NOTE.length < 10)) {
+
+        if (reason.REASON === 'Lý do khác' && (reason.TECHNICIANS_NOTE === '' || reason.TECHNICIANS_NOTE.length < 10)) {
             return;
         }
         Swal.fire({
