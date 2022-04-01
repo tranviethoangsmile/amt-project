@@ -1,19 +1,19 @@
 <script>
     $(document).ready(() => {
         var tableCont = document.querySelector('#table-cont')
-            /**
-             * scroll handle
-             * @param {event} e -- scroll event
-             */
+        /**
+         * scroll handle
+         * @param {event} e -- scroll event
+         */
         function scrollHandle(e) {
             var scrollTop = this.scrollTop;
             this.querySelector('thead').style.transform = 'translateY(' + scrollTop + 'px)';
         }
         var tableCont = document.querySelector('#table-cont-reason')
-            /**
-             * scroll handle
-             * @param {event} e -- scroll event
-             */
+        /**
+         * scroll handle
+         * @param {event} e -- scroll event
+         */
         function scrollHandle(e) {
             var scrollTop = this.scrollTop;
             this.querySelector('thead').style.transform = 'translateY(' + scrollTop + 'px)';
@@ -23,7 +23,7 @@
         tableCont.addEventListener('scroll', scrollHandle)
         init();
     })
-
+    
     init = () => {
         load_week();
         get_data_of_week();
@@ -39,12 +39,14 @@
         }
     }
 
+    
+
     // Nhận lý do không đạt của group_line trong tuần
     get_reason_of_group_line_in_week = () => {
         $("#reason_of_group_line_in_week tbody").empty();
         let gr_and_week = {
             GROUP_LINE: $("#group_line_in_week").val(),
-            SHIFT : $("#get_data_of_shift").val(),
+            SHIFT: $("#get_data_of_shift").val(),
             week: $("#week_get_data").val()
         }
         $.ajax({
@@ -199,7 +201,7 @@
                     get_data_of_group_line_in_week(data[i].GROUP_LINE);
                 };
             }
-        get_reason_of_group_line_in_week();
+            get_reason_of_group_line_in_week();
         }).fail((e) => {
             console.error(e);
         })
@@ -411,14 +413,14 @@
     }
 
     function getWeek(dt) {
-        var calc = function(o) {
-                if (o.dtmin.getDay() != 1) {
-                    if (o.dtmin.getDay() <= 4 && o.dtmin.getDay() != 0) o.w += 1;
-                    o.dtmin.setDate((o.dtmin.getDay() == 0) ? 2 : 1 + (7 - o.dtmin.getDay()) + 1);
-                }
-                o.w += Math.ceil((((o.dtmax.getTime() - o.dtmin.getTime()) / (24 * 60 * 60 * 1000)) + 1) / 7);
-            },
-            getNbDaysInAMonth = function(year, month) {
+        var calc = function (o) {
+            if (o.dtmin.getDay() != 1) {
+                if (o.dtmin.getDay() <= 4 && o.dtmin.getDay() != 0) o.w += 1;
+                o.dtmin.setDate((o.dtmin.getDay() == 0) ? 2 : 1 + (7 - o.dtmin.getDay()) + 1);
+            }
+            o.w += Math.ceil((((o.dtmax.getTime() - o.dtmin.getTime()) / (24 * 60 * 60 * 1000)) + 1) / 7);
+        },
+            getNbDaysInAMonth = function (year, month) {
                 var nbdays = 31;
                 for (var i = 0; i <= 3; i++) {
                     nbdays = nbdays - i;
@@ -437,10 +439,10 @@
             return pyData.w;
         } else {
             var ayData = {
-                    "dtmin": new Date(dt.getFullYear(), 0, 1, 0, 0, 0, 0),
-                    "dtmax": new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), 0, 0, 0, 0),
-                    "w": 0
-                },
+                "dtmin": new Date(dt.getFullYear(), 0, 1, 0, 0, 0, 0),
+                "dtmax": new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), 0, 0, 0, 0),
+                "w": 0
+            },
                 nd12m = getNbDaysInAMonth(dt.getFullYear(), 12);
             if (dt.getMonth() == 12 && dt.getDay() != 0 && dt.getDay() <= 3 && nd12m - dt.getDate() <= 3 - dt.getDay()) ayData.w = 1;
             else calc(ayData);

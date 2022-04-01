@@ -1,17 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Dec 21 19:34:30 2020
-
-@author: mutran
-"""
-
-# -*- coding: utf-8 -*-
-
-"""
-Created on Mon Dec 21 18:58:25 2020
-
-@author: mutran
-"""
 import sys, json
 import os
 import string

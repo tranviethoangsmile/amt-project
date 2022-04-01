@@ -17,8 +17,8 @@
 
     tableCont.addEventListener('scroll', scrollHandle)
 
-     // table custom fixed thead
-     var tableCont_employee = document.querySelector('#table-cont-employee')
+    // table custom fixed thead
+    var tableCont_employee = document.querySelector('#table-cont-employee')
     /**
      * scroll handle
      * @param {event} e -- scroll event
@@ -56,6 +56,14 @@
         })
     }
 
+    $(document).keypress((event) => {
+        var keycode = event.keyCode || event.which;
+        if (keycode == '13') {
+            search_employee_of_technician();
+        }
+    });
+
+    // nhận name của kĩ thuật
     get_name_tech = () => {
         $("#tech_name_search").text('')
         let tech_id = $("#technician_id_search").val();
@@ -91,7 +99,7 @@
     //     })
     // }
 
-   
+
     var employee_profile_chart = Object;
     search_employee_of_technician = () => {
         let id_tech_and_day_tracking = {
@@ -109,6 +117,7 @@
             data: JSON.stringify(id_tech_and_day_tracking)
         }).done((employee_list) => {
             if (employee_list.status == 201) {
+                $("#technician_id_search").val('');
                 $("#employee_profile_tab tbody").empty();
                 $.each(employee_list.employee_profile_list, (index, item) => {
                     $("#employee_profile_tab tbody").append(
@@ -145,18 +154,20 @@
                         `
                         <tr>
                             <td>${item.DAY_TRACKING}</td>
-                            <td style="color:${item.EFF > item.TAGETS ? '#43A047' : '#EC407A'};font-weight:bold">${item.EFF > item.TAGETS ? 'ĐẠT' : 'KHÔNG'}</td>
+                            <td>${item.OPERATION_NAME_REAL}</td>
+                            <td>${item.EFF}</td>
+                            <td>${item.TAGETS}</td>
                             <td>${item.REASON}</td>
                             <td>${item.TECHNICIANS_NOTE}</td>
                         </tr>
                         `
                     )
                 })
-                var eff_chart_employee_profile  = document.getElementById("employee_chart_detail").getContext('2d');
+                var eff_chart_employee_profile = document.getElementById("employee_chart_detail").getContext('2d');
 
                 Chart.defaults.global.defaultFontFamily = "Lato";
                 Chart.defaults.global.defaultFontSize = 18;
-                
+
                 var dataFirst = {
                     label: "Đường cong",
                     data: data_tagets,
@@ -212,11 +223,13 @@
 
     }
 
+    // hủy hiển thị employee profile
     cancel_employee_profile = () => {
         employee_profile_chart.destroy();
         $("#employee_profile_show").modal('hide');
     }
 
+    // hiển thị modal employee profile
     show_profile_employee = (id) => {
         $("#show_profile_employee").modal('show');
     }
@@ -345,6 +358,7 @@
         })
     }
 
+    // nhận danh sách lỗi của employee ID sau đó hiển thị chart
     var irr_chart_tracking = Object;
     get_data_irr_training = (id) => {
         $("#btn_show_detail_irr").empty();
@@ -455,6 +469,7 @@
         })
     }
 
+    // hiển thị modal danh sách lỗi của ID
     show_irr_detail = (id) => {
         $("#irr_detail_show tbody").empty();
         let employee = {
@@ -491,7 +506,7 @@
 
 
 
-    // get reason 
+    // get reason then display chart
     var reason_detail = Object;
     get_season = async (id) => {
         $("#btn_show_detail_reason").empty();
@@ -544,6 +559,7 @@
         })
     }
 
+    // hiển thị danh sách reason modal
     show_reason_detail = (id) => {
         $("#reason_detail_show tbody").empty();
         let employee = {
@@ -735,24 +751,33 @@
         })
     }
 
-    // show modal 
+    // show modal để kỹ thuật thêm lý do không đạt trong ngày
     why_not_pass = (id) => {
+        let find = {
+            ID: id,
+            DAY_TRACKING: $("#day_tracking").val(),
+        }
         $.ajax({
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            url: "/api/amt/get_employee_id_and_name/" + id,
-            type: "GET",
+            url: "/api/amt/get_employee_id_and_name",
+            type: "POST",
+            data: JSON.stringify(find)
         }).done((employee) => {
+            console.log(employee)
             $("#id_of_employee").val(employee[0].ID);
             $("#name_of_employee").val(employee[0].NAME);
+            $("#code_training_of_employee").val(employee[0].CODE_TRAINING);
+            $("#operation_of_employee").val(employee[0].OPERATION_NAME_REAL);
             $("#why_not_pass").modal('show');
         }).fail((e) => {
             console.error(e);
         })
     }
 
+    // hàm hủy hiển thị modal.
     cancel = () => {
         $("#id_of_employee").val('');
         $("#technician_note").val('');
@@ -763,6 +788,9 @@
         $("#employee_profile_show").modal('hide');
     }
 
+    // hàm này dùng để lúc kĩ thuật chọn lý do. Nếu chọn Lý do khác thì sẽ 
+    // tự động chạy hàm validate 
+    // bắt buộc kỹ thuật phải nhập note
     change_reason = () => {
         let reason = $("#reason_not_pass").val();
         if (reason == 'Lý do khác') {
@@ -842,7 +870,7 @@
 
     }
 
-    // lấy danh sách ngày vào
+    // lấy danh sách nhân viên trong group_line ()
     get_start_date_list = () => {
         $.ajax({
             headers: {

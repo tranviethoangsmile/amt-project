@@ -4,21 +4,16 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <%-include ('layout/header'); %>
+    <!-- <%-include ('layout/header'); %> -->
 </head>
 
 <body class="layout-fixed layout-navbar-fixed layout-footer-fixed sidebar-closed sidebar-collapse">
     <div class="wrapper">
-        <%-include ('dashboard/preloader');%>
-            <%-include ('dashboard/nav');%>
                     <div class="content-wrapper">
-                        <%-include ('./components/amt/search');%>
                             <div style="margin-top:5%">
-                                <%-include ('./components/amt/table');%>
+                                <button onclick="handle_file()">tải</button>
                             </div>
                     </div>
-                    <!-- Tabs content -->
-                    <%-include ('dashboard/footer');%>
     </div>
     <%-include ('./components/amt/handle_file');%>
     <%-include ('./components/amt/employee_detail');%>

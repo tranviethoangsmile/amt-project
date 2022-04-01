@@ -40,10 +40,10 @@
                     type: "POST",
                     data: JSON.stringify(info)
                 }).done((responseText) => {
-                    if(responseText.status == 200) {
+                    if (responseText.status == 200) {
                         $.notify('thêm thành công', 'success');
                         get_code_standard_success();
-                    }else {
+                    } else {
                         Swal.fire(
                             'Trùng lặp!',
                             'Code bạn vừa thêm đã tồn tại',
@@ -231,6 +231,66 @@
         } else {
             $.notify('Bạn chưa chọn file', 'error');
             return;
+        }
+    }
+
+    update_tagets_training_file = () => {
+        $("#handle_file_tagets").modal('show');
+    }
+
+    // cập nhật tagets đường cong đào tạo
+    upload_file_tagets = () => {
+        $("#handle_file_tagets").modal('hide');
+        var form = document.getElementById('upload_file_tagets_training');
+        if (document.getElementById('tagets_file_training').value != '') {
+            let timerInterval
+            Swal.fire({
+                title: 'Đang cập nhật, vui lòng đợi!',
+                timer: 15000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading()
+                    const b = Swal.getHtmlContainer().querySelector('b')
+                    timerInterval = setInterval(() => {
+                        b.textContent = Swal.getTimerLeft()
+                    }, 15000)
+                },
+                willClose: () => {
+                    clearInterval(timerInterval)
+                }
+            }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    console.log('I was closed by the timer')
+                }
+            })
+            event.preventDefault();
+            var xsend = new XMLHttpRequest();
+            var fileInput = document.getElementById('tagets_file_training');
+            var file;
+            file = fileInput.files[0];
+            console.log(file['name']);
+            var formData = new FormData();
+            formData.append('filee', file);
+            if (file != null) {
+                xsend.open('POST', '/api/amt/uploadfiletagetstrainingtracking', true);
+                xsend.send(formData);
+                xsend.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var data = this.responseText;
+                        console.log(data)
+                        if (data == 'success') {
+                            $.notify('cập nhật thành công', 'success');
+                            $("#handle_file_tagets").modal('hide');
+                        } else {
+                            $.notify('cập nhật không thành công', 'error');
+                            $("#handle_file_tagets").modal('show');
+                        }
+                    }
+                }
+            }
+        } else {
+            alert("Không có tệp nào được chọn!!!")
         }
     }
 </script>

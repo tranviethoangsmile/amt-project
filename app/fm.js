@@ -288,11 +288,10 @@ module.exports = function (app, passport) {
     })
 
     // go to system page 
-    app.get('/system', isLoggedIn, function (req, res) {
-        res.render('system.ejs', {
-            note: req.user[0].note,
-            user: req.user[0].user // Lấy thông tin user trong session và truyền nó qua template
-        });
+    var counter = 0;
+    app.get('/system', function (req, res) {
+        counter ++;
+        res.render('system.ejs', {counter});
     })
 
 
@@ -425,13 +424,42 @@ module.exports = function (app, passport) {
 
     // go to amt action page
     app.get('/action', isLoggedIn, (req, res) => {
+        counter++;
         res.render('action.ejs', {
             user: req.user[0].user, // Lấy thông tin user trong session và truyền nó qua template
-            note: req.user[0].note
+            note: req.user[0].note,
+            counter
         });
     })
 
-    // get reason detail by id
+    // upload file
+    app.post('/api/amt/upload_file_tagets', function (req, res) {
+        console.log("Uploadfile_machine");
+        var form = new formidable.IncomingForm();
+        excelFile = '';
+        form.parse(req);
+        form.on('fileBegin', function (name, file) {
+            excelFile = file.name;
+            file.path = './public/amt/' + excelFile;
+        });
+        form.on('file', function (name, file) {
+            let options = {
+                mode: 'text',
+                pythonPath: 'python',
+                pythonOptions: ['-u'], // get print results in real-time
+                scriptPath: './python/', //If you are having python_test.py script in same folder, then it's optional.
+                args: [excelFile]
+            };
+            console.log("hi ")
+            PythonShell.run('upload_tagets_training_tracking.py', options, function (err, result) {
+                if (err) throw err;
+                res.send(result.toString())
+            });
+        })
+    });
+
+
+    // get reason detail by id 
     app.post('/api/amt/get_reason_detail', (req, res) => {
         let { ID, DAY_TRACKING } = req.body;
         day_end_tracking = DAY_TRACKING.split('-');
@@ -565,11 +593,14 @@ module.exports = function (app, passport) {
     })
 
     // get id and name of employee
-    app.get('/api/amt/get_employee_id_and_name/:tagId', (req, res) => {
-        let id = req.params.tagId;
+    app.post('/api/amt/get_employee_id_and_name', (req, res) => {
+        let {ID, DAY_TRACKING} = req.body;
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
-            let sql_data = `SELECT ID, NAME FROM amt.amt_tracking WHERE ID = '${id}'`;
+            let sql_data = `SELECT ID, NAME, CODE_TRAINING, OPERATION_NAME_REAL 
+            FROM amt.employee_profile WHERE ID = '${ID}' 
+            AND DAY_TRACKING = '${DAY_TRACKING}' GROUP BY ID`;
+            console.log(sql_data);
             data.query(sql_data, (err, employee) => {
                 if (err) throw err;
                 data.release();
@@ -708,7 +739,8 @@ module.exports = function (app, passport) {
                     } else {
                         connect_amt.getConnection((err, data) => {
                             if (err) throw err;
-                            let search_employee_profile = `SELECT tb1.ID,tb1.NAME, tb1.SHIFT, tb1.GROUP_LINE, tb1.OPERATION_NAME, tb1.DAY_TRACKING, tb1.TECH_ID, tb1.TECHNICIANS, tb1.EFF, tb1.REASON,tb1.CYCLE_TIME,tb1.TECHNICIANS_NOTE,tb2.TAGETS   
+                            let search_employee_profile = `SELECT tb1.ID,tb1.NAME, tb1.SHIFT, tb1.GROUP_LINE, tb1.OPERATION_NAME_REAL, tb1.DAY_TRACKING, tb1.TECH_ID, tb1.TECHNICIANS, tb1.EFF, 
+                            tb1.REASON,tb1.CYCLE_TIME,tb1.TECHNICIANS_NOTE,tb2.TAGETS   
                             FROM (SELECT * FROM amt.employee_profile a WHERE a.ID = '${TECH_ID}')tb1
                             LEFT JOIN (SELECT * FROM amt.tagets_training_tracking)tb2
                             ON tb1.DAY_TRAINING = tb2.DAY AND tb1.CODE_TRAINING = tb2.CODE_TRAINING`;
@@ -813,9 +845,11 @@ module.exports = function (app, passport) {
 
     // go to amt detail
     app.get('/detail', isLoggedIn, (req, res) => {
+        counter++;
         res.render('detail.ejs', {
             user: req.user[0].user, // Lấy thông tin user trong session và truyền nó qua template
-            note: req.user[0].note
+            note: req.user[0].note,
+            counter
         });
     })
 
@@ -902,21 +936,20 @@ module.exports = function (app, passport) {
                 pythonPath: 'python',
                 pythonOptions: ['-u'], // get print results in real-time
                 scriptPath: './python/', //If you are having python_test.py script in same folder, then it's optional.
-                args: [excelFile]
+                args: [excelFile]   
             };
             // console.log("hi")
             PythonShell.run('upload_tagets_training_tracking.py', options, function (err, result) {
-                if (err) throw err;
-                // result is an array consisting of messages collected 
-                //during execution of script.
-                //console.log('result: ', result.toString());
-                res.send(result.toString())
+                if (err) {
+                    res.send('unsuccess')
+                } else {
+                    res.send('success')
+                }
             });
         })
     });
 
-
-    // go to tutorials page
+    // go to tutorials page 
     app.get('/tutorials', isLoggedIn, (req, res) => {
         res.render('tutorials.ejs', {
             user: req.user[0].user, // Lấy thông tin user trong session và truyền nó qua template
@@ -1065,14 +1098,14 @@ module.exports = function (app, passport) {
     }), function (req, res) {
         var depart = req.user[0].Department;
         if (req.user[0].Department == "F&M") {
-            res.redirect('/system')
+            res.redirect('/detail')
         }
         else {
             if (req.user[0].Department == "HR") {
-                res.redirect('/system')
+                res.redirect('/detail')
             }
             else {
-                res.redirect('/system')
+                res.redirect('/detail')
                 res.end();
             }
 

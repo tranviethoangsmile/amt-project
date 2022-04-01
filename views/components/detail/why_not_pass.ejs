@@ -7,10 +7,25 @@
             </div>
             <div class="modal-body">
                 <form class="form-control" id="note_season_not_pass" name="note_season_not_pass">
-                    <span>ID: </span>
-                    <input style="border: 1px; border-color: blue;" id="id_of_employee" readonly/>
-                    <span>Tên: </span>
-                    <input style="border: 1px; border-color: blue;" id="name_of_employee" class="form-input"/>
+                    <div class="row">
+                        <div class="col-3">
+                            <span>ID: </span>
+                            <input style="border: 1px;" id="id_of_employee" readonly/>
+                        </div>
+                        <div class="col-3">
+                            <span>Tên: </span>
+                            <input style="border: 1px;" id="name_of_employee" class="form-input"readonly/>
+                        </div>
+                        <div class="col-3">
+                            <span>Code: </span>
+                            <input style="border: 1px;" id="code_training_of_employee" class="form-input"readonly/>
+                        </div>
+                        <div class="col-3">
+                            <span>Công đoạn: </span>
+                            <input style="border: 1px;" id="operation_of_employee" class="form-input" readonly/>
+                        </div>
+                    </div>
+
                     <fieldset>
                         <div class="form-group">
                             <label for="reason_not_pass">Lý do: </label>
