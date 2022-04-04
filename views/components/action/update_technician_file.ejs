@@ -1,8 +1,8 @@
-<div class="modal fade" id="handle_file" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="handle_file_technician" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Update file nhân viên mới</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Update file kỹ thuật</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -11,16 +11,16 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="col-md-12">
-                                    <form id="upload_file_tagets" method="post"
-                                        action="/api/amt/uploadfiletagetstranningtracking"
+                                    <form id="upload_file_technician" method="post"
+                                        action="/api/amt/upload_file_technician"
                                         enctype="multipart/form-data">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <label for="tagets_file">File</label>
-                                                <input type="file" id="tagets_file" name="tagets_file">
+                                                <label for="tech_file">File</label>
+                                                <input type="file" id="tech_file" name="tech_file">
                                             </div>
                                             <div class="col-md-12 mt-2">
-                                                <button onclick="updload_file()" type="button"
+                                                <button onclick="updload_file_tech()" type="button"
                                                     class="btn btn-primary">Tải lên</button>
                                             </div>
                                         </div>

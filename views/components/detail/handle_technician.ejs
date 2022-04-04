@@ -1,0 +1,61 @@
+<div class="modal fade" id="handle_technician" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thay đổi kỹ thuật</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="row">
+                                <div class="col-3">
+                                    <span>ID: </span>
+                                    <input style="border: 1px;" id="id_employee" readonly />
+                                </div>
+                                <div class="col-3">
+                                    <span>Tên: </span>
+                                    <input style="border: 1px;" id="name_employee" class="form-input" readonly />
+                                </div>
+                                <div class="col-3">
+                                    <span>ID KT: </span>
+                                    <input style="border: 1px;" id="id_tech_of_employee" class="form-input"
+                                        readonly />
+                                </div>
+                                <div class="col-3">
+                                    <span>Tên KT: </span>
+                                    <input style="border: 1px;" id="name_tech_of_employee" class="form-input"
+                                        readonly />
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row mt-1 text-center">
+                                <div class="col-6">
+                                    <label for="tech_id_new">ID Kỹ thuật: </label>
+                                    <input oninput="get_name_tech_new()" id="tech_id_new" class="form-input" type="number"/>
+                                </div>
+                                <div class="col-6">
+                                    <label for="tech_name_new">Tên Kỹ thuật: </label>
+                                    <input id="tech_name_new" class="form-input"/>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <button onclick="add_tech_second()" type="button" class="btn btn-primary">Thêm
+                                            kỹ thuật</button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button onclick="change_tech()" type="button" class="btn btn-primary">Thay đổi
+                                            kỹ thuật</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
