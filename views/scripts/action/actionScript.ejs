@@ -163,10 +163,11 @@
             $.each(code_list, (index, item) => {
                 $("#code_standard_list").append(
                     `
-                    <option>${item.Code}</option>
+                    <option value="${item.Code}" selected>${item.Code}</option>
                     `
                 )
             })
+            get_description_code();
         }).fail((e) => {
             console.error(e);
         })

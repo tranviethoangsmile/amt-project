@@ -124,6 +124,18 @@ module.exports = function (app, passport) {
 
     var amt_upload = multer({ storage: amt_storage })
 
+
+
+
+
+    app.get('/api/amt/check', (req, res) => {
+        let datenow = new Date(Date.now());
+        var date = new Date(datenow);
+        let day_get_data = new Date(date.setDate(date.getDate() - 6)).toLocaleDateString('fr-CA');
+        console.log(day_get_data);
+    })
+
+
     // get name tachnician
     app.get('/api/amt/get_name_technician/:tagID', (req, res) => {
         let tech_id = req.params.tagID;
@@ -142,7 +154,7 @@ module.exports = function (app, passport) {
 
     // get reason of group line in week
     app.post('/api/amt/get_reason_of_group_line_in_week', (req, res) => {
-        let { GROUP_LINE,SHIFT, week } = req.body;
+        let { GROUP_LINE, SHIFT, week } = req.body;
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
             let sql_data = `SELECT GROUP_LINE, REASON, COUNT(REASON) AS SL 
@@ -183,7 +195,8 @@ module.exports = function (app, passport) {
         let { GROUP_LINE, week } = req.body;
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
-            let sql_data = `SELECT a.ID, a.SHIFT,a.GROUP_LINE, SUM(b.QUANTITY)AS QUANTITY 
+            let sql_data = `
+            SELECT a.ID, a.SHIFT,a.GROUP_LINE, SUM(b.QUANTITY)AS QUANTITY 
             FROM (SELECT ID,LEFT(SHIFT,3) AS SHIFT, GROUP_LINE 
             FROM amt.employee_profile WHERE WEEK(DAY_TRACKING) = '${week}' AND GROUP_LINE = '${GROUP_LINE}'
             GROUP BY ID)a
@@ -290,8 +303,8 @@ module.exports = function (app, passport) {
     // go to system page 
     var counter = 0;
     app.get('/system', function (req, res) {
-        counter ++;
-        res.render('system.ejs', {counter});
+        counter++;
+        res.render('system.ejs', { counter });
     })
 
 
@@ -460,7 +473,7 @@ module.exports = function (app, passport) {
 
 
     // get tech of employee 
-    app.get('/api/amt/get_tech_of_employee/:tagId',(req,res) => {
+    app.get('/api/amt/get_tech_of_employee/:tagId', (req, res) => {
         let id = req.params.tagId;
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
@@ -477,23 +490,14 @@ module.exports = function (app, passport) {
 
     // get reason detail by id 
     app.post('/api/amt/get_reason_detail', (req, res) => {
+        let datenow = new Date(Date.now());
+        var date = new Date(datenow);
+        let time_get_data = new Date(date.setDate(date.getDate() - 7)).toLocaleDateString('fr-CA');
         let { ID, DAY_TRACKING } = req.body;
-        day_end_tracking = DAY_TRACKING.split('-');
-        let year = day_end_tracking[0];
-        let month = day_end_tracking[1];
-        let day_start = day_end_tracking[2]
-        let day_end = parseInt(day_end_tracking[2]) - 6;
-        let month_end;
-        if(day_end < 0) {
-            day_end = 25
-            month_end = parseInt(month) - 1;
-        }else {
-            month_end = parseInt(month);
-        }
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
             let sql_data = `SELECT DAY_TRACKING, REASON, TECHNICIANS_NOTE FROM amt.employee_profile
-            WHERE ID = '${ID}' AND REASON IS NOT NULL AND DAY_TRACKING <= '${DAY_TRACKING}' AND  DAY_TRACKING >= '${year}-${month_end < 10 ? '0' + month_end : month_end}-${day_end}'`;
+            WHERE ID = '${ID}' AND REASON IS NOT NULL AND DAY_TRACKING <= '${DAY_TRACKING}' AND  DAY_TRACKING >= '${time_get_data}'`;
             console.log(sql_data);
             data.query(sql_data, (err, reason_list) => {
                 if (err) throw err;
@@ -507,22 +511,22 @@ module.exports = function (app, passport) {
     // get irr detail by id
     app.post('/api/amt/get_irr_detail', (req, res) => {
         let { ID, DAY_TRACKING } = req.body;
-        day_end_tracking = DAY_TRACKING.split('-');
+        let day_end_tracking = DAY_TRACKING.split('-');
         let year = day_end_tracking[0];
         let month = day_end_tracking[1];
         let day_start = day_end_tracking[2]
-        let day_end = parseInt(day_end_tracking[2]) - 6;
-        let month_end;
-        if(day_end < 0) {
-            day_end = 25
-            month_end = parseInt(month) - 1;
-        }else {
-            month_end = parseInt(month);
-        }
+        let datenow = new Date(Date.now());
+        var date = new Date(datenow);
+        let time_get_data = new Date(date.setDate(date.getDate() - 7)).toLocaleDateString('fr-CA');
+        console.log(time_get_data);
+        let day_tracking_end = time_get_data.split('-');
+        let month_end = day_tracking_end[1];
+        let day_end = day_tracking_end[2];
+        
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
             let sql_data = `SELECT DATE, QUANTITY, IRR_NAME FROM amt.amt_irr_tracking
-            WHERE ID = '${ID}' AND DATE <= '${year}${month}${day_start}' AND  DATE >= '${year}${month_end < 10 ? '0' + month_end : month_end}${day_end}'`;
+            WHERE ID = '${ID}' AND DATE <= '${year}${month}${day_start}' AND  DATE >= '${year}${month_end}${day_end}'`;
             data.query(sql_data, (err, irr_list) => {
                 if (err) throw err
                 data.release();
@@ -566,21 +570,21 @@ module.exports = function (app, passport) {
     // get percent irr training of employee by id
     app.post('/api/amt/get_reason', (req, res) => {
         let { ID, DAY_TRACKING } = req.body;
-        day_tracking = DAY_TRACKING.split('-');
+        let day_end_tracking = DAY_TRACKING.split('-');
         let year = day_end_tracking[0];
         let month = day_end_tracking[1];
-        let day_end = parseInt(day_end_tracking[2]) - 6;
-        let month_end;
-        if(day_end < 0) {
-            day_end = 25
-            month_end = parseInt(month) - 1;
-        }else {
-            month_end = parseInt(month);
-        }
+        let day_start = day_end_tracking[2]
+        let datenow = new Date(Date.now());
+        var date = new Date(datenow);
+        let time_get_data = new Date(date.setDate(date.getDate() - 7)).toLocaleDateString('fr-CA');
+        console.log(time_get_data);
+        let day_tracking_end = time_get_data.split('-');
+        let month_end = day_tracking_end[1];
+        let day_end = day_tracking_end[2];
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
             let sql_data = `SELECT REASON, COUNT(REASON) AS QUANTITY FROM amt.employee_profile
-             WHERE ID = '${ID}' AND REASON IS NOT NULL AND DAY_TRACKING <= '${year}-${month}-${day_tracking[2]}' AND DAY_TRACKING >= '${year}-${month_end < 10 ? '0' + month_end : month_end}-${day_end}'
+             WHERE ID = '${ID}' AND REASON IS NOT NULL AND DAY_TRACKING <= '${year}-${month}-${day_start}' AND DAY_TRACKING >= '${year}-${month_end}-${day_end}'
             GROUP BY REASON;`;
             console.log(sql_data);
             data.query(sql_data, (err, reason_list) => {
@@ -608,7 +612,7 @@ module.exports = function (app, passport) {
         })
     })
 
-    app.get('/api/amt/get_em_profile/:tagId', (req,res) => {
+    app.get('/api/amt/get_em_profile/:tagId', (req, res) => {
         let id = req.params.tagId;
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
@@ -636,24 +640,50 @@ module.exports = function (app, passport) {
         })
     })
 
+    // send report sys
+    app.post('/api/amt/send_report_sys', (req,res) => {
+        let {DATE,NOTE, STAFF} = req.body;
+        connect_amt.getConnection((err, data) => {
+            if (err) {
+                res.send({
+                    status: 500
+                })
+            }
+            let sql_data = `INSERT INTO amt.sys_error (DATE,NOTE, STAFF) values ('${DATE}','${NOTE}','${STAFF}')`;
+            console.log(sql_data);
+            data.query(sql_data, (err, eff_list) => {
+                if (err) {
+                    res.send({
+                        status: 500
+                    })
+                }else {
+                    data.release();
+                    res.send({
+                        status: 200
+                    });
+                }
+            })
+        })
+    })
+
     // get data eff detail by ID
     app.post('/api/amt/get_eff_detail', (req, res) => {
         let { ID, DAY_TRACKING } = req.body;
-        day_end_tracking = DAY_TRACKING.split('-');
+        let day_end_tracking = DAY_TRACKING.split('-');
         let year = day_end_tracking[0];
         let month = day_end_tracking[1];
-        let day_end = parseInt(day_end_tracking[2]) - 6;
-        let month_end;
-        if(day_end < 0) {
-            day_end = 25
-            month_end = parseInt(month) - 1;
-        }else {
-            month_end = parseInt(month);
-        }
+        let day_start = day_end_tracking[2]
+        let datenow = new Date(Date.now());
+        var date = new Date(datenow);
+        let time_get_data = new Date(date.setDate(date.getDate() - 7)).toLocaleDateString('fr-CA');
+        console.log(time_get_data);
+        let day_tracking_end = time_get_data.split('-');
+        let month_end = day_tracking_end[1];
+        let day_end = day_tracking_end[2];
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
             let sql_data = `SELECT tb1.ID, tb1.EFF,tb1.DAY_TRACKING, tb2.TAGETS, tb1.SPAN_TIME, tb1.DOWTIME, tb1.WORK_HRS FROM (SELECT ID,EFF,DAY_TRACKING,WORK_HRS, DAY_TRAINING,CODE_TRAINING, SPAN_TIME, DOWTIME FROM amt.employee_profile 
-                WHERE ID = '${ID}' AND DAY_TRACKING <= '${year}-${month}-${day_end_tracking[2]}' AND DAY_TRACKING >= '${year}-${month_end < 10 ? '0' + month_end : month_end}-${day_end}')tb1
+                WHERE ID = '${ID}' AND DAY_TRACKING <= '${year}-${month}-${day_start}' AND DAY_TRACKING >= '${year}-${month_end}-${day_end}')tb1
                 INNER JOIN (SELECT * FROM amt.tagets_training_tracking)tb2
                 ON tb1.DAY_TRAINING = tb2.DAY AND tb1.CODE_TRAINING = tb2.CODE_TRAINING`;
             data.query(sql_data, (err, eff_list) => {
@@ -666,7 +696,7 @@ module.exports = function (app, passport) {
 
     // get id and name of employee
     app.post('/api/amt/get_employee_id_and_name', (req, res) => {
-        let {ID, DAY_TRACKING} = req.body;
+        let { ID, DAY_TRACKING } = req.body;
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
             let sql_data = `SELECT ID, NAME, CODE_TRAINING, OPERATION_NAME 
@@ -682,25 +712,23 @@ module.exports = function (app, passport) {
     })
 
     // get data eff training of employee by id
-    app.post('/api/amt/get_data_eff_training/', (req, res) => {
+    app.post('/api/amt/get_data_eff_training', (req, res) => {
         let { ID, DAY_TRACKING } = req.body;
-        day_end_tracking = DAY_TRACKING.split('-');
+        let day_end_tracking = DAY_TRACKING.split('-');
         let year = day_end_tracking[0];
         let month = day_end_tracking[1];
-        console.log(day_end_tracking[2]);
-        let day_end = parseInt(day_end_tracking[2]) - 6;
-        let month_end;
-        if(day_end < 0) {
-            day_end = 25
-            month_end = parseInt(month) - 1;
-        }else {
-            month_end = parseInt(month);
-        }
-        console.log(month_end);
+        let day_start = day_end_tracking[2]
+        let datenow = new Date(Date.now());
+        var date = new Date(datenow);
+        let time_get_data = new Date(date.setDate(date.getDate() - 7)).toLocaleDateString('fr-CA');
+        console.log(time_get_data);
+        let day_tracking_end = time_get_data.split('-');
+        let month_end = day_tracking_end[1];
+        let day_end = day_tracking_end[2];
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
             let sql_data = `SELECT tb1.EFF,tb1.DAY_TRACKING, tb2.TAGETS FROM (SELECT EFF,DAY_TRACKING, DAY_TRAINING,CODE_TRAINING FROM amt.employee_profile 
-                WHERE ID = '${ID}' AND DAY_TRACKING <= '${year}-${month}-${day_end_tracking[2]}' AND DAY_TRACKING >= '${year}-${month_end < 10 ? '0' + month_end : month_end}-${day_end}')tb1
+                WHERE ID = '${ID}' AND DAY_TRACKING <= '${year}-${month}-${day_start}' AND DAY_TRACKING >= '${year}-${month_end}-${day_end}')tb1
                 INNER JOIN (SELECT * FROM amt.tagets_training_tracking)tb2
                 ON tb1.DAY_TRAINING = tb2.DAY AND tb1.CODE_TRAINING = tb2.CODE_TRAINING`;
             console.log(sql_data);
@@ -716,23 +744,21 @@ module.exports = function (app, passport) {
     // get data irr training of employee by id
     app.post('/api/amt/get_data_irr_training/', (req, res) => {
         let { ID, DAY_TRACKING } = req.body;
-        day_end_tracking = DAY_TRACKING.split('-');
+        let day_end_tracking = DAY_TRACKING.split('-');
         let year = day_end_tracking[0];
         let month = day_end_tracking[1];
         let day_start = day_end_tracking[2]
-        let day_end = parseInt(day_end_tracking[2]) - 6;
-        let month_end;
-        if(day_end < 0) {
-            day_end = 25
-            month_end = parseInt(month) - 1;
-        }else {
-            month_end = parseInt(month);
-        }
-        console.log(month_end);
+        let datenow = new Date(Date.now());
+        var date = new Date(datenow);
+        let time_get_data = new Date(date.setDate(date.getDate() - 7)).toLocaleDateString('fr-CA');
+        console.log(time_get_data);
+        let day_tracking_end = time_get_data.split('-');
+        let month_end = day_tracking_end[1];
+        let day_end = day_tracking_end[2];
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
             let sql_data = `SELECT SUM(QUANTITY) AS QUANTITY, IRR_NAME,DATE FROM amt.amt_irr_tracking 
-            WHERE ID = '${ID}' AND DATE <= '${year}${month}${day_start}' AND  DATE >= '${year}${month_end < 10 ? '0' + month_end : month_end}${day_end}' 
+            WHERE ID = '${ID}' AND DATE <= '${year}${month}${day_start}' AND  DATE >= '${year}${month_end}${day_end}' 
             GROUP BY DATE`;
             data.query(sql_data, (err, irr_list) => {
                 if (err) throw err;
@@ -766,48 +792,48 @@ module.exports = function (app, passport) {
     })
 
     // add new tech second
-    app.post('/api/amt/add_tech_second', (req,res) => {
-        let {ID, TECH_ID_SECOND, TECH_NAME_SECOND} = req.body;
+    app.post('/api/amt/add_tech_second', (req, res) => {
+        let { ID, TECH_ID_SECOND, TECH_NAME_SECOND } = req.body;
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
             let sql_data = `UPDATE amt.amt_tracking set TECH_ID_SECOND = '${TECH_ID_SECOND}', TECH_NAME_SECOND = '${TECH_NAME_SECOND}' WHERE ID = '${ID}'`;
             console.log(sql_data);
             data.query(sql_data, (err, tech) => {
-                if (err){
+                if (err) {
                     res.send({
-                        status : 500
+                        status: 500
                     })
                 }
                 data.release();
                 res.send({
-                    status : 200
+                    status: 200
                 })
             })
         })
     })
 
     // change technician
-    app.post('/api/amt/change_tech', (req,res) => {
-        let {ID, TECH_ID, TECHNICIAN} = req.body;
+    app.post('/api/amt/change_tech', (req, res) => {
+        let { ID, TECH_ID, TECHNICIAN } = req.body;
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
             let sql_data = `UPDATE amt.amt_tracking set TECH_ID = '${TECH_ID}', TECHNICIAN = '${TECHNICIAN}' WHERE ID = '${ID}'`;
             console.log(sql_data);
             data.query(sql_data, (err, tech) => {
-                if (err){
+                if (err) {
                     res.send({
-                        status : 500
+                        status: 500
                     })
                 }
                 data.release();
                 res.send({
-                    status : 200
+                    status: 200
                 })
             })
         })
     })
     // get name tech new
-    app.get('/api/amt/get_new_tech_name/:tagId', (req,res) => {
+    app.get('/api/amt/get_new_tech_name/:tagId', (req, res) => {
         let id = req.params.tagId;
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
@@ -819,12 +845,12 @@ module.exports = function (app, passport) {
                 res.send(tech);
             })
         })
-        
+
     })
 
 
     // get irr list of employee profile 
-    app.get('/api/amt/get_irr_of_employee_profile/:tagId', (req,res) => {
+    app.get('/api/amt/get_irr_of_employee_profile/:tagId', (req, res) => {
         let id = req.params.tagId;
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
@@ -836,7 +862,7 @@ module.exports = function (app, passport) {
                 res.send(irr_list);
             })
         })
-        
+
     })
 
     // get empployee list by TECH_ID
@@ -914,7 +940,7 @@ module.exports = function (app, passport) {
             })
         }
     })
-    
+
     // get employee_profile by start_date and day_tracking
     app.post('/api/amt/get_info_employee_by_group_line', (req, res) => {
         let { GROUP_LINE, DAY_TRACKING, SHIFT } = req.body;
@@ -1066,8 +1092,8 @@ module.exports = function (app, passport) {
         })
     })
 
-     // upload file technician
-     app.post('/api/amt/upload_file_technician', function (req, res) {
+    // upload file technician
+    app.post('/api/amt/upload_file_technician', function (req, res) {
         // var dt = datetime.create();
         // var format_date = dt.format("YmdHMS");
         console.log("Uploadfile_machine");
@@ -1085,7 +1111,7 @@ module.exports = function (app, passport) {
                 pythonPath: 'python',
                 pythonOptions: ['-u'], // get print results in real-time
                 scriptPath: './python/', //If you are having python_test.py script in same folder, then it's optional.
-                args: [excelFile]   
+                args: [excelFile]
             };
             // console.log("hi")
             PythonShell.run('update_technician_file.py', options, function (err, result) {
@@ -1117,7 +1143,7 @@ module.exports = function (app, passport) {
                 pythonPath: 'python',
                 pythonOptions: ['-u'], // get print results in real-time
                 scriptPath: './python/', //If you are having python_test.py script in same folder, then it's optional.
-                args: [excelFile]   
+                args: [excelFile]
             };
             // console.log("hi")
             PythonShell.run('upload_tagets_training_tracking.py', options, function (err, result) {
@@ -1286,7 +1312,7 @@ module.exports = function (app, passport) {
                 res.redirect('/detail')
             }
             else {
-                res.redirect('/detail')
+                res.redirect('/action')
                 res.end();
             }
 

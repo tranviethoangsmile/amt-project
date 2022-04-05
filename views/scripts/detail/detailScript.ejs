@@ -38,6 +38,9 @@
         Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
 
+
+
+    // nhận tên của nhân viên.
     get_name_employee = (id) => {
         $.ajax({
             headers: {
@@ -56,12 +59,13 @@
         })
     }
 
-    $(document).keypress((event) => {
-        var keycode = event.keyCode || event.which;
-        if (keycode == '13') {
-            search_employee_of_technician();
-        }
-    });
+    // nhấn enter để tìm kiếm
+    // $(document).keypress((event) => {
+    //     var keycode = event.keyCode || event.which;
+    //     if (keycode == '13') {
+    //         search_employee_of_technician();
+    //     }
+    // });
 
     // nhận name của kĩ thuật
     get_name_tech = () => {
@@ -118,6 +122,7 @@
 
 
     var employee_profile_chart = Object;
+    // get employee list of technician 
     search_employee_of_technician = () => {
         let id_tech_and_day_tracking = {
             TECH_ID: $("#technician_id_search").val(),
@@ -242,6 +247,44 @@
             console.error(e)
         })
 
+    }
+
+    // show input report sys
+    report_error_system = () => {
+        $("#report").css('display', 'block');
+    }
+    cancel_send_report = () => {
+        $("#report_error_system_note").val('')
+        $("#report").css('display', 'none');
+    }
+
+    // send report
+    send_report_sys = () => {
+        let report = {
+            DATE: $("#day_tracking").val(),
+            NOTE: $("#report_error_system_note").val(),
+            STAFF: '<%= user %>',
+        }
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/send_report_sys",
+            type: "POST",
+            data: JSON.stringify(report)
+        }).done((resText) => {
+            if (resText.status == 200) {
+                $.notify('gửi thành công', 'success')
+                $("#report_error_system_note").val('')
+                $("#report").css('display', 'none');
+            } else {
+                $.notify('gửi thất bại', 'error')
+
+            }
+        }).fail((e) => {
+            console.error(e);
+        })
     }
 
     // hủy hiển thị employee profile
@@ -380,6 +423,7 @@
         })
     }
 
+    // get data then display chart after dblclick on employee name  
     var eff_chart = Object;
     get_data_eff_training = (id) => {
         $("#btn_show_detail_eff").empty();
@@ -393,7 +437,7 @@
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            url: "/api/amt/get_data_eff_training/",
+            url: "/api/amt/get_data_eff_training",
             type: "POST",
             data: JSON.stringify(employee)
         }).done((arrData) => {
@@ -606,9 +650,6 @@
         })
     }
 
-
-
-
     // get reason then display chart
     var reason_detail = Object;
     get_season = async (id) => {
@@ -694,18 +735,12 @@
             console.error(e);
         })
     }
-
-
-
-
-
-
-
     // hàm khỏi đầu 
     init = () => {
-        get_start_date_list();
+        get_group_line_list();
         load_time();
     }
+
     // theo dõi chi tiết employee
     see_employee_detail = (id) => {
         $("#chart_views_employee").show();
@@ -714,6 +749,7 @@
         get_name_employee(id);
         get_season(id);
     }
+
     // ẩn chart theo dõi > hủy
     none_chart = () => {
         $("#chart_views_employee").hide();
@@ -721,6 +757,7 @@
         destroy_eff(eff_chart);
         destroy_irr(irr_chart_tracking);
     }
+    
     // hủy chart eff
     destroy_eff = (eff) => {
         eff.destroy();
@@ -803,6 +840,7 @@
             DAY_TRACKING: $("#day_tracking").val(),
             SHIFT: $("#shift_list").val(),
         }
+        // gọi hàm nhận lỗi của ngày thôi dõi.
         get_irr_by_day_tracking(day_tracking.GROUP_LINE, day_tracking.DAY_TRACKING);
         $.ajax({
             headers: {
@@ -868,7 +906,7 @@
             TECH_NAME_SECOND: $("#tech_name_new").val()
         }
 
-        if (employee_add.TECH_ID_SECOND == '') {
+        if (employee_add.TECH_ID_SECOND == '' || employee_add.TECH_NAME_SECOND == '') {
             $.notify('vui lòng chọn kỹ thuật', 'info');
             return;
         }
@@ -906,15 +944,15 @@
         })
     }
 
-      // thay đổi kỹ thuật.
-      change_tech = () => {
+    // thay đổi kỹ thuật.
+    change_tech = () => {
         let employee_add = {
             ID: $("#id_employee").val(),
             TECH_ID: $("#tech_id_new").val(),
             TECHNICIAN: $("#tech_name_new").val()
         }
 
-        if (employee_add.TECH_ID == '') {
+        if (employee_add.TECH_ID == '' || employee_add.TECHNICIAN == '') {
             $.notify('vui lòng chọn kỹ thuật', 'info');
             return;
         }
@@ -1091,7 +1129,7 @@
     }
 
     // lấy danh sách nhân viên trong group_line ()
-    get_start_date_list = () => {
+    get_group_line_list = () => {
         $.ajax({
             headers: {
                 'Accept': 'application/json',
