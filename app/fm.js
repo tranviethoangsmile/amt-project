@@ -522,7 +522,7 @@ module.exports = function (app, passport) {
         let day_tracking_end = time_get_data.split('-');
         let month_end = day_tracking_end[1];
         let day_end = day_tracking_end[2];
-        
+
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
             let sql_data = `SELECT DATE, QUANTITY, IRR_NAME FROM amt.amt_irr_tracking
@@ -641,8 +641,8 @@ module.exports = function (app, passport) {
     })
 
     // send report sys
-    app.post('/api/amt/send_report_sys', (req,res) => {
-        let {DATE,NOTE, STAFF} = req.body;
+    app.post('/api/amt/send_report_sys', (req, res) => {
+        let { DATE, NOTE, STAFF } = req.body;
         connect_amt.getConnection((err, data) => {
             if (err) {
                 res.send({
@@ -656,7 +656,7 @@ module.exports = function (app, passport) {
                     res.send({
                         status: 500
                     })
-                }else {
+                } else {
                     data.release();
                     res.send({
                         status: 200
@@ -864,6 +864,124 @@ module.exports = function (app, passport) {
         })
 
     })
+    // modify amt_tracking
+
+    app.post('/api/amt/modifiy_amt_tracking', (req, res) => {
+        let { ID, CODE_TRAINING, OPERATION_NAME } = req.body;
+        connect_amt.getConnection((err, data) => {
+            if (err) {
+                res.send({
+                    status: 500
+                })
+            }
+            let search_code = `SELECT CODE_TRAINING FROM amt.tagets_training_tracking WHERE CODE_TRAINING = '${CODE_TRAINING}' GROUP BY CODE_TRAINING`;
+            console.log(search_code);
+            data.query(search_code, (err, code) => {
+                if (err) {
+                    res.send({
+                        status: 500
+                    })
+                }
+                data.release();
+                console.log(code);
+                if (code.length != 0) {
+                    connect_amt.getConnection((err, data) => {
+                        if (err) {
+                            res.send({
+                                status: 500
+                            })
+                        }
+                        let sql_data = `UPDATE amt.amt_tracking SET OPERATION_NAME = '${OPERATION_NAME}', CODE_TRAINING = '${CODE_TRAINING}' WHERE ID = '${ID}'`;
+                        console.log(sql_data);
+                        data.query(sql_data, (err, employee) => {
+                            if (err) {
+                                res.send({
+                                    status: 500
+                                })
+                            }
+                            data.release();
+                            res.send({
+                                status: 200
+                            })
+
+                        })
+                    })
+                } else {
+                    res.send({
+                        status: 500
+                    })
+                }
+
+            })
+        })
+
+    })
+
+    // modify employee profile
+    app.post('/api/amt/modifiy_employee_profile', (req, res) => {
+        let { ID, CODE_TRAINING, OPERATION_NAME } = req.body;
+        connect_amt.getConnection((err, data) => {
+            if (err) {
+                res.send({
+                    status: 500
+                })
+            }
+            let search_code = `SELECT CODE_TRAINING FROM amt.tagets_training_tracking WHERE CODE_TRAINING = '${CODE_TRAINING}' GROUP BY CODE_TRAINING`;
+            console.log(search_code);
+            data.query(search_code, (err, code) => {
+                if (err) {
+                    res.send({
+                        status: 500
+                    })
+                }
+                data.release();
+                console.log(code);
+                if (code.length != 0) {
+                    connect_amt.getConnection((err, data) => {
+                        if (err) {
+                            res.send({
+                                status: 500
+                            })
+                        }
+                        let sql_data = `UPDATE amt.employee_profile SET OPERATION_NAME = '${OPERATION_NAME}', CODE_TRAINING = '${CODE_TRAINING}' WHERE ID = '${ID}'`;
+                        console.log(sql_data);
+                        data.query(sql_data, (err, employee) => {
+                            if (err) {
+                                res.send({
+                                    status: 500
+                                })
+                            }
+                            data.release();
+
+                            res.send({
+                                status: 200
+                            })
+
+                        })
+                    })
+                } else {
+                    res.send({
+                        status: 500
+                    })
+                }
+            })
+        })
+    })
+
+    //FIND EMPLOYEE INFO
+    app.get('/api/amt/find_employee_info/:tagId', (req, res) => {
+        let id = req.params.tagId;
+        connect_amt.getConnection((err, data) => {
+            if (err) throw err;
+            let sql_data = `SELECT ID,NAME, CODE_TRAINING, OPERATION_NAME FROM amt.amt_tracking WHERE ID = '${id}'`;
+            console.log(sql_data);
+            data.query(sql_data, (err, employee) => {
+                if (err) throw err;
+                data.release();
+                res.send(employee);
+            })
+        })
+    })
 
     // get empployee list by TECH_ID
     app.post('/api/amt/get_employee_detail_by_tech_id', (req, res) => {
@@ -895,7 +1013,7 @@ module.exports = function (app, passport) {
                         connect_amt.getConnection((err, data) => {
                             if (err) throw err;
                             let sql_data = `SELECT * FROM (SELECT ID, NAME,OPERATION_NAME, OPERATION_NAME_REAL, SPAN_TIME, DOWTIME, WORK_HRS, SHIFT, START_DATE, CODE_TRAINING,EFF, DAY_TRAINING,DAY_TRACKING, 
-                                REDUCE_DAY, (DAY_TRAINING - REDUCE_DAY) AS DAY_TRAINING_REAL 
+                                REDUCE_DAY, (DAY_TRAINING - REDUCE_DAY) AS DAY_TRAINING_REAL, REASON
                                 FROM amt.employee_profile WHERE TECH_ID = '${TECH_ID}' AND DAY_TRACKING = '${DAY_TRACKING}')b
                                 LEFT JOIN (SELECT * FROM amt.tagets_training_tracking)tb
                                 ON tb.CODE_TRAINING = b.CODE_TRAINING AND tb.DAY = b.DAY_TRAINING_REAL;`;
@@ -947,7 +1065,7 @@ module.exports = function (app, passport) {
         connect_amt.getConnection((err, data) => {
             if (err) throw err;
             let sql_data = `SELECT * FROM (SELECT ID,SHIFT, NAME,OPERATION_NAME_REAL, OPERATION_NAME,SPAN_TIME, DOWTIME, WORK_HRS, START_DATE, CODE_TRAINING,EFF, DAY_TRAINING,DAY_TRACKING, 
-                REDUCE_DAY, (DAY_TRAINING - REDUCE_DAY) AS DAY_TRAINING_REAL 
+                REDUCE_DAY, (DAY_TRAINING - REDUCE_DAY) AS DAY_TRAINING_REAL, REASON
                 FROM amt.employee_profile WHERE GROUP_LINE = '${GROUP_LINE}' AND DAY_TRACKING = '${DAY_TRACKING}' AND LEFT(SHIFT,3) = '${SHIFT}')b
                 LEFT JOIN (SELECT * FROM amt.tagets_training_tracking)tb
                 ON tb.CODE_TRAINING = b.CODE_TRAINING AND tb.DAY = b.DAY_TRAINING_REAL;`;

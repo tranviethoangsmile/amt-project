@@ -173,6 +173,80 @@
         })
     }
 
+    // tìm thông tin employee
+
+    search_employee_info = () => {
+        let id = $("#id").val();
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/find_employee_info/" + id,
+            type: "GET",
+        }).done((employee) => {
+            
+            if(employee[0].NAME != null) {
+                $("#em_info").css('display', 'block')
+                $("#employee_id").val(employee[0].ID);
+                $("#code_training").val(employee[0].CODE_TRAINING);
+                $("#operation_name").val(employee[0].OPERATION_NAME);
+                $("#employee_name").val(employee[0].NAME)
+            }
+        }).fail((e) => {
+            console.error(e);
+        })
+    }
+
+    // thay doi cong doan va ngay code training
+    change_em_info = () => {
+        let employee = {
+            ID : $("#employee_id").val(),
+            CODE_TRAINING: $("#code_training").val(),
+            OPERATION_NAME:  $("#operation_name").val()
+        }
+        // run modify employee training func
+        update_code_and_operation_of_employee(employee.ID, employee.CODE_TRAINING, employee.OPERATION_NAME);
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/modifiy_employee_profile",
+            type: "post",
+            data:JSON.stringify(employee)
+        }).done((resText) => {
+            console.log(resText);
+        }).fail((e) => {
+            console.error(e);
+        })
+    }
+
+    update_code_and_operation_of_employee = (id, code_training, operation_name) => {
+        let employee = {
+            ID :id,
+            CODE_TRAINING: code_training,
+            OPERATION_NAME: operation_name
+        }
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: "/api/amt/modifiy_amt_tracking",
+            type: "post",
+            data:JSON.stringify(employee)
+        }).done((resText) => {
+            if(resText.status == 500) {
+                $.notify('Vui lòng kiểm tra lại','error')
+            }else {
+                $.notify('Cập nhật thành công','success')
+            }
+        }).fail((e) => {
+            console.error(e);
+        })
+    }
+
     // display modal handle file
     handle_file = () => {
         $("#handle_file").modal("show");

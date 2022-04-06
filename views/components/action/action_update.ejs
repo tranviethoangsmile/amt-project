@@ -7,7 +7,7 @@
                     <i class="material-icons opacity-10">person</i>
                 </div>
                 <div class="text-end pt-1">
-                    <p class="text-sm mb-0 text-capitalize">Nhân Viên Mới</p>
+                    <h4 class="text-sm mb-2 text-capitalize">Nhân Viên Mới</h4>
                     <button class="btn btn-success" onclick="handle_file()">Cập nhật</button>
                 </div>
             </div>
@@ -23,7 +23,7 @@
                     <i class="material-icons opacity-10">trending_up</i>
                 </div>
                 <div class="text-end pt-1">
-                    <p class="text-sm mb-0 text-capitalize">Đường cong</p>
+                    <h4 class="text-sm mb-2 text-capitalize">Đường cong</h4>
                     <button class="btn btn-success" onclick="update_tagets_training_file()">Cập nhật</button>
                 </div>
             </div>
@@ -41,7 +41,7 @@
                     <i class="material-icons opacity-10">person</i>
                 </div>
                 <div class="text-end pt-1">
-                    <p class="text-sm mb-0 text-capitalize">Kỹ thuật</p>
+                    <h4 class="text-sm mb-2 text-capitalize">Kỹ thuật</h4>
                     <button class="btn btn-success" onclick="handle_file_tech()">Cập nhật</button>
                 </div>
             </div>
@@ -49,7 +49,51 @@
 
         </div>
     </div>
-    <div class="col-xl-6 col-sm-6">
+    <div class="col-xl-6 col-sm-6 mb-xl-0 mb-2">
+        <div class="card">
+            <div class="card-header p-3 pt-2">
+                <div
+                    class="icon icon-shape bg-gradient-dark shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                    <i class="material-icons opacity-10">person</i>
+                </div>
+                <div class="text-end pt-1">
+                    <h4 class="text-sm mb-2 text-capitalize">Thay đổi thông tin nhân viên</h4>
+                </div>
+            </div>
+            <hr class="dark horizontal my-0">
+            <div class="row">
+                <div class="col-md-4">
+                    <p><u><b>ID:</b></u></p>
+                    <input class="form-control-lg m-lg-3" id="id" type="number" oninput="search_employee_info()"/>
+                </div>
+                <div class="col-md-8" style="display: none;" id="em_info">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p>ID: </p>
+                            <input class="form-group m-lg-3" id="employee_id" readonly/> <br>
+                            <p>Ngày ĐT: </p>
+                            <input class="form-group m-lg-3" id="code_training"/> <br>
+                        </div>
+                        <div class="col-sm-6">
+                            <p>Tên: </p>
+                            <input class="form-group m-lg-3" id="employee_name" readonly/> <br>
+                            
+                            <p>Công đoạn: </p>
+                            <input class="form-group m-lg-3" id="operation_name"/> <br>
+                        </div>
+                        <div class="col-6">
+
+                        </div>
+                        <div class="col-6 text-lg-center">
+                            <button class="btn btn-success" onclick="change_em_info()">Lưu</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-xl-6 col-sm-6 mt-3">
         <div class="card">
             <div class="card-header p-3 pt-2">
                 <div
@@ -60,12 +104,12 @@
                     <div class="row">
                         <div class="col-md-6">
                             <label for="code_standard_list">Code: </label>
-                            <select onchange="get_description_code()" class="form-control" id="code_standard_list">
+                            <select onchange="get_description_code()" class="form-select m-lg-1 text-center" id="code_standard_list" style="border: 1px; border-color: black; background-color:bisque;font-weight: bold;">
                             </select>
                         </div>
                         <div class="col-md-6">
                             <label for="description">Nội dung : </label>
-                            <input id="description" class="form-control"/>
+                            <input id="description" class="form-control" style="font-weight: bold;"/>
                         </div>
                     </div>
                     <button onclick="add_new_code_success()" class="btn btn-success">Thêm</button>

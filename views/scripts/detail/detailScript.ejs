@@ -1,15 +1,11 @@
 <script>
     $(document).ready(() => {
-        init();
+            init();
 
 
-    })
-    // table custom fixed thead
+        })
+        // table custom fixed thead
     var tableCont = document.querySelector('#table-cont')
-    /**
-     * scroll handle
-     * @param {event} e -- scroll event
-     */
     function scrollHandle(e) {
         var scrollTop = this.scrollTop;
         this.querySelector('thead').style.transform = 'translateY(' + scrollTop + 'px)';
@@ -19,10 +15,6 @@
 
     // table custom fixed thead
     var tableCont_employee = document.querySelector('#table-cont-employee')
-    /**
-     * scroll handle
-     * @param {event} e -- scroll event
-     */
     function scrollHandle(e) {
         var scrollTop = this.scrollTop;
         this.querySelector('thead').style.transform = 'translateY(' + scrollTop + 'px)';
@@ -139,7 +131,6 @@
             data: JSON.stringify(id_tech_and_day_tracking)
         }).done((employee_list) => {
             if (employee_list.status == 201) {
-                $("#technician_id_search").val('');
                 $("#employee_profile_tab tbody").empty();
                 $.each(employee_list.employee_profile_list, (index, item) => {
                     $("#employee_profile_tab tbody").append(
@@ -152,7 +143,7 @@
                         <td>${item.TAGETS}</td>
                         <td>${Math.floor(((item.WORK_HRS - item.SPAN_TIME - item.DOWTIME) / item.WORK_HRS) * 100)} %</td>
                         <td style="color:${item.EFF > item.TAGETS ? '#43A047' : '#EC407A'};">${item.EFF > item.TAGETS ? 'ĐẠT' : 'KHÔNG'}</td>
-                        <td><button onclick = "why_not_pass(${item.ID})" class = "btn btn-outline-primary">ghi chú<butotn></td>
+                        <td><button onclick = "why_not_pass(${item.ID})" class = "btn btn-outline-${item.REASON == null ? 'primary': 'success'}">${item.REASON == null ? 'Ghi chú': 'Đã ghi chú'}<butotn></td>
                         <td><button onclick = "technician_handle(${item.ID})" class = "btn btn-outline-success">Đổi KT<butotn></td>
                     </tr>
                     `
@@ -652,7 +643,7 @@
 
     // get reason then display chart
     var reason_detail = Object;
-    get_season = async (id) => {
+    get_season = async(id) => {
         $("#btn_show_detail_reason").empty();
         $("#btn_show_detail_reason").append(`<button onclick = "show_reason_detail(${id})" class="btn btn-danger">Chi tiết</button>`)
         let employee = {
@@ -682,16 +673,16 @@
                 type: 'bar',
                 data: {
                     labels: labels_reason,
-                    datasets: [
-                        {
-                            label: "SL",
-                            backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850", "red", 'blue'],
-                            data: data_reason
-                        }
-                    ]
+                    datasets: [{
+                        label: "SL",
+                        backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850", "red", 'blue'],
+                        data: data_reason
+                    }]
                 },
                 options: {
-                    legend: { display: false },
+                    legend: {
+                        display: false
+                    },
                     title: {
                         display: true,
                         text: 'Lý do không đạt'
@@ -705,37 +696,37 @@
 
     // hiển thị danh sách reason modal
     show_reason_detail = (id) => {
-        $("#reason_detail_show tbody").empty();
-        let employee = {
-            ID: id,
-            DAY_TRACKING: $("#day_tracking").val(),
-        }
-        $.ajax({
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            url: "/api/amt/get_reason_detail",
-            type: "POST",
-            data: JSON.stringify(employee)
-        }).done((reasons) => {
-            $("#show_reason_detail").modal('show');
-            $.each(reasons, (index, item) => {
-                $("#reason_detail_show tbody").append(
-                    `
+            $("#reason_detail_show tbody").empty();
+            let employee = {
+                ID: id,
+                DAY_TRACKING: $("#day_tracking").val(),
+            }
+            $.ajax({
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                url: "/api/amt/get_reason_detail",
+                type: "POST",
+                data: JSON.stringify(employee)
+            }).done((reasons) => {
+                $("#show_reason_detail").modal('show');
+                $.each(reasons, (index, item) => {
+                    $("#reason_detail_show tbody").append(
+                        `
                         <tr>
                             <td>${item.DAY_TRACKING}</td>
                             <td>${item.REASON}</td>
                             <td>${item.TECHNICIANS_NOTE}</td>
                         </tr>
                         `
-                )
+                    )
+                })
+            }).fail((e) => {
+                console.error(e);
             })
-        }).fail((e) => {
-            console.error(e);
-        })
-    }
-    // hàm khỏi đầu 
+        }
+        // hàm khỏi đầu 
     init = () => {
         get_group_line_list();
         load_time();
@@ -757,16 +748,16 @@
         destroy_eff(eff_chart);
         destroy_irr(irr_chart_tracking);
     }
-    
+
     // hủy chart eff
     destroy_eff = (eff) => {
-        eff.destroy();
-    }
-    // hủy chart irr
+            eff.destroy();
+        }
+        // hủy chart irr
     destroy_irr = (irr) => {
-        irr.destroy();
-    }
-    // hủy chart percent
+            irr.destroy();
+        }
+        // hủy chart percent
     destroy_reason = (percent) => {
         percent.destroy();
     }
@@ -814,7 +805,7 @@
             data: JSON.stringify(data)
         }).done((irr_list) => {
             let total = 0;
-            irr_list.sort(function (a, b) {
+            irr_list.sort(function(a, b) {
                 return b.QUANTITY - a.QUANTITY
             })
             console.log(irr_list);
@@ -831,16 +822,16 @@
         })
     }
 
-    // nhận thông tin chi tiết qua ngày bắt đầu
+    // nhận thông tin chi tiết group_line bắt đầu
     get_info_employee_by_group_line = () => {
         $("#employee_profile_tab tbody").empty();
         // none_chart();
         let day_tracking = {
-            GROUP_LINE: $("#group_line_list").val(),
-            DAY_TRACKING: $("#day_tracking").val(),
-            SHIFT: $("#shift_list").val(),
-        }
-        // gọi hàm nhận lỗi của ngày thôi dõi.
+                GROUP_LINE: $("#group_line_list").val(),
+                DAY_TRACKING: $("#day_tracking").val(),
+                SHIFT: $("#shift_list").val(),
+            }
+            // gọi hàm nhận lỗi của ngày theo dõi.
         get_irr_by_day_tracking(day_tracking.GROUP_LINE, day_tracking.DAY_TRACKING);
         $.ajax({
             headers: {
@@ -879,7 +870,7 @@
                         <td>${item.TAGETS}</td>
                         <td>${Math.floor(((item.WORK_HRS - item.SPAN_TIME - item.DOWTIME) / item.WORK_HRS) * 100)} %</td>
                         <td style="color:${item.EFF > item.TAGETS ? '#43A047' : '#EC407A'};">${item.EFF > item.TAGETS ? 'ĐẠT' : 'KHÔNG'}</td>
-                        <td><button onclick = "why_not_pass(${item.ID})" class = "btn btn-outline-primary">ghi chú<butotn></td>
+                        <td><button onclick = "why_not_pass(${item.ID})" class = "btn btn-outline-${item.REASON == null ? 'primary': 'success'}">${item.REASON == null ? 'Ghi chú': 'Đã ghi chú'}<butotn></td>
                         <td><button onclick = "technician_handle(${item.ID})" class = "btn btn-outline-success">Đổi KT<butotn></td>
                     </tr>
                     `
@@ -1115,7 +1106,9 @@
                         $.notify('lưu thành công', 'success')
                         $("#id_of_employee").val('');
                         $("#technician_note").val('');
+                        $("#cycle_time").val('');
                         $('#why_not_pass').modal('hide');
+                        search_employee_of_technician();
                     } else {
                         $.notify('lưu thất bại', 'error')
                     }
@@ -1175,5 +1168,4 @@
         let day_get_data = format_time(date.setDate(date.getDate() - 2));
         $("#day_tracking").val(day_get_data);
     }
-
 </script>
